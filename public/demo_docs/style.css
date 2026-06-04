@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Caveat:wght@600&display=swap');
+
+:root {
+    --sbi-blue: #005f9e;
+    --sbi-light-blue: #e6f3ff;
+    --sbi-dark-blue: #003a63;
+    --text-main: #333;
+    --border-color: #bdc3c7;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    color: var(--text-main);
+    background: #e0e0e0;
+}
+
+/* Page Layout for Printing */
+@page {
+    size: A4;
+    margin: 0;
+}
+
+.page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    margin: 10mm auto;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+@media print {
+    body { background: white; }
+    .page { 
+        margin: 0; 
+        box-shadow: none; 
+        page-break-after: always;
+    }
+}
+
+/* Watermarks */
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 100px;
+    font-weight: bold;
+    color: rgba(255, 0, 0, 0.08);
+    pointer-events: none;
+    z-index: 9999;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+.watermark-small {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: red;
+    border: 2px solid red;
+    padding: 5px 10px;
+    transform: rotate(15deg);
+    z-index: 9999;
+}
+
+/* Headers */
+.header-blue {
+    background: var(--sbi-blue);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 20px;
+}
+
+.header-blue h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.header-blue p {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* Sections & Tables */
+.section-title {
+    background: var(--sbi-light-blue);
+    color: var(--sbi-dark-blue);
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: 14px;
+    border-left: 4px solid var(--sbi-blue);
+    margin: 15px 0 10px 0;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.info-table th, .info-table td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    text-align: left;
+}
+
+.info-table th {
+    background: #f8f9fa;
+    font-weight: 500;
+    width: 30%;
+    color: #555;
+}
+
+/* Specific Document Styles */
+.handwriting {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    color: #1a1a1a;
+}
+
+.doctor-header {
+    text-align: center;
+    border-bottom: 2px solid var(--sbi-blue);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.id-card {
+    width: 85.6mm;
+    height: 53.98mm;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    padding: 10px;
+    position: relative;
+    background: #fff;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.barcode {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 40px;
+}
