@@ -209,7 +209,7 @@ export default function KnowledgeBase() {
                             AI-processed manuals with semantic knowledge graph extraction and domain relevance scoring.
                         </Typography>
                     </Box>
-                    <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1.5 }}>
                         <IconButton
                             onClick={handleRefreshRulebooks}
                             disabled={rbLoading}
@@ -241,7 +241,7 @@ export default function KnowledgeBase() {
                         >
                             Add Document
                         </Button>
-                    </Stack>
+                    </Box>
                 </Box>
                 <TableContainer>
                     <Table>
@@ -326,7 +326,7 @@ export default function KnowledgeBase() {
             </Card>
 
             {/* Rule Book Upload Dialog */}
-            <Dialog open={openRbUploadDialog} onClose={() => !rbUploading && setOpenRbUploadDialog(false)} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
+            <Dialog open={openRbUploadDialog} onClose={() => !rbUploading && setOpenRbUploadDialog(false)} maxWidth="xs" fullWidth slotProps={{ paper: { sx: { borderRadius: 3 } } }}>
                 <DialogTitle sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>Add to Knowledge Base</DialogTitle>
                 <DialogContent sx={{ pt: 3 }}>
                     <Box sx={{ border: '2px dashed #cbd5e1', borderRadius: 3, p: 3, textAlign: 'center', bgcolor: '#f8fafc', mb: 2 }}>
@@ -385,7 +385,7 @@ export default function KnowledgeBase() {
             </Dialog>
 
             {/* Knowledge Base GraphRAG Details Dialog */}
-            <Dialog open={openKbDetailsDialog} onClose={() => setOpenKbDetailsDialog(false)} maxWidth="md" fullWidth PaperProps={{ sx: { borderRadius: 4, height: '85vh', bgcolor: themeColors.cardBg } }}>
+            <Dialog open={openKbDetailsDialog} onClose={() => setOpenKbDetailsDialog(false)} maxWidth="md" fullWidth slotProps={{ paper: { sx: { borderRadius: 4, height: '85vh', bgcolor: themeColors.cardBg } } }}>
                 <DialogTitle sx={{ bgcolor: themeColors.tableHeadBg, borderBottom: themeColors.border, p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h6" sx={{ fontWeight: 800, color: themeColors.textPrimary }}>Document Knowledge Graph</Typography>
                     <Button onClick={() => setOpenKbDetailsDialog(false)} sx={{ color: themeColors.textSecondary }}>Close</Button>

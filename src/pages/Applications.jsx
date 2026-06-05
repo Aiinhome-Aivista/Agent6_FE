@@ -4,7 +4,8 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
     CircularProgress, IconButton, Divider, LinearProgress,
-    Accordion, AccordionSummary, AccordionDetails, Tooltip
+    Accordion, AccordionSummary, AccordionDetails, Tooltip,
+    Snackbar, Alert, Autocomplete
 } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -37,6 +38,7 @@ export default function Applications() {
     const [policyType, setPolicyType] = useState('Health Insurance');
     const [applicationType, setApplicationType] = useState('Existing Claim');
     const [productType, setProductType] = useState('Standard');
+    const [claimType, setClaimType] = useState('Hospitalization');
     const [existingPolicyDetails, setExistingPolicyDetails] = useState('');
     const [requestedCoverage, setRequestedCoverage] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -47,6 +49,7 @@ export default function Applications() {
     // File Upload States
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [uploadError, setUploadError] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
     const [uploadResult, setUploadResult] = useState(null);
     const [openResultDialog, setOpenResultDialog] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -68,6 +71,16 @@ export default function Applications() {
     // Missing Docs States
     const [missingDocsDialog, setMissingDocsDialog] = useState(false);
     const [missingDocsList, setMissingDocsList] = useState([]);
+
+    // Enhanced Decision States
+    const [openReferModal, setOpenReferModal] = useState(false);
+    const [referralTargets, setReferralTargets] = useState([]);
+    const [selectedReferUser, setSelectedReferUser] = useState('');
+    const [openRejectModal, setOpenRejectModal] = useState(false);
+    const [rejectionReasonType, setRejectionReasonType] = useState('predefined');
+    const [selectedPredefinedReason, setSelectedPredefinedReason] = useState('');
+    const [rejectCustomReason, setRejectCustomReason] = useState('');
+    const [rejectDoc, setRejectDoc] = useState(null);
 
     const fetchCases = async (showTableLoader = true) => {
         if (showTableLoader) setLoading(true);
@@ -242,13 +255,67 @@ export default function Applications() {
         finally { setRiskLoading(false); }
     };
 
+    const fetchReferralTargets = async () => {
+        try {
+            const res = await api.get('/auth/referral-targets');
+            setReferralTargets(res.data);
+        } catch (e) {
+            console.error('Failed to fetch referral targets:', e);
+        }
+    };
+
     const handleDecision = async (decision) => {
         if (!selectedCase) return;
+        if (decision === 'approve') {
+            setDecisionLoading(true);
+            try {
+                await api.post(`/cases/${selectedCase.id}/decision`, { decision, remarks: 'Underwriter: approve' });
+                setSelectedCase(null); fetchCases();
+            } catch (e) { alert('Decision failed.'); }
+            finally { setDecisionLoading(false); }
+        } else if (decision === 'reject') {
+            setOpenRejectModal(true);
+        } else if (decision === 'escalate') {
+            fetchReferralTargets();
+            setOpenReferModal(true);
+        }
+    };
+
+    const handleReferSubmit = async () => {
+        if (!selectedCase || !selectedReferUser) return;
         setDecisionLoading(true);
         try {
-            await api.post(`/cases/${selectedCase.id}/decision`, { decision, remarks: decisionRemarks || `Underwriter: ${decision}` });
-            setSelectedCase(null); fetchCases();
-        } catch (e) { alert('Decision failed.'); }
+            await api.post(`/cases/${selectedCase.id}/decision`, { 
+                decision: 'escalate', 
+                remarks: decisionRemarks || 'Referred to higher authority',
+                referred_to_user_id: selectedReferUser 
+            });
+            setOpenReferModal(false);
+            setSelectedCase(null); 
+            fetchCases();
+        } catch (e) { alert('Refer failed.'); }
+        finally { setDecisionLoading(false); }
+    };
+
+    const handleRejectSubmit = async () => {
+        if (!selectedCase) return;
+        const finalReason = rejectCustomReason;
+        if (!finalReason || !rejectDoc) {
+            alert('Rejection Reason and Supporting Document are mandatory for rejection.');
+            return;
+        }
+        setDecisionLoading(true);
+        try {
+            const payload = { 
+                decision: 'reject', 
+                remarks: finalReason,
+                rejection_reason: finalReason
+            };
+            await api.post(`/cases/${selectedCase.id}/decision`, payload);
+            setOpenRejectModal(false);
+            setSelectedCase(null); 
+            fetchCases();
+        } catch (e) { alert('Reject failed.'); }
         finally { setDecisionLoading(false); }
     };
 
@@ -304,7 +371,7 @@ export default function Applications() {
                             ? 'My Applications'
                             : (isAdmin ? 'Manage Cases' : 'Case Queue')}
                     </Typography>
-                    <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1.5 }}>
                         <IconButton
                             onClick={handleRefreshCases}
                             disabled={loading}
@@ -334,29 +401,34 @@ export default function Applications() {
                                 New Application
                             </Button>
                         )}
-                    </Stack>
+                    </Box>
                 </Box>
                 <TableContainer>
                     <Table>
                         <TableHead>
                             <TableRow sx={{ bgcolor: themeColors.tableHeadBg }}>
-                                {['Case ID', 'Applicant', 'Policy', 'Status', 'Date', 'Actions'].map(h => (
+                                {(isBroker ? ['Case ID', 'Applicant', 'Policy', 'Assigned To', 'Status', 'Date', 'Actions'] : ['Case ID', 'Applicant', 'Policy', 'Status', 'SLA', 'Date', 'Actions']).map(h => (
                                     <TableCell key={h} sx={{ fontWeight: 700, color: themeColors.tableHeadText, borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem', textTransform: 'uppercase' }}>{h}</TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {loading ? (
-                                <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8, borderBottom: themeColors.tableCellBorder }}><CircularProgress /></TableCell></TableRow>
-                            ) : cases.length === 0 ? (
-                                <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8, color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>
-                                    {isBroker ? 'No cases yet — click "New Application" above!' : 'Queue is empty.'}
-                                </TableCell></TableRow>
+                                                <TableRow><TableCell colSpan={7} align="center" sx={{ py: 8, borderBottom: themeColors.tableCellBorder }}><CircularProgress /></TableCell></TableRow>
+                                            ) : cases.length === 0 ? (
+                                                <TableRow><TableCell colSpan={7} align="center" sx={{ py: 8, color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>
+                                                    {isBroker ? 'No cases yet — click "New Application" above!' : 'Queue is empty.'}
+                                                </TableCell></TableRow>
                             ) : cases.map(row => (
                                 <TableRow key={row.id} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
                                     <TableCell sx={{ fontWeight: 700, color: '#2563eb', borderBottom: themeColors.tableCellBorder, fontFamily: 'monospace' }}>{row.case_number}</TableCell>
                                     <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{row.applicant_name}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>{row.policy_type}</TableCell>
+                                    {isBroker && (
+                                        <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontWeight: 500 }}>
+                                            {row.assigned_user ? row.assigned_user : 'Pending Assignment'}
+                                        </TableCell>
+                                    )}
                                     <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
                                         {(() => {
                                             const isEscalatedPastUser = !isBroker && row.current_role_id && user?.role_id > row.current_role_id;
@@ -373,11 +445,33 @@ export default function Applications() {
                                             );
                                         })()}
                                     </TableCell>
+                                    {!isBroker && (
+                                        <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
+                                            {(() => {
+                                                if (!row.sla_due_at) return '-';
+                                                const due = new Date(row.sla_due_at);
+                                                const now = new Date();
+                                                due.setHours(0, 0, 0, 0);
+                                                now.setHours(0, 0, 0, 0);
+                                                const diffMs = due - now;
+                                                const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+                                                if (diffDays < 0) return <Typography sx={{color: '#ef4444', fontWeight: 700, fontSize: '0.8rem'}}>Overdue</Typography>;
+                                                if (diffDays === 0) return <Typography sx={{color: '#f59e0b', fontWeight: 700, fontSize: '0.8rem'}}>Due Today</Typography>;
+                                                return <Typography sx={{color: '#10b981', fontWeight: 700, fontSize: '0.8rem'}}>{diffDays} Days Left</Typography>;
+                                            })()}
+                                        </TableCell>
+                                    )}
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.85rem' }}>{new Date(row.created_at).toLocaleDateString()}</TableCell>
                                     <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
                                         {isBroker && (row.status === 'Pending' || row.status === 'Pending Additional Documents' || row.status === 'Rejected') ? (
                                             <Box>
-                                                <Button variant="outlined" color="secondary" size="small" onClick={() => openEditCase(row)} sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2 }}>
+                                                <Button variant="outlined" color="secondary" size="small" onClick={() => {
+                                                        if (row.user_id !== user.id) {
+                                                            setErrorMsg('This application belongs to another broker and is not visible to you.');
+                                                        } else {
+                                                            openEditCase(row);
+                                                        }
+                                                    }} sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2 }}>
                                                     Edit Application & Docs
                                                 </Button>
                                                 {row.status === 'Rejected' && row.underwriter_remarks && (
@@ -387,9 +481,15 @@ export default function Applications() {
                                                 )}
                                             </Box>
                                         ) : (
-                                            <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                                            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
                                                 {isBroker ? (
-                                                    <IconButton size="small" color="primary" onClick={() => openEditCase(row, true)} sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe' }}>
+                                                    <IconButton size="small" color="primary" onClick={() => {
+                                                        if (row.user_id !== user.id) {
+                                                            setErrorMsg('This application belongs to another broker and is not visible to you.');
+                                                        } else {
+                                                            openEditCase(row, true);
+                                                        }
+                                                    }} sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe' }}>
                                                         <VisibilityIcon fontSize="small" />
                                                     </IconButton>
                                                 ) : (
@@ -400,7 +500,7 @@ export default function Applications() {
                                                         {row.current_role_id && user?.role_id > row.current_role_id ? 'View Status' : 'Review Report'}
                                                     </Button>
                                                 )}
-                                            </Stack>
+                                            </Box>
                                         )}
                                     </TableCell>
                                 </TableRow>
@@ -574,7 +674,7 @@ export default function Applications() {
                     <TextField autoFocus fullWidth label="Applicant Full Name" variant="outlined" value={applicantName}
                         onChange={e => setApplicantName(e.target.value)} sx={{ mt: 1, mb: 3 }} InputProps={{ readOnly: viewMode }} />
                     
-                    <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+                    <Box sx={{ display: 'flex', gap: 2, mb: applicationType === 'Existing Claim' ? 2 : 4 }}>
                         <Box sx={{ flex: 1 }}>
                             <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, mb: 0.5, display: 'block' }}>Application Type</Typography>
                             <select
@@ -602,6 +702,55 @@ export default function Applications() {
                             </select>
                         </Box>
                     </Box>
+
+                    {/* applicationType === 'Existing Claim' && (
+                        <Box sx={{ mb: 4 }}>
+                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, mb: 0.5, display: 'block' }}>Claim Category</Typography>
+                            <select
+                                value={claimType}
+                                onChange={e => setClaimType(e.target.value)}
+                                disabled={viewMode}
+                                style={{ width: '100%', padding: '14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', background: viewMode ? '#f1f5f9' : '#fff', cursor: viewMode ? 'default' : 'pointer', outline: 'none' }}
+                            >
+                                <option value="Hospitalization">General Hospitalization</option>
+                                <option value="Critical Illness">Critical Illness</option>
+                                <option value="Maternity">Maternity</option>
+                                <option value="Accident">Accident / Trauma</option>
+                            </select>
+                        </Box>
+                    ) */}
+
+                    {/* (() => {
+                        let policies = [];
+                        if (applicationType === 'Existing Claim') {
+                            if (claimType === 'Critical Illness') policies = ['Cancer Cover', 'Heart Ailment Cover', 'Organ Transplant'];
+                            else if (claimType === 'Maternity') policies = ['Newborn Baby Cover', 'Vaccination Cover'];
+                            else if (claimType === 'Accident') policies = ['Permanent Disability', 'Loss of Income'];
+                            else if (claimType === 'Hospitalization') policies = ['Room Rent Waiver', 'Consumables Cover', 'Daily Cash'];
+                        } else {
+                            if (policyType === 'Health Insurance') policies = ['Critical Illness Add-on', 'Personal Accident', 'OPD Care'];
+                            else if (policyType === 'Life Insurance') policies = ['Accidental Death Benefit', 'Terminal Illness Rider'];
+                            else if (policyType === 'Auto Insurance') policies = ['Zero Depreciation', 'Engine Protect'];
+                        }
+
+                        if (policies.length > 0) {
+                            return (
+                                <Box sx={{ mb: 4 }}>
+                                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: 0.5 }}>Suggested Add-on Sub-Policies</Typography>
+                                    <Grid container spacing={1.5}>
+                                        {policies.map(p => (
+                                            <Grid item xs={4} key={p}>
+                                                <Box sx={{ p: 1.5, bgcolor: '#f0fdfa', border: '1px solid #5eead4', borderRadius: 2, textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { bgcolor: '#ccfbf1', transform: 'translateY(-2px)', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' } }}>
+                                                    <Typography variant="caption" sx={{ color: '#0f766e', fontWeight: 800, lineHeight: 1.2, display: 'block' }}>{p}</Typography>
+                                                </Box>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Box>
+                            );
+                        }
+                        return null;
+                    })() */}
 
                     {editCaseId && existingDocs.length > 0 && (
                         <Box sx={{ mb: 3 }}>
@@ -753,7 +902,7 @@ export default function Applications() {
             </Dialog>
 
             {/* Underwriter Review Dialog */}
-            <Dialog open={Boolean(selectedCase)} onClose={() => setSelectedCase(null)} maxWidth="lg" fullWidth PaperProps={{ sx: { borderRadius: 4, border: 'none', outline: 'none', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' } }}>
+            <Dialog open={Boolean(selectedCase)} onClose={() => setSelectedCase(null)} maxWidth="lg" fullWidth slotProps={{ paper: { sx: { borderRadius: 4, border: 'none', outline: 'none', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' } } }}>
                 {selectedCase && (
                     <>
                         <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -762,6 +911,27 @@ export default function Applications() {
                                     Underwriter Review — <Box component="span" sx={{ color: '#2563eb', fontFamily: 'monospace' }}>{selectedCase.case_number}</Box>
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">{selectedCase.applicant_name} · {selectedCase.policy_type}</Typography>
+                                <Box sx={{ mt: 1, display: 'flex', gap: 2 }}>
+                                    <Chip 
+                                        label={`Assigned To: ${selectedCase.assigned_to === user?.id ? 'Self' : (selectedCase.assigned_user || 'Pending Assignment')}`} 
+                                        size="small" 
+                                        sx={{ bgcolor: '#f1f5f9', color: '#334155', fontWeight: 600, fontSize: '0.75rem' }} 
+                                    />
+                                    <Chip 
+                                        label={`SLA Due: ${selectedCase.sla_due_at ? new Date(selectedCase.sla_due_at).toLocaleDateString() : 'N/A'} (${(() => {
+                                            if (!selectedCase.sla_due_at) return '';
+                                            const due = new Date(selectedCase.sla_due_at);
+                                            const now = new Date();
+                                            due.setHours(0, 0, 0, 0);
+                                            now.setHours(0, 0, 0, 0);
+                                            const diffDays = Math.round((due - now) / (1000 * 60 * 60 * 24));
+                                            return diffDays > 0 ? `${diffDays} Days Left` : diffDays === 0 ? 'Due Today' : `Overdue by ${Math.abs(diffDays)} Days`;
+                                        })()})`} 
+                                        size="small" 
+                                        color="warning" 
+                                        sx={{ fontWeight: 600, fontSize: '0.75rem' }} 
+                                    />
+                                </Box>
                             </Box>
                             {riskData && (
                                 <Stack direction="row" spacing={3} alignItems="center">
@@ -807,7 +977,7 @@ export default function Applications() {
 
                                             {(() => {
                                                         const brokerCov = selectedCase?.requested_coverage ? Number(selectedCase.requested_coverage) : null;
-                                                        const aiCovStr = riskData.findings?.extracted_details?.policy_details?.coverage_amount || '';
+                                                        const aiCovStr = String(riskData.findings?.extracted_details?.policy_details?.coverage_amount || '');
                                                         const aiCov = Number(aiCovStr.replace(/[^0-9.-]+/g, ''));
                                                         const showMismatch = brokerCov && aiCov && brokerCov !== aiCov;
 
@@ -815,9 +985,9 @@ export default function Applications() {
                                                         const isObj_global = cc_global && typeof cc_global === 'object';
                                                         let globalClaimAmount = 0;
                                                         if (isObj_global) {
-                                                            globalClaimAmount = Number((cc_global.amount_claimed || '').replace(/[^0-9]/g, '')) || 0;
+                                                            globalClaimAmount = Number(String(cc_global.amount_claimed || '').replace(/[^0-9]/g, '')) || 0;
                                                         } else {
-                                                            const match = (cc_global || '').match(/(?:Rs\.|₹)\s*([\d,]+)/i);
+                                                            const match = String(cc_global || '').match(/(?:Rs\.|₹)\s*([\d,]+)/i);
                                                             if (match) globalClaimAmount = Number(match[1].replace(/,/g, ''));
                                                         }
                                                         const isClaimAssessment = globalClaimAmount > 0;
@@ -840,8 +1010,10 @@ export default function Applications() {
                                                                     </Box>
                                                                 )}
 
+                                                                {/* Risk Score Formula Table Moved to Bottom Section */}
+
                                                                 <Grid container spacing={2}>
-                                                                    <Grid item xs={12} sm={4}>
+                                                                    <Grid xs={12} sm={4}>
                                                                         <Box sx={{ p: 2, bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2 }}>
                                                                             <Typography variant="overline" sx={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Application Type</Typography>
                                                                             <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800, fontSize: '1.15rem' }}>
@@ -852,7 +1024,7 @@ export default function Applications() {
                                                                             </Typography>
                                                                         </Box>
                                                                     </Grid>
-                                                                    <Grid item xs={12} sm={4}>
+                                                                    <Grid xs={12} sm={4}>
                                                                         <Box sx={{ p: 2, bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2 }}>
                                                                             <Typography variant="overline" sx={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Total Coverage</Typography>
                                                                             <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800, fontSize: '1.15rem' }}>
@@ -860,7 +1032,7 @@ export default function Applications() {
                                                                             </Typography>
                                                                         </Box>
                                                                     </Grid>
-                                                                    <Grid item xs={12} sm={4}>
+                                                                    <Grid xs={12} sm={4}>
                                                                         <Box sx={{ p: 2, bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2 }}>
                                                                             <Typography variant="overline" sx={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Coverage Type</Typography>
                                                                             <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800, fontSize: '1.15rem' }}>
@@ -959,7 +1131,7 @@ export default function Applications() {
 
                                                                                 contentRows = (
                                                                                     <TableRow>
-                                                                                        <TableCell sx={{ color: '#78350f', py: 0.5, fontWeight: 700 }}>{isObj && cc.claim_date ? cc.claim_date : '-'}</TableCell>
+                                                                                        <TableCell sx={{ color: '#78350f', py: 0.5, fontWeight: 700 }}>{isObj && (cc.date || cc.claim_date) ? (cc.date || cc.claim_date) : '-'}</TableCell>
                                                                                         <TableCell sx={{ color: '#78350f', py: 0.5, fontWeight: 700 }}>{isObj ? cc.amount_claimed : parsedAmount}</TableCell>
                                                                                         <TableCell sx={{ color: '#78350f', py: 0.5, fontWeight: 700 }}>{isObj ? cc.claim_type : parsedType}</TableCell>
                                                                                         <TableCell sx={{ color: '#78350f', py: 0.5, fontWeight: 700 }}>{isObj ? cc.reason_for_claim : parsedReason}</TableCell>
@@ -1015,18 +1187,18 @@ export default function Applications() {
                                                                                         </Stack>
                                                                                         <Stack direction="row" justifyContent="space-between">
                                                                                             <Typography variant="body2" sx={{ color: '#64748b' }}>Approved Amount</Typography>
-                                                                                            <Typography variant="body2" sx={{ fontWeight: 600 }}>₹{riskData.findings.claim_decision_engine.approved_amount.toLocaleString()}</Typography>
+                                                                                            <Typography variant="body2" sx={{ fontWeight: 600 }}>₹{Number(riskData.findings?.claim_decision_engine?.approved_amount || 0).toLocaleString()}</Typography>
                                                                                         </Stack>
                                                                                         {riskData.findings.claim_decision_engine.deductions?.map((deduction, idx) => (
                                                                                             <Stack key={idx} direction="row" justifyContent="space-between">
                                                                                                 <Typography variant="body2" sx={{ color: '#64748b', textTransform: 'capitalize' }}>Deduction ({deduction.type})</Typography>
-                                                                                                <Typography variant="body2" sx={{ fontWeight: 600, color: '#ef4444' }}>- ₹{deduction.amount.toLocaleString()}</Typography>
+                                                                                                <Typography variant="body2" sx={{ fontWeight: 600, color: '#ef4444' }}>- ₹{Number(deduction.amount || 0).toLocaleString()}</Typography>
                                                                                             </Stack>
                                                                                         ))}
                                                                                         <Divider sx={{ my: 1 }} />
                                                                                         <Stack direction="row" justifyContent="space-between">
                                                                                             <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0f172a' }}>Final Payable Amount</Typography>
-                                                                                            <Typography variant="subtitle2" sx={{ fontWeight: 900, color: '#16a34a' }}>₹{riskData.findings.claim_decision_engine.final_payable_amount.toLocaleString()}</Typography>
+                                                                                            <Typography variant="subtitle2" sx={{ fontWeight: 900, color: '#16a34a' }}>₹{Number(riskData.findings?.claim_decision_engine?.final_payable_amount || 0).toLocaleString()}</Typography>
                                                                                         </Stack>
                                                                                     </Stack>
                                                                                 </Box>
@@ -1037,9 +1209,9 @@ export default function Applications() {
                                                                                         <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, display: 'block', mb: 1 }}>Policy Information</Typography>
                                                                                         <Stack spacing={0.5}>
                                                                                             <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Policy No:</strong> {riskData.findings.policy_information.policy_number || 'N/A'}</Typography>
-                                                                                            <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Sum Insured:</strong> ₹{riskData.findings.policy_information.sum_insured?.toLocaleString()}</Typography>
-                                                                                            <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Used So Far:</strong> ₹{riskData.findings.policy_information.used_sum_insured?.toLocaleString()}</Typography>
-                                                                                            <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Remaining:</strong> ₹{riskData.findings.policy_information.remaining_sum_insured?.toLocaleString()}</Typography>
+                                                                                            <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Sum Insured:</strong> {riskData.findings.policy_information.sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.sum_insured).toLocaleString()}`}</Typography>
+                                                                                            <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Used So Far:</strong> {riskData.findings.policy_information.used_sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.used_sum_insured).toLocaleString()}`}</Typography>
+                                                                                            <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Remaining:</strong> {riskData.findings.policy_information.remaining_sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.remaining_sum_insured).toLocaleString()}`}</Typography>
                                                                                             <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Waiting Period Completed:</strong> {riskData.findings.policy_information.waiting_period_completed ? 'Yes' : 'No'}</Typography>
                                                                                         </Stack>
                                                                                     </Box>
@@ -1098,7 +1270,7 @@ export default function Applications() {
                                                                                 </Grid>
                                                                             </Grid>
                                                                             {(riskData.findings.exclusions || []).length > 0 && (
-                                                                                <Grid item xs={12}>
+                                                                                <Grid xs={12}>
                                                                                     <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mt: 1, display: 'block' }}>Exclusions</Typography>
                                                                                     {riskData.findings.exclusions.map((ex, idx) => (
                                                                                         <Typography key={idx} variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}>• {ex}</Typography>
@@ -1243,12 +1415,7 @@ export default function Applications() {
                                                                                 {riskData.findings.extracted_details.policy_details?.coverage_amount || '—'}
                                                                             </Typography>
                                                                         </Box>
-                                                                        <Box>
-                                                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Coverage Amount (Broker Requested)</Typography>
-                                                                            <Typography variant="body2" sx={{ fontWeight: 800, color: '#2563eb' }}>
-                                                                                {selectedCase?.requested_coverage ? `₹${selectedCase.requested_coverage.toLocaleString()}` : '—'}
-                                                                            </Typography>
-                                                                        </Box>
+
 
                                                                         <Box>
                                                                             <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Policy Term</Typography>
@@ -1331,7 +1498,12 @@ export default function Applications() {
                                                             Risk Assessment Engine evaluated {riskData.findings?.rules_total || 4} deterministic underwriting rules against the applicant's document profile.
                                                         </Typography>
                                                         <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
-                                                            {(riskData.findings?.breakdown || []).map((b, i) => (
+                                                            {(riskData.findings?.breakdown || []).map((b, i) => {
+                                                                const weight = typeof b.weight === 'number' ? (b.weight <= 1 ? b.weight * 100 : b.weight) : b.weight;
+                                                                const raw = b.raw_score ?? b.score;
+                                                                const finalScore = b.weighted_score ?? (Number.isInteger(b.score * b.weight) ? (b.score * b.weight) : (b.score * b.weight).toFixed(1));
+                                                                
+                                                                return (
                                                                 <Box key={i} sx={{ flex: 1, minWidth: 0 }}>
                                                                     <Tooltip title={
                                                                         <Box sx={{ p: 1 }}>
@@ -1339,11 +1511,12 @@ export default function Applications() {
                                                                             <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>{b.justification || 'No justification provided.'}</Typography>
                                                                             
                                                                             <Typography variant="caption" sx={{ display: 'block', mb: 1, color: '#0369a1', fontWeight: 700, bgcolor: '#f0f9ff', p: 0.75, borderRadius: 1, border: '1px solid #bae6fd' }}>
-                                                                                Formula: Score ({b.score}) × Weight ({b.weight}) = {(b.score * b.weight).toFixed(1)} points
+                                                                                Formula: Score ({raw}) / Max ({weight})
                                                                             </Typography>
 
-                                                                            {(b.matched_risk_signals?.length > 0 || b.matched_positive_signals?.length > 0) && (
+                                                                            {(b.matched_risk_signals?.length > 0 || b.matched_positive_signals?.length > 0 || b.triggered_rules?.length > 0) && (
                                                                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                                                    {b.triggered_rules?.map((rule, idx) => <Chip key={`rule-${idx}`} label={rule} size="small" sx={{ bgcolor: '#f3e8ff', color: '#7e22ce', height: 20, fontSize: '0.6rem' }} />)}
                                                                                     {b.matched_risk_signals?.map((sig, idx) => <Chip key={`neg-${idx}`} label={sig} size="small" sx={{ bgcolor: '#fef2f2', color: '#ef4444', height: 20, fontSize: '0.6rem' }} />)}
                                                                                     {b.matched_positive_signals?.map((sig, idx) => <Chip key={`pos-${idx}`} label={sig} size="small" sx={{ bgcolor: '#f0fdf4', color: '#16a34a', height: 20, fontSize: '0.6rem' }} />)}
                                                                                 </Box>
@@ -1352,15 +1525,15 @@ export default function Applications() {
                                                                     } arrow placement="top">
                                                                         <Box sx={{ p: 1.5, bgcolor: '#ffffff', borderRadius: 2, border: '1px solid #e2e8f0', textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', cursor: 'pointer' }}>
                                                                             <Typography variant="caption" sx={{ display: 'block', fontWeight: 800, color: '#64748b', mb: 0.5, textTransform: 'uppercase', fontSize: '0.65rem', letterSpacing: 0.5 }}>
-                                                                                {b.label}
+                                                                                {b.factor || b.label}
                                                                             </Typography>
-                                                                            <Typography variant="subtitle2" sx={{ fontWeight: 900, color: b.score <= 100 * 0.4 ? '#16a34a' : (b.score <= 100 * 0.7 ? '#f59e0b' : '#ef4444') }}>
-                                                                                {Number.isInteger(b.score * b.weight) ? (b.score * b.weight) : (b.score * b.weight).toFixed(1)} <Box component="span" sx={{ color: '#94a3b8', fontWeight: 600, fontSize: '0.65rem' }}>/ {Number.isInteger(100 * b.weight) ? (100 * b.weight) : (100 * b.weight).toFixed(1)}</Box>
+                                                                            <Typography variant="subtitle2" sx={{ fontWeight: 900, color: finalScore <= weight * 0.4 ? '#16a34a' : (finalScore <= weight * 0.7 ? '#f59e0b' : '#ef4444') }}>
+                                                                                {finalScore} <Box component="span" sx={{ color: '#94a3b8', fontWeight: 600, fontSize: '0.65rem' }}>/ {weight}</Box>
                                                                             </Typography>
                                                                         </Box>
                                                                     </Tooltip>
                                                                 </Box>
-                                                            ))}
+                                                            )})}
                                                         </Box>
                                                     </Box>
                                                 ) : (
@@ -1377,36 +1550,24 @@ export default function Applications() {
                         <DialogActions sx={{ px: 4, pb: 4, borderTop: '1px solid #e2e8f0', pt: 3, bgcolor: '#f8fafc', flexDirection: 'column', alignItems: 'stretch', gap: 2 }}>
                             {(() => {
                                 const isEscalatedPastUser = selectedCase.current_role_id && user.role_id > selectedCase.current_role_id;
-                                const disableActions = isBroker || !['Submitted', 'Underwriter Review'].includes(selectedCase.status) || isEscalatedPastUser;
+                                // Enable actions for non-brokers, ignoring status for testing/demo per user request
+                                const disableActions = isBroker;
                                 
                                 return (
                                     <>
-                                        {isEscalatedPastUser ? (
+                                        {isEscalatedPastUser && (
                                             <Box sx={{ width: '100%', p: 1.5, bgcolor: '#fef2f2', borderRadius: 2, border: '1px dashed #fca5a5' }}>
                                                 <Typography variant="body2" sx={{ color: '#b91c1c', fontWeight: 700, textAlign: 'center' }}>
                                                     ⚠️ You did not review this case in time. It has been escalated to the next authority level.
                                                 </Typography>
-                                            </Box>
-                                        ) : (
-                                            <Box sx={{ width: '100%' }}>
-                                                <TextField
-                                                    fullWidth
-                                                    label="Underwriter Remarks (Required for Req Document / Reject)"
-                                                    variant="outlined"
-                                                    size="small"
-                                                    disabled={disableActions}
-                                                    value={decisionRemarks}
-                                                    onChange={e => setDecisionRemarks(e.target.value)}
-                                                    placeholder={disableActions ? "Action already taken on this case." : "e.g. Please upload PAN Card and Bank Statement."}
-                                                />
                                             </Box>
                                         )}
                                         <Stack direction="row" spacing={1} sx={{ width: '100%', flexWrap: 'wrap' }}>
                                             <Button onClick={() => setSelectedCase(null)} sx={{ color: '#64748b', fontWeight: 700, mr: 'auto' }}>Close</Button>
                                             {!disableActions && (
                                                 <>
-                                                    <Button variant="outlined" color="warning" disabled={decisionLoading || !decisionRemarks.trim()} onClick={() => handleDecision('escalate')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Refer</Button>
-                                                    <Button variant="outlined" color="error" disabled={decisionLoading || !decisionRemarks.trim()} onClick={() => handleDecision('reject')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Reject</Button>
+                                                    <Button variant="outlined" color="warning" disabled={decisionLoading} onClick={() => handleDecision('escalate')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Refer</Button>
+                                                    <Button variant="outlined" color="error" disabled={decisionLoading} onClick={() => handleDecision('reject')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Reject</Button>
                                                     <Button variant="contained" color="success" disabled={decisionLoading} onClick={() => handleDecision('approve')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Approve</Button>
                                                 </>
                                             )}
@@ -1419,6 +1580,105 @@ export default function Applications() {
                 )}
             </Dialog>
 
+            {/* Reject Modal */}
+            <Dialog open={openRejectModal} onClose={() => setOpenRejectModal(false)} maxWidth="sm" fullWidth>
+                <DialogTitle>Reject Application</DialogTitle>
+                <DialogContent sx={{ pt: 2 }}>
+                    <Stack spacing={3}>
+
+                        <Box>
+                            <Typography variant="caption" sx={{ display: 'block', mb: 1, fontWeight: 700 }}>Rejection Reason</Typography>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                                {["High Medical Risk", "Fraudulent Documents", "Non-disclosure of facts", "Outside Policy Limits"].map((reason) => (
+                                    <Chip 
+                                        key={reason} 
+                                        label={reason} 
+                                        onClick={() => setRejectCustomReason(reason)} 
+                                        variant={rejectCustomReason === reason ? "filled" : "outlined"}
+                                        color={rejectCustomReason === reason ? "primary" : "default"}
+                                        sx={{ cursor: 'pointer', fontWeight: 600 }}
+                                    />
+                                ))}
+                            </Box>
+                            <TextField
+                                fullWidth
+                                label="Reason Details"
+                                placeholder="Select a reason above or type a custom reason..."
+                                variant="outlined"
+                                value={rejectCustomReason}
+                                onChange={e => setRejectCustomReason(e.target.value)}
+                                required
+                            />
+                        </Box>
+                        <Box sx={{ border: '1px dashed #cbd5e1', p: 2, borderRadius: 2 }}>
+                            <Typography variant="caption" sx={{ display: 'block', mb: 1, fontWeight: 700 }}>Supporting Document *</Typography>
+                            <Button variant="outlined" component="label" size="small">
+                                Upload PDF
+                                <input type="file" hidden accept=".pdf" onChange={(e) => setRejectDoc(e.target.files[0])} />
+                            </Button>
+                            {rejectDoc && <Typography variant="caption" sx={{ ml: 2 }}>{rejectDoc.name}</Typography>}
+                        </Box>
+                    </Stack>
+                </DialogContent>
+                <DialogActions sx={{ p: 3 }}>
+                    <Button onClick={() => setOpenRejectModal(false)} color="inherit">Cancel</Button>
+                    <Button onClick={handleRejectSubmit} variant="contained" color="error" disabled={decisionLoading || !rejectCustomReason || !rejectDoc}>
+                        Confirm Reject
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Refer Modal */}
+            <Dialog open={openReferModal} onClose={() => setOpenReferModal(false)} maxWidth="sm" fullWidth>
+                <DialogTitle>Refer Application</DialogTitle>
+                <DialogContent sx={{ pt: 2 }}>
+                    <Stack spacing={3}>
+                        <TextField
+                            fullWidth
+                            label="Remarks (Optional)"
+                            variant="outlined"
+                            value={decisionRemarks}
+                            onChange={e => setDecisionRemarks(e.target.value)}
+                        />
+                        <Box>
+                            <Typography variant="caption" sx={{ display: 'block', mb: 1, fontWeight: 700 }}>Select User to Refer</Typography>
+                            <select
+                                value={selectedReferUser}
+                                onChange={e => setSelectedReferUser(e.target.value)}
+                                style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                            >
+                                <option value="" disabled>Select user...</option>
+                                {referralTargets.map(target => (
+                                    <option key={target.id} value={target.id}>
+                                        {target.full_name || target.name} ({target.role || `Role ${target.role_id}`})
+                                    </option>
+                                ))}
+                            </select>
+                        </Box>
+                    </Stack>
+                </DialogContent>
+                <DialogActions sx={{ p: 3 }}>
+                    <Button onClick={() => setOpenReferModal(false)} color="inherit">Cancel</Button>
+                    <Button onClick={handleReferSubmit} variant="contained" color="warning" disabled={decisionLoading || !selectedReferUser}>
+                        Confirm Refer
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        <Dialog open={!!errorMsg} onClose={() => setErrorMsg('')} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: 4, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' } }}>
+            <DialogTitle sx={{ bgcolor: '#fef2f2', borderBottom: '1px solid #fecaca', p: 2, textAlign: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 900, color: '#991b1b' }}>Access Denied 🔒</Typography>
+            </DialogTitle>
+            <DialogContent sx={{ p: 4, textAlign: 'center' }}>
+                <Typography variant="body1" sx={{ color: '#334155', fontWeight: 600, lineHeight: 1.6 }}>
+                    {errorMsg}
+                </Typography>
+            </DialogContent>
+            <DialogActions sx={{ p: 2, justifyContent: 'center', bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+                <Button onClick={() => setErrorMsg('')} variant="contained" color="error" sx={{ fontWeight: 800, borderRadius: 2, px: 4 }}>
+                    Okay, Understood
+                </Button>
+            </DialogActions>
+        </Dialog>
         </Box>
     );
 }

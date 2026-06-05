@@ -15,19 +15,31 @@ const formatChatMessage = (text, role, darkMode, themeColors) => {
         if (!line.trim()) return <Box key={i} sx={{ height: 12 }} />;
         const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ');
         const cleanLine = isBullet ? line.trim().substring(2) : line;
-        const parts = cleanLine.split(/(\*\*.*?\*\*)/g);
+        const parts = cleanLine.split(/(\*\*.*?\*\*|\[Source Document:.*?\])/g);
 
         return (
             <Box key={i} sx={{ display: 'flex', mb: 0.5 }}>
                 {isBullet && (
                     <Box component="span" sx={{ mr: 1, fontSize: '1.2rem', color: role === 'user' ? '#fff' : '#7c3aed', mt: '-4px' }}>•</Box>
                 )}
-                <Typography sx={{ fontSize: '0.95rem', fontWeight: role === 'user' ? 600 : 500, lineHeight: 1.6, color: role === 'user' ? '#ffffff' : themeColors.textPrimary }}>
+                <Typography sx={{ fontSize: '0.95rem', fontWeight: role === 'user' ? 600 : 500, lineHeight: 1.6, color: role === 'user' ? '#ffffff' : themeColors.textPrimary, display: 'inline' }}>
                     {parts.map((part, j) => {
                         if (part.startsWith('**') && part.endsWith('**')) {
                             return <strong key={j} style={{ fontWeight: 800 }}>{part.slice(2, -2)}</strong>;
                         }
-                        return part;
+                        if (part.startsWith('[Source Document:') && part.endsWith(']')) {
+                            const fileName = part.slice(17, -1).trim();
+                            return (
+                                <Chip 
+                                    key={j} 
+                                    label={fileName} 
+                                    size="small" 
+                                    sx={{ ml: 0.5, mr: 0.5, height: 20, fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', bgcolor: darkMode ? '#334155' : '#e2e8f0', color: darkMode ? '#94a3b8' : '#475569' }} 
+                                    onClick={() => window.open(`http://127.0.0.1:8000/uploads/${fileName}`, '_blank')}
+                                />
+                            );
+                        }
+                        return <span key={j}>{part}</span>;
                     })}
                 </Typography>
             </Box>

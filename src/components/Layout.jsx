@@ -279,7 +279,7 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-    Box, Typography, AppBar, Toolbar, Drawer, List, ListItem,
+    Box, Typography, AppBar, Toolbar, Drawer, List, ListItem, ListItemButton,
     ListItemIcon, ListItemText, Avatar, IconButton, Stack, Menu, MenuItem, Divider, Chip
 } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
@@ -405,18 +405,18 @@ export default function Layout() {
     const drawerContent = (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: themeColors.sidebarBg, borderRight: themeColors.sidebarBorder }}>
             <Toolbar sx={{ borderBottom: themeColors.sidebarHeaderBorder }}>
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
                     <ShieldIcon sx={{ color: '#2563eb' }} />
                     {sidebarOpen && <Typography sx={{ fontWeight: 800, color: themeColors.textPrimary, fontSize: '1rem' }}>IUA Platform</Typography>}
-                </Stack>
+                </Box>
             </Toolbar>
             <Box sx={{ p: 2 }}>
                 <List dense>
                     {navItems.map(item => {
                         const isActive = currentPath === item.path || currentPath.startsWith(item.path);
                         return (
-                            <ListItem
-                                button key={item.key}
+                            <ListItemButton
+                                key={item.key}
                                 onClick={() => navigate(item.path)}
                                 sx={{
                                     borderRadius: 2, mb: 0.5,
@@ -433,21 +433,24 @@ export default function Layout() {
                                 {sidebarOpen && (
                                     <ListItemText
                                         primary={item.label}
-                                        primaryTypographyProps={{
-                                            color: isActive ? themeColors.navActiveText : themeColors.navText,
-                                            fontWeight: 700,
-                                            fontSize: '0.875rem'
+                                        slotProps={{
+                                            primary: {
+                                                sx: {
+                                                    color: isActive ? themeColors.navActiveText : themeColors.navText,
+                                                    fontWeight: 700,
+                                                    fontSize: '0.875rem'
+                                                }
+                                            }
                                         }}
                                     />
                                 )}
-                            </ListItem>
+                            </ListItemButton>
                         );
                     })}
                 </List>
             </Box>
             <Box sx={{ mt: 'auto', p: 2 }}>
-                <ListItem
-                    button
+                <ListItemButton
                     onClick={logout}
                     sx={{
                         borderRadius: 2,
@@ -462,8 +465,8 @@ export default function Layout() {
                     <ListItemIcon sx={{ color: '#ef4444', minWidth: sidebarOpen ? 36 : 'auto' }}>
                         <LogoutIcon />
                     </ListItemIcon>
-                    {sidebarOpen && <ListItemText primary="Sign Out" primaryTypographyProps={{ color: 'inherit', fontWeight: 700, fontSize: '0.875rem' }} />}
-                </ListItem>
+                    {sidebarOpen && <ListItemText primary="Sign Out" slotProps={{ primary: { sx: { color: 'inherit', fontWeight: 700, fontSize: '0.875rem' } } }} />}
+                </ListItemButton>
             </Box>
         </Box>
     );
