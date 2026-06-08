@@ -262,8 +262,8 @@ export default function KnowledgeBase() {
                             ) : rulebooks.map(rb => (
                                 <TableRow key={rb.id} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
                                     <TableCell 
-                                        sx={{ fontWeight: 700, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer', textDecoration: 'underline' }}
-                                        onClick={() => handleViewKbDetails(rb.id)}
+                                        sx={{ fontWeight: 700, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                        // onClick={() => handleViewKbDetails(rb.id)}
                                     >
                                         <Tooltip title={rb.file_name} placement="top">
                                             <span>{rb.file_name}</span>

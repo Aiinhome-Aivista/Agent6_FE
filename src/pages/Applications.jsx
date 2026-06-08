@@ -1490,7 +1490,7 @@ export default function Applications() {
                                                                                 POLICY SUMMARY
                                                                             </Typography>
                                                                             <Typography variant="body2" sx={{ color: '#334155', fontStyle: 'italic', fontWeight: 500 }}>
-                                                                                "{riskData.findings.extracted_details.policy_details.policy_summary}"
+                                                                                "{riskData.findings.extracted_details.policy_details.policy_summary?.replace?.(/(^|\s)I(\d)/g, '$1$2') || riskData.findings.extracted_details.policy_details.policy_summary}"
                                                                             </Typography>
                                                                         </Box>
                                                                         <Box sx={{ mt: 2, pt: 2, borderTop: '1px dashed #cbd5e1' }}>
