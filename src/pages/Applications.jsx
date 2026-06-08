@@ -574,7 +574,7 @@ export default function Applications() {
                     {uploadResult && (
                         <Box>
                             {isBroker ? (
-                                <Box sx={{ p: 3, bgcolor: '#f0fdf4', borderRadius: 2, border: '1px solid #86efac', textAlign: 'center' }}>
+                                <Box sx={{ p: 3, mt: 3, bgcolor: '#f0fdf4', borderRadius: 2, border: '1px solid #86efac', textAlign: 'center' }}>
                                     <Typography variant="h6" sx={{ color: '#166534', fontWeight: 700, mb: 1 }}>
                                         Application Under Processing
                                     </Typography>
@@ -823,7 +823,12 @@ export default function Applications() {
                         <>
                             <Button onClick={() => setOpenNewCase(false)} sx={{ color: '#64748b', fontWeight: 600 }}>Cancel</Button>
                             <Button onClick={handleCreateCase} variant="contained" disabled={!applicantName || submitting} sx={{ fontWeight: 700, borderRadius: 2 }}>
-                                {submitting ? 'Analysing Documents...' : 'Analyse Documents'}
+                                {submitting ? (
+                                    <>
+                                        <CircularProgress size={20} sx={{ mr: 1, color: '#94a3b8' }} />
+                                        Analysing Documents...
+                                    </>
+                                ) : 'Analyse Documents'}
                             </Button>
                         </>
                     )}
@@ -849,9 +854,21 @@ export default function Applications() {
                         📋 Mandatory Documents
                     </Typography>
                     <Stack spacing={1.5} sx={{ mb: 3 }}>
-                        {(applicationType === 'New Policy' ? ['Identity Proof', 'Bank Statement', 'Medical Reports'] : ['Claim Form', 'Hospital Bills', 'Prescriptions', 'Identity Proof', 'Discharge Summary', 'Policy Document']).map((doc, idx) => {
-                            const isMissing = missingDocsList.includes(doc) || missingDocsList.some(d => d.toLowerCase().includes(doc.toLowerCase()));
-                            const displayName = doc === 'Identity Proof' ? 'Identity Proof (e.g., Aadhaar, PAN)' : doc;
+                        {(applicationType === 'New Policy' ? ['Identity Proof (Aadhaar or PAN)', 'Medical Reports', 'Bank Statement', 'Previous Claim History'] : ['Identity Proof (Aadhaar or PAN)', 'Policy Document', 'Claim Form', 'Hospital Bills', 'Discharge Summary', 'Medical Reports / Prescriptions', 'Previous Claim History']).map((doc, idx) => {
+                            const isMissing = missingDocsList.some(d => {
+                                const dL = d.toLowerCase();
+                                const docL = doc.toLowerCase();
+                                return dL.includes(docL) || docL.includes(dL) || 
+                                       (docL.includes('identity') && dL.includes('identity')) ||
+                                       (docL.includes('medical') && dL.includes('medical')) ||
+                                       (docL.includes('bank') && dL.includes('bank')) ||
+                                       (docL.includes('policy') && dL.includes('policy')) ||
+                                       (docL.includes('claim form') && dL.includes('claim')) ||
+                                       (docL.includes('hospital') && dL.includes('hospital')) ||
+                                       (docL.includes('discharge') && dL.includes('discharge')) ||
+                                       (docL.includes('previous claim history') && dL.includes('previous claim history'));
+                            });
+                            const displayName = doc.includes('Identity Proof') ? 'Identity Proof (e.g., Aadhaar, PAN)' : doc;
                             return (
                                 <Box key={idx} sx={{ display: 'flex', alignItems: 'center', p: 1.5, bgcolor: isMissing ? '#fee2e2' : '#dcfce7', borderRadius: 2 }}>
                                     {isMissing ? <span style={{ color: '#ef4444', marginRight: 10, fontSize: '18px' }}>❌</span> : <span style={{ color: '#22c55e', marginRight: 10, fontSize: '18px' }}>✅</span>}
@@ -863,27 +880,33 @@ export default function Applications() {
                         })}
                     </Stack>
 
-                    {/* Optional documents - Existing Claim only */}
-                    {applicationType !== 'New Policy' && (
-                        <>
-                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, display: 'block', mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>
-                                📎 Additional Documents (Optional)
-                            </Typography>
-                            <Stack spacing={1} sx={{ mb: 3 }}>
-                                {['Bank Statement', 'Passport Size Photo', 'Cancelled Cheque', 'Lab Reports / Test Results', 'Referral Letter from Doctor'].map((doc, idx) => (
-                                    <Box key={idx} sx={{ display: 'flex', alignItems: 'center', p: 1.2, bgcolor: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: 2 }}>
-                                        <span style={{ color: '#94a3b8', marginRight: 10, fontSize: '15px' }}>📄</span>
-                                        <Typography variant="body2" sx={{ color: '#475569', fontWeight: 600, flex: 1 }}>
-                                            {doc}
-                                        </Typography>
-                                        <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700, bgcolor: '#e2e8f0', px: 1, py: 0.3, borderRadius: 1 }}>
-                                            Optional
-                                        </Typography>
-                                    </Box>
+                    {/* Optional documents */}
+                    <>
+                        <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, display: 'block', mb: 1, mt: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
+                            📎 Additional Documents (Optional)
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
+                            {(applicationType === 'New Policy' 
+                                ? ['Passport Size Photo / Image'] 
+                                : ['Bank Statement', 'Passport Size Photo', 'Cancelled Cheque', 'Lab Reports / Test Results', 'Referral Letter from Doctor']
+                            ).map((doc, idx) => (
+                                    <Chip 
+                                        key={idx} 
+                                        label={doc} 
+                                        icon={<span style={{ fontSize: '14px', marginLeft: 8 }}>📄</span>}
+                                        variant="outlined"
+                                        sx={{ 
+                                            bgcolor: '#f8fafc', 
+                                            border: '1px dashed #cbd5e1', 
+                                            color: '#475569', 
+                                            fontWeight: 600,
+                                            py: 1,
+                                            '& .MuiChip-icon': { color: '#94a3b8' }
+                                        }} 
+                                    />
                                 ))}
-                            </Stack>
+                            </Box>
                         </>
-                    )}
 
                     {missingDocsList.length > 0 && (
                         <Typography variant="body2" sx={{ color: '#7f1d1d', fontWeight: 500 }}>
@@ -1248,22 +1271,34 @@ export default function Applications() {
                                                                                     {riskData.findings.premium_calculation.premium_output.map((po, idx) => (
                                                                                         <Grid item xs={12} md={6} key={idx}>
                                                                                             <Box sx={{ p: 1.2, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
-                                                                                                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1e293b', mb: 1, fontSize: '0.8rem' }}>Sum Assured: ₹{po.sum_assured.toLocaleString()}</Typography>
+                                                                                                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1e293b', mb: 1, fontSize: '0.8rem' }}>Sum Assured: ₹{(po.sum_assured || 0).toLocaleString()}</Typography>
                                                                                                 <Stack spacing={0.5}>
                                                                                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                                                                                         <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.7rem' }}>Base Premium</Typography>
-                                                                                                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.7rem' }}>₹{po.base_premium.toLocaleString()} <Box component="span" sx={{ fontSize: '0.65rem', color: '#94a3b8' }}>/ Yr</Box></Typography>
+                                                                                                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.7rem' }}>₹{(po.base_premium || 0).toLocaleString()} <Box component="span" sx={{ fontSize: '0.65rem', color: '#94a3b8' }}>/ Yr</Box></Typography>
                                                                                                     </Stack>
                                                                                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                                                                                         <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.7rem' }}>Risk Loading</Typography>
-                                                                                                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.7rem' }}>{po.risk_loading_percent}%</Typography>
+                                                                                                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.7rem' }}>{po.risk_loading_percent || 0}%</Typography>
                                                                                                     </Stack>
                                                                                                     <Divider sx={{ my: 0.5 }} />
                                                                                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                                                                        <Typography sx={{ fontWeight: 800, color: '#0f172a', fontSize: '0.65rem' }}>Final (incl. ₹{(po.final_premium - (po.base_premium * (1 + (po.risk_loading_percent || 0) / 100))).toLocaleString()} GST)</Typography>
-                                                                                                        <Typography sx={{ fontWeight: 900, color: '#16a34a', fontSize: '0.8rem' }}>₹{po.final_premium.toLocaleString()} <Box component="span" sx={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600 }}>/ Yr</Box></Typography>
+                                                                                                        <Typography sx={{ fontWeight: 800, color: '#0f172a', fontSize: '0.65rem' }}>Final (incl. ₹{((po.final_premium || 0) - ((po.base_premium || 0) * (1 + (po.risk_loading_percent || 0) / 100))).toLocaleString()} GST)</Typography>
+                                                                                                        <Typography sx={{ fontWeight: 900, color: '#16a34a', fontSize: '0.8rem' }}>₹{(po.final_premium || 0).toLocaleString()} <Box component="span" sx={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600 }}>/ Yr</Box></Typography>
                                                                                                     </Stack>
                                                                                                 </Stack>
+                                                                                                
+                                                                                                {po.addons && po.addons.length > 0 && (
+                                                                                                    <Box sx={{ mt: 1.5, p: 1, bgcolor: '#f8fafc', borderRadius: 1, border: '1px solid #e2e8f0' }}>
+                                                                                                        <Typography variant="caption" sx={{ color: '#475569', fontWeight: 800, display: 'block', mb: 0.5 }}>Recommended Add-ons:</Typography>
+                                                                                                        {po.addons.map((addon, aIdx) => (
+                                                                                                            <Stack key={aIdx} direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.2 }}>
+                                                                                                                <Typography variant="body2" sx={{ fontSize: '0.65rem', color: '#64748b' }}>+ {addon.name}</Typography>
+                                                                                                                <Typography variant="body2" sx={{ fontSize: '0.65rem', fontWeight: 700, color: '#0f172a' }}>₹{addon.price.toLocaleString()}</Typography>
+                                                                                                            </Stack>
+                                                                                                        ))}
+                                                                                                    </Box>
+                                                                                                )}
                                                                                             </Box>
                                                                                         </Grid>
                                                                                     ))}
