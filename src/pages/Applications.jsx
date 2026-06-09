@@ -5,7 +5,7 @@ import {
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
     CircularProgress, IconButton, Divider, LinearProgress,
     Accordion, AccordionSummary, AccordionDetails, Tooltip,
-    Snackbar, Alert, Autocomplete
+    Snackbar, Alert, Autocomplete, Paper
 } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -20,6 +20,51 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DescriptionIcon from '@mui/icons-material/Description';
 import api from '../api';
+
+const resolveCitationToFile = (citationStr, uploadedDocs) => {
+    if (!uploadedDocs || uploadedDocs.length === 0) return citationStr;
+    const lowerCitation = citationStr.toLowerCase();
+    
+    let bestMatch = null;
+    let maxMatches = 0;
+    
+    uploadedDocs.forEach(d => {
+        const lowerName = d.file_name.toLowerCase();
+        if (lowerName.includes(lowerCitation) || lowerCitation.includes(lowerName.replace('.pdf', ''))) {
+            bestMatch = d.file_name;
+            maxMatches = 999;
+        } else {
+            const words = lowerCitation.split(/\s+/).filter(w => w.length > 3);
+            let matches = 0;
+            words.forEach(w => {
+                if (lowerName.includes(w)) matches++;
+            });
+            if (matches > maxMatches) {
+                maxMatches = matches;
+                bestMatch = d.file_name;
+            }
+        }
+    });
+    if (bestMatch && maxMatches > 0) return bestMatch;
+
+    if (lowerCitation.includes('medical') || lowerCitation.includes('hospital')) {
+         const m = uploadedDocs.find(d => d.file_name.toLowerCase().includes('medical') || d.file_name.toLowerCase().includes('hospital'));
+         if (m) return m.file_name;
+    }
+    if (lowerCitation.includes('bank') || lowerCitation.includes('financial') || lowerCitation.includes('statement')) {
+         const m = uploadedDocs.find(d => d.file_name.toLowerCase().includes('bank') || d.file_name.toLowerCase().includes('statement') || d.file_name.toLowerCase().includes('invoice'));
+         if (m) return m.file_name;
+    }
+    if (lowerCitation.includes('policy') || lowerCitation.includes('insurance') || lowerCitation.includes('document')) {
+         const m = uploadedDocs.find(d => d.file_name.toLowerCase().includes('policy') || d.file_name.toLowerCase().includes('document') || d.file_name.toLowerCase().includes('aadhaar'));
+         if (m) return m.file_name;
+    }
+    if (lowerCitation.includes('identity') || lowerCitation.includes('aadhaar') || lowerCitation.includes('pan') || lowerCitation.includes('kyc')) {
+         const m = uploadedDocs.find(d => d.file_name.toLowerCase().includes('aadhaar') || d.file_name.toLowerCase().includes('pan'));
+         if (m) return m.file_name;
+    }
+    return citationStr;
+};
 
 export default function Applications() {
     const { user } = useAuth();
@@ -107,11 +152,31 @@ export default function Applications() {
                 selectedFiles.forEach(f => checkFd.append('files', f));
                 checkFd.append('application_type', applicationType);
                 const checkRes = await api.post('/cases/check_documents', checkFd, { headers: { 'Content-Type': 'multipart/form-data' } });
-                
-                setMissingDocsList(checkRes.data.missing || []);
-                setMissingDocsDialog(true);
-                setSubmitting(false);
-                return;
+                let missing = checkRes.data.missing || [];
+                if (existingDocs && existingDocs.length > 0) {
+                    missing = missing.filter(missingDoc => {
+                        const mLower = missingDoc.toLowerCase();
+                        return !existingDocs.some(ed => {
+                            const edName = (ed.file_name || '').toLowerCase();
+                            return edName.includes(mLower) || 
+                                   (mLower.includes('identity') && (edName.includes('identity') || edName.includes('aadhaar') || edName.includes('pan'))) ||
+                                   (mLower.includes('medical') && edName.includes('medical')) ||
+                                   (mLower.includes('bank') && edName.includes('bank')) ||
+                                   (mLower.includes('policy') && edName.includes('policy')) ||
+                                   (mLower.includes('claim form') && edName.includes('claim')) ||
+                                   (mLower.includes('hospital') && edName.includes('hospital')) ||
+                                   (mLower.includes('discharge') && edName.includes('discharge')) ||
+                                   (mLower.includes('previous claim history') && edName.includes('history'));
+                        });
+                    });
+                }
+
+                if (missing.length > 0) {
+                    setMissingDocsList(missing);
+                    setMissingDocsDialog(true);
+                    setSubmitting(false);
+                    return;
+                }
             }
 
             let targetCaseId = editCaseId;
@@ -165,6 +230,7 @@ export default function Applications() {
     const openEditCase = async (row, isViewMode = false) => {
         setApplicantName(row.applicant_name);
         setPolicyType(row.policy_type || 'Health Insurance');
+        setApplicationType(row.application_type || 'Existing Claim');
         setProductType(row.product_type || 'Standard');
         setExistingPolicyDetails(row.existing_policy_details || '');
         setRequestedCoverage(row.requested_coverage || '');
@@ -185,6 +251,7 @@ export default function Applications() {
         setViewMode(false);
         setApplicantName('');
         setPolicyType('Health Insurance');
+        setApplicationType('Existing Claim');
         setProductType('Standard');
         setExistingPolicyDetails('');
         setRequestedCoverage('');
@@ -287,7 +354,7 @@ export default function Applications() {
         try {
             await api.post(`/cases/${selectedCase.id}/decision`, { 
                 decision: 'escalate', 
-                remarks: decisionRemarks || 'Referred to higher authority',
+                remarks: decisionRemarks || '',
                 referred_to_user_id: selectedReferUser 
             });
             setOpenReferModal(false);
@@ -672,7 +739,7 @@ export default function Applications() {
                 </DialogTitle>
                 <DialogContent sx={{ pt: 4 }}>
                     <TextField autoFocus fullWidth label="Applicant Full Name" variant="outlined" value={applicantName}
-                        onChange={e => setApplicantName(e.target.value)} sx={{ mt: 1, mb: 3 }} InputProps={{ readOnly: viewMode }} />
+                        onChange={e => setApplicantName(e.target.value)} sx={{ mt: 3, mb: 3 }} InputProps={{ readOnly: viewMode }} />
                     
                     <Box sx={{ display: 'flex', gap: 2, mb: applicationType === 'Existing Claim' ? 2 : 4 }}>
                         <Box sx={{ flex: 1 }}>
@@ -681,7 +748,7 @@ export default function Applications() {
                                 value={applicationType}
                                 onChange={e => setApplicationType(e.target.value)}
                                 disabled={viewMode}
-                                style={{ width: '100%', padding: '14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', background: viewMode ? '#f1f5f9' : '#fff', cursor: viewMode ? 'default' : 'pointer', outline: 'none' }}
+                                style={{ width: '100%', padding: '14px 40px 14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', backgroundColor: viewMode ? '#f1f5f9' : '#fff', cursor: viewMode ? 'default' : 'pointer', outline: 'none', appearance: 'none', backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '20px' }}
                             >
                                 <option value="Existing Claim">Existing Claim</option>
                                 <option value="New Policy">New Policy</option>
@@ -693,7 +760,7 @@ export default function Applications() {
                                 value={policyType}
                                 onChange={e => setPolicyType(e.target.value)}
                                 disabled={viewMode}
-                                style={{ width: '100%', padding: '14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', background: viewMode ? '#f1f5f9' : '#fff', cursor: viewMode ? 'default' : 'pointer', outline: 'none' }}
+                                style={{ width: '100%', padding: '14px 40px 14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', backgroundColor: viewMode ? '#f1f5f9' : '#fff', cursor: viewMode ? 'default' : 'pointer', outline: 'none', appearance: 'none', backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '20px' }}
                             >
                                 <option value="Health Insurance">Health Insurance</option>
                                 <option value="Life Insurance">Life Insurance</option>
@@ -854,7 +921,7 @@ export default function Applications() {
                         📋 Mandatory Documents
                     </Typography>
                     <Stack spacing={1.5} sx={{ mb: 3 }}>
-                        {(applicationType === 'New Policy' ? ['Identity Proof (Aadhaar or PAN)', 'Medical Reports', 'Bank Statement', 'Previous Claim History'] : ['Identity Proof (Aadhaar or PAN)', 'Policy Document', 'Claim Form', 'Hospital Bills', 'Discharge Summary', 'Medical Reports / Prescriptions', 'Previous Claim History']).map((doc, idx) => {
+                        {(applicationType === 'New Policy' ? ['Identity Proof (Aadhaar or PAN)', 'Medical Reports', 'Bank Statement'] : ['Identity Proof (Aadhaar or PAN)', 'Policy Document', 'Claim Form', 'Hospital Bills', 'Discharge Summary', 'Medical Reports / Prescriptions', 'Previous Claim History']).map((doc, idx) => {
                             const isMissing = missingDocsList.some(d => {
                                 const dL = d.toLowerCase();
                                 const docL = doc.toLowerCase();
@@ -962,8 +1029,8 @@ export default function Applications() {
                                         <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800, lineHeight: 1 }}>AI Risk Score</Typography>
                                         <Typography variant="h5" sx={{ fontWeight: 900, color: riskData.risk_score <= 20 ? '#16a34a' : riskData.risk_score <= 40 ? '#d97706' : '#ef4444', lineHeight: 1 }}>
                                             {(() => {
-                                                const finalScore = riskData.findings?.risk_score ?? riskData.risk_score ?? 0;
-                                                return finalScore % 1 === 0 ? finalScore.toFixed(0) : finalScore.toFixed(1);
+                                                const computedScore = riskData.findings?.breakdown ? riskData.findings.breakdown.reduce((sum, b) => sum + (b.weighted_score || 0), 0) : (riskData.findings?.risk_score ?? riskData.risk_score ?? 0);
+                                                return computedScore % 1 === 0 ? computedScore.toFixed(0) : computedScore.toFixed(1);
                                             })()}<Box component="span" sx={{ fontSize: '0.9rem', color: '#94a3b8' }}>/100</Box>
                                         </Typography>
                                     </Box>
@@ -1102,9 +1169,11 @@ export default function Applications() {
                                                                             </TableBody>
                                                                         </Table>
 
-                                                                        <Typography variant="caption" sx={{ color: '#b45309', fontWeight: 700, display: 'block', mb: 0.5 }}>Current Claim</Typography>
-                                                                        {(() => {
-                                                                            const cc = riskData.findings.claim_history.current_claim;
+                                                                        {selectedCase.application_type !== 'New Policy' && (
+                                                                            <Box sx={{ mt: 2 }}>
+                                                                                <Typography variant="caption" sx={{ color: '#b45309', fontWeight: 700, display: 'block', mb: 0.5 }}>Current Claim</Typography>
+                                                                                {(() => {
+                                                                                    const cc = riskData.findings.claim_history.current_claim;
                                                                             const isObj = typeof cc === 'object' && cc !== null;
                                                                             
                                                                             let contentRows = null;
@@ -1178,6 +1247,8 @@ export default function Applications() {
                                                                                 </Table>
                                                                             );
                                                                         })()}
+                                                                            </Box>
+                                                                        )}
                                                                     </Box>
                                                                 )}
 
@@ -1249,27 +1320,27 @@ export default function Applications() {
                                                                         </Grid>
                                                                     </Box>
                                                                 ) : riskData.findings?.premium_calculation?.premium_output?.length > 0 && (
-                                                                    <Box sx={{ p: 2, bgcolor: '#f8fafc', borderLeft: '4px solid #8b5cf6', borderRadius: 1, mt: 2 }}>
-                                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#5b21b6', mb: 1.5, textTransform: 'uppercase' }}>Policy Eligibility & Premium Details</Typography>
-                                                                        <Grid container spacing={2} wrap="nowrap">
-                                                                            {riskData.findings.policy_eligibility?.eligible_plans && (
-                                                                                <Grid item xs={5}>
-                                                                                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, display: 'block' }}>Eligible Plans</Typography>
-                                                                                    <Stack spacing={1}>
-                                                                                        {riskData.findings.policy_eligibility.eligible_plans.map((plan, idx) => (
-                                                                                            <Box key={idx} sx={{ p: 1, bgcolor: plan.allowed ? '#f0fdf4' : '#fef2f2', border: `1px solid ${plan.allowed ? '#bbf7d0' : '#fecaca'}`, borderRadius: 1 }}>
-                                                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: plan.allowed ? '#166534' : '#991b1b' }}>{plan.plan_name} {plan.allowed ? '✅' : '❌'}</Typography>
-                                                                                                <Typography variant="caption" sx={{ color: '#475569' }}>{plan.reason}</Typography>
-                                                                                            </Box>
-                                                                                        ))}
-                                                                                    </Stack>
-                                                                                </Grid>
-                                                                            )}
-                                                                            <Grid item xs={riskData.findings.policy_eligibility?.eligible_plans ? 7 : 12}>
-                                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, mt: riskData.findings.policy_eligibility?.eligible_plans ? 0 : 1, display: 'block' }}>Premium Breakdown by Sum Assured</Typography>
-                                                                                <Grid container spacing={1.5}>
-                                                                                    {riskData.findings.premium_calculation.premium_output.map((po, idx) => (
-                                                                                        <Grid item xs={12} md={6} key={idx}>
+                                                                        <Box sx={{ p: 2, bgcolor: '#f8fafc', borderLeft: '4px solid #8b5cf6', borderRadius: 1, mt: 2 }}>
+                                                                            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#5b21b6', mb: 1.5, textTransform: 'uppercase' }}>Policy Eligibility & Premium Details</Typography>
+                                                                            <Grid container spacing={2}>
+                                                                                {riskData.findings.policy_eligibility?.eligible_plans && (
+                                                                                    <Grid item xs={12}>
+                                                                                        <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, display: 'block' }}>Eligible Plans</Typography>
+                                                                                        <Stack spacing={1} direction="row" flexWrap="wrap" useFlexGap>
+                                                                                            {riskData.findings.policy_eligibility.eligible_plans.map((plan, idx) => (
+                                                                                                <Box key={idx} sx={{ p: 1.5, minWidth: 250, flexGrow: 1, bgcolor: plan.allowed ? '#f0fdf4' : '#fef2f2', border: `1px solid ${plan.allowed ? '#bbf7d0' : '#fecaca'}`, borderRadius: 1 }}>
+                                                                                                    <Typography variant="body2" sx={{ fontWeight: 700, color: plan.allowed ? '#166534' : '#991b1b' }}>{plan.plan_name} {plan.allowed ? '✅' : '❌'}</Typography>
+                                                                                                    <Typography variant="caption" sx={{ color: '#475569' }}>{plan.reason}</Typography>
+                                                                                                </Box>
+                                                                                            ))}
+                                                                                        </Stack>
+                                                                                    </Grid>
+                                                                                )}
+                                                                                <Grid item xs={12}>
+                                                                                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, mt: riskData.findings.policy_eligibility?.eligible_plans ? 1 : 0, display: 'block' }}>Premium Breakdown by Sum Assured</Typography>
+                                                                                    <Grid container spacing={1.5}>
+                                                                                        {riskData.findings.premium_calculation.premium_output.map((po, idx) => (
+                                                                                            <Grid item xs={12} sm={6} md={4} xl={3} key={idx}>
                                                                                             <Box sx={{ p: 1.2, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
                                                                                                 <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1e293b', mb: 1, fontSize: '0.8rem' }}>Sum Assured: ₹{(po.sum_assured || 0).toLocaleString()}</Typography>
                                                                                                 <Stack spacing={0.5}>
@@ -1439,7 +1510,7 @@ export default function Applications() {
                                                                     </Typography>
                                                                     <Stack spacing={1.5}>
                                                                         <Box>
-                                                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Policy Number</Typography>
+                                                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Proposal ID / Quote No</Typography>
                                                                             <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
                                                                                 {riskData.findings.extracted_details.policy_details?.policy_number || '—'}
                                                                             </Typography>
@@ -1470,21 +1541,9 @@ export default function Applications() {
                                                                 <Box sx={{ flex: 1 }}>
                                                                     <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#475569', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                                                                         <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#f59e0b', borderRadius: 1 }} />
-                                                                        Validity Period
+                                                                        Application Summary
                                                                     </Typography>
                                                                     <Stack spacing={2}>
-                                                                        <Box>
-                                                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>From Date</Typography>
-                                                                            <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
-                                                                                {riskData.findings.extracted_details.validity_dates?.from_date || '—'}
-                                                                            </Typography>
-                                                                        </Box>
-                                                                        <Box>
-                                                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Till Date</Typography>
-                                                                            <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
-                                                                                {riskData.findings.extracted_details.validity_dates?.to_date || '—'}
-                                                                            </Typography>
-                                                                        </Box>
                                                                         <Box sx={{ mt: 1 }}>
                                                                             <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block', mb: 0.5 }}>
                                                                                 POLICY SUMMARY
@@ -1532,44 +1591,67 @@ export default function Applications() {
                                                         <Typography variant="body2" sx={{ color: '#475569', mb: 2 }}>
                                                             Risk Assessment Engine evaluated {riskData.findings?.rules_total || 4} deterministic underwriting rules against the applicant's document profile.
                                                         </Typography>
-                                                        <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
+                                                        <Box sx={{ mb: 3, p: 2, bgcolor: '#f0fdfa', border: '1px solid #ccfbf1', borderRadius: 2 }}>
+                                                            <Typography variant="caption" sx={{ fontWeight: 800, color: '#0f766e', display: 'block', mb: 0.5, textTransform: 'uppercase' }}>
+                                                                How is the AI Risk Score Calculated?
+                                                            </Typography>
+                                                            <Typography variant="body2" sx={{ color: '#115e59', fontSize: '0.85rem', lineHeight: 1.6 }}>
+                                                                1. <strong>AI Evaluation:</strong> The AI reads the documents (e.g. Medical Reports) and understands the applicant's profile.<br/>
+                                                                2. <strong>Raw Score:</strong> Based on the findings, it assigns a base risk penalty. (High number = High Risk)<br/>
+                                                                3. <strong>Weightage:</strong> Each parameter (Age, BMI, etc.) has a fixed percentage of importance in the policy.<br/>
+                                                                4. <strong>Weighted Score:</strong> <code>Raw Score × Weightage %</code> gives the final risk point for that parameter.<br/>
+                                                                The Final AI Risk Score (at the top) is the sum total of all these individual weighted points.
+                                                            </Typography>
+                                                        </Box>
+                                                        <Stack spacing={2} sx={{ width: '100%' }}>
                                                             {(riskData.findings?.breakdown || []).map((b, i) => {
                                                                 const weight = typeof b.weight === 'number' ? (b.weight <= 1 ? b.weight * 100 : b.weight) : b.weight;
                                                                 const raw = b.raw_score ?? b.score;
                                                                 const finalScore = b.weighted_score ?? (Number.isInteger(b.score * b.weight) ? (b.score * b.weight) : (b.score * b.weight).toFixed(1));
                                                                 
                                                                 return (
-                                                                <Box key={i} sx={{ flex: 1, minWidth: 0 }}>
-                                                                    <Tooltip title={
-                                                                        <Box sx={{ p: 1 }}>
-                                                                            <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>Justification</Typography>
-                                                                            <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>{b.justification || 'No justification provided.'}</Typography>
-                                                                            
-                                                                            <Typography variant="caption" sx={{ display: 'block', mb: 1, color: '#0369a1', fontWeight: 700, bgcolor: '#f0f9ff', p: 0.75, borderRadius: 1, border: '1px solid #bae6fd' }}>
-                                                                                Formula: Score ({raw}) / Max ({weight})
-                                                                            </Typography>
-
-                                                                            {(b.matched_risk_signals?.length > 0 || b.matched_positive_signals?.length > 0 || b.triggered_rules?.length > 0) && (
-                                                                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                                                    {b.triggered_rules?.map((rule, idx) => <Chip key={`rule-${idx}`} label={rule} size="small" sx={{ bgcolor: '#f3e8ff', color: '#7e22ce', height: 20, fontSize: '0.6rem' }} />)}
-                                                                                    {b.matched_risk_signals?.map((sig, idx) => <Chip key={`neg-${idx}`} label={sig} size="small" sx={{ bgcolor: '#fef2f2', color: '#ef4444', height: 20, fontSize: '0.6rem' }} />)}
-                                                                                    {b.matched_positive_signals?.map((sig, idx) => <Chip key={`pos-${idx}`} label={sig} size="small" sx={{ bgcolor: '#f0fdf4', color: '#16a34a', height: 20, fontSize: '0.6rem' }} />)}
-                                                                                </Box>
-                                                                            )}
-                                                                        </Box>
-                                                                    } arrow placement="top">
-                                                                        <Box sx={{ p: 1.5, bgcolor: '#ffffff', borderRadius: 2, border: '1px solid #e2e8f0', textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', cursor: 'pointer' }}>
-                                                                            <Typography variant="caption" sx={{ display: 'block', fontWeight: 800, color: '#64748b', mb: 0.5, textTransform: 'uppercase', fontSize: '0.65rem', letterSpacing: 0.5 }}>
+                                                                <Paper key={i} variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: '#f8fafc', borderColor: '#e2e8f0' }}>
+                                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                                                                        <Box>
+                                                                            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#334155', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                                                                                 {b.factor || b.label}
                                                                             </Typography>
-                                                                            <Typography variant="subtitle2" sx={{ fontWeight: 900, color: finalScore <= weight * 0.4 ? '#16a34a' : (finalScore <= weight * 0.7 ? '#f59e0b' : '#ef4444') }}>
-                                                                                {finalScore} <Box component="span" sx={{ color: '#94a3b8', fontWeight: 600, fontSize: '0.65rem' }}>/ {weight}</Box>
+                                                                            <Typography variant="caption" sx={{ fontWeight: 600, color: '#64748b', display: 'block' }}>
+                                                                                Calculation: {raw} (Raw Score) × {weight/100} (Weightage of {weight}%) = {finalScore}
                                                                             </Typography>
                                                                         </Box>
-                                                                    </Tooltip>
-                                                                </Box>
+                                                                        <Typography variant="subtitle2" sx={{ fontWeight: 900, color: finalScore <= weight * 0.4 ? '#16a34a' : (finalScore <= weight * 0.7 ? '#f59e0b' : '#ef4444') }}>
+                                                                            {finalScore} <Box component="span" sx={{ color: '#94a3b8', fontWeight: 600, fontSize: '0.75rem' }}>/ {weight}</Box>
+                                                                        </Typography>
+                                                                    </Box>
+                                                                    
+                                                                    <Typography variant="body2" sx={{ color: '#475569', mb: 1.5 }}>
+                                                                        <Box component="span" sx={{ fontWeight: 700, color: '#1e293b' }}>Justification:</Box> {b.justification || 'No justification provided.'}
+                                                                    </Typography>
+
+                                                                    {(b.triggered_rules?.length > 0) && (
+                                                                        <Box sx={{ mb: 1 }}>
+                                                                            <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', display: 'block', mb: 0.5 }}>Triggered Rules:</Typography>
+                                                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                                                {b.triggered_rules.map((rule, idx) => <Chip key={`rule-${idx}`} label={rule} size="small" sx={{ bgcolor: '#f3e8ff', color: '#7e22ce', height: 22, fontSize: '0.7rem' }} />)}
+                                                                            </Box>
+                                                                        </Box>
+                                                                    )}
+
+                                                                    {(b.citations?.length > 0) && (
+                                                                        <Box sx={{ mt: 1 }}>
+                                                                            <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', display: 'block', mb: 0.5 }}>Citations / Source Documents:</Typography>
+                                                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                                                {b.citations.map((doc, idx) => {
+                                                                                    const resolvedFile = resolveCitationToFile(doc, riskData?.uploaded_documents || []);
+                                                                                    return <Chip component="a" href={`http://127.0.0.1:8000/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }}/>} sx={{ bgcolor: '#e0f2fe', color: '#0369a1', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
+                                                                                })}
+                                                                            </Box>
+                                                                        </Box>
+                                                                    )}
+                                                                </Paper>
                                                             )})}
-                                                        </Box>
+                                                        </Stack>
                                                     </Box>
                                                 ) : (
                                                     <Box sx={{ p: 3, bgcolor: '#fef9c3', borderRadius: 2, border: '1px solid #fde68a' }}>

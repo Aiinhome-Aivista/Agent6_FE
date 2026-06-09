@@ -323,13 +323,9 @@ export default function ClaimTracker() {
                   <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Customer Name</TableCell>
                   <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Aadhaar</TableCell>
                   <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>PAN</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Policy No.</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Claim ID</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Company</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Amount</TableCell>
                   <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Previous Claims</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Current Claims</TableCell>
-                  <TableCell align="right" sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Actions</TableCell>
+                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Status</TableCell>
+                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Assigned To</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -338,37 +334,14 @@ export default function ClaimTracker() {
                     <TableCell sx={{ color: themeColors.textSecondary, fontWeight: 500 }}>{c.customer_name}</TableCell>
                     <TableCell sx={{ color: themeColors.textSecondary }}>{c.aadhaar || 'N/A'}</TableCell>
                     <TableCell sx={{ color: themeColors.textSecondary }}>{c.pan || 'N/A'}</TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary }}>{c.policy_no}</TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary, fontFamily: 'monospace' }}>{c.claim_id}</TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary }}>{c.company}</TableCell>
+                    <TableCell sx={{ color: themeColors.textSecondary }}>
+                        {c.previous_claims && c.previous_claims !== 'None' ? 'Yes' : 'No'}
+                    </TableCell>
+                    <TableCell sx={{ color: themeColors.textSecondary }}>
+                        <Chip label={c.status || 'Unknown'} size="small" sx={{ fontWeight: 600 }} />
+                    </TableCell>
                     <TableCell sx={{ color: themeColors.textSecondary, fontWeight: 600 }}>
-                      {formatCurrency(c.amount)}
-                    </TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      <Tooltip title={c.previous_claims || 'None'} arrow>
-                        <span>{c.previous_claims || 'None'}</span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      <Tooltip title={c.current_claims || 'None'} arrow>
-                        <span>{c.current_claims || 'None'}</span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Tooltip title="Customer Overview" arrow>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleViewDetails(c)}
-                          sx={{
-                            color: '#2563eb',
-                            '&:hover': {
-                              backgroundColor: 'rgba(37, 99, 235, 0.08)'
-                            }
-                          }}
-                        >
-                          <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                        {c.assigned_user || 'None'}
                     </TableCell>
                   </TableRow>
                 ))}
