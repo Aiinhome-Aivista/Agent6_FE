@@ -3,7 +3,7 @@ import {
     Box, Typography, Card, CardContent, Grid, Stack, Button, Chip,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-    CircularProgress, IconButton, Divider, LinearProgress,
+    CircularProgress, IconButton, Divider, LinearProgress, Stepper, Step, StepLabel,
     Accordion, AccordionSummary, AccordionDetails, Tooltip
 } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
@@ -13,6 +13,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import SearchIcon from '@mui/icons-material/Search';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,6 +31,7 @@ export default function Applications() {
     const [cases, setCases] = useState([]);
     const [loading, setLoading] = useState(false);
     const [refreshingCases, setRefreshingCases] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     
     // New / Edit Case states
     const [openNewCase, setOpenNewCase] = useState(false);
@@ -80,11 +82,37 @@ export default function Applications() {
         fetchCases(true);
     }, []);
 
+    // Stepper Logic
+    const currentCaseForStepper = editCaseId ? cases.find(c => c.id === editCaseId) : null;
+    const isEscalatedForStepper = currentCaseForStepper && (
+        (currentCaseForStepper.current_role_id && currentCaseForStepper.current_role_id < 4) || 
+        currentCaseForStepper.status?.toUpperCase() === 'REFERRED' ||
+        (!isBroker && currentCaseForStepper.current_role_id && user?.role_id > currentCaseForStepper.current_role_id)
+    );
+
+    // const steps = ['SUBMITTED', 'REVIEW PROCESS', 'FINAL DECISION'];
+    const steps = ['SUBMITTED', 'REVIEW PROCESS'];
+    const activeStep = (() => {
+        if (!currentCaseForStepper) return 0;
+        const status = currentCaseForStepper.status;
+        if (status === 'Approved' || status === 'Rejected') {
+            return 2; // FINAL DECISION
+        } else if (isEscalatedForStepper || status === 'Underwriter Review' || status === 'Pending Additional Documents') {
+            return 1; // REVIEW PROCESS
+        }
+        return 0; // SUBMITTED or 'Pending'
+    })();
+
     const handleRefreshCases = async () => {
         setRefreshingCases(true);
         await fetchCases(false);
         setRefreshingCases(false);
     };
+
+    const filteredCases = cases.filter(c => 
+        (c.case_number || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (c.applicant_name || '').toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const executeCaseSave = async (skipCheck = false) => {
         setSubmitting(true);
@@ -295,6 +323,23 @@ export default function Applications() {
         }
     };
 
+    const getDynamicStepLabel = (stepKey) => {
+        if (stepKey === 'REVIEW PROCESS') {
+            if (isEscalatedForStepper) {
+                return 'ESCALATED';
+            } else if (currentCaseForStepper?.status === 'Underwriter Review' || currentCaseForStepper?.status === 'Pending Additional Documents') {
+                return 'UNDERWRITER REVIEW';
+            }
+            return 'REVIEW PROCESS';
+        } 
+        else if (stepKey === 'FINAL DECISION') {
+            if (currentCaseForStepper?.status === 'Approved') return 'APPROVED';
+            if (currentCaseForStepper?.status === 'Rejected') return 'REJECTED';
+            return 'FINAL DECISION';
+        }
+        return stepKey;
+    };
+
     return (
         <Box sx={{ pb: 6 }}>
             <Card sx={{ borderRadius: 3, boxShadow: '0 4px 24px rgba(0,0,0,0.06)', border: themeColors.border, bgcolor: themeColors.cardBg, color: themeColors.textPrimary, transition: 'all 0.2s ease' }}>
@@ -304,7 +349,25 @@ export default function Applications() {
                             ? 'My Applications'
                             : (isAdmin ? 'Manage Cases' : 'Case Queue')}
                     </Typography>
-                    <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <TextField
+                            size="small"
+                            placeholder="Search here..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <SearchIcon sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} />
+                                ),
+                            }}
+                            sx={{
+                                width: 260,
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 2,
+                                    bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc',
+                                }
+                            }}
+                        />
                         <IconButton
                             onClick={handleRefreshCases}
                             disabled={loading}
@@ -348,11 +411,11 @@ export default function Applications() {
                         <TableBody>
                             {loading ? (
                                 <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8, borderBottom: themeColors.tableCellBorder }}><CircularProgress /></TableCell></TableRow>
-                            ) : cases.length === 0 ? (
+                            ) : filteredCases.length === 0 ? (
                                 <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8, color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>
-                                    {isBroker ? 'No cases yet — click "New Application" above!' : 'Queue is empty.'}
+                                    {searchQuery ? 'No cases match your search.' : (isBroker ? 'No cases yet — click "New Application" above!' : 'Queue is empty.')}
                                 </TableCell></TableRow>
-                            ) : cases.map(row => (
+                            ) : filteredCases.map(row => (
                                 <TableRow key={row.id} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
                                     <TableCell sx={{ fontWeight: 700, color: '#2563eb', borderBottom: themeColors.tableCellBorder, fontFamily: 'monospace' }}>{row.case_number}</TableCell>
                                     <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{row.applicant_name}</TableCell>
@@ -570,6 +633,18 @@ export default function Applications() {
                 <DialogTitle sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                     {viewMode ? 'Application & Documents View' : (editCaseId ? 'Edit Application & Documents' : 'New Insurance Application')}
                 </DialogTitle>
+                {editCaseId && (
+                    <Box sx={{ width: '100%', pt: 3, pb: 1, px: 2 }}>
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{getDynamicStepLabel(label)}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                    </Box>
+                )}
+                
                 <DialogContent sx={{ pt: 4 }}>
                     <TextField autoFocus fullWidth label="Applicant Full Name" variant="outlined" value={applicantName}
                         onChange={e => setApplicantName(e.target.value)} sx={{ mt: 1, mb: 3 }} InputProps={{ readOnly: viewMode }} />

@@ -424,7 +424,8 @@ export default function Layout() {
                                     '&:hover': { bgcolor: themeColors.navHoverBg },
                                     px: sidebarOpen ? 2 : 1.5,
                                     justifyContent: sidebarOpen ? 'flex-start' : 'center',
-                                    transition: 'all 0.2s ease'
+                                    transition: 'all 0.2s ease',
+                                    cursor: 'pointer'
                                 }}
                             >
                                 <ListItemIcon sx={{ color: isActive ? themeColors.navActiveText : themeColors.navText, minWidth: sidebarOpen ? 36 : 'auto' }}>
@@ -445,7 +446,7 @@ export default function Layout() {
                     })}
                 </List>
             </Box>
-            <Box sx={{ mt: 'auto', p: 2 }}>
+            <Box sx={{ mt: 'auto', p: 2, cursor: 'pointer'}}>
                 <ListItem
                     button
                     onClick={logout}
@@ -457,6 +458,7 @@ export default function Layout() {
                         '&:hover': { bgcolor: '#fef2f2', color: '#ef4444', borderColor: '#fecaca' },
                         justifyContent: sidebarOpen ? 'flex-start' : 'center',
                         transition: 'all 0.2s ease'
+                        
                     }}
                 >
                     <ListItemIcon sx={{ color: '#ef4444', minWidth: sidebarOpen ? 36 : 'auto' }}>
