@@ -1638,13 +1638,13 @@ export default function Applications() {
                                                                         </Box>
                                                                     )}
 
-                                                                    {(b.citations?.length > 0) && (
+                                                                    {(b.citations && Array.isArray(b.citations) && b.citations.filter(c => c && c.trim() !== '' && c.toLowerCase() !== 'none' && c.toLowerCase() !== 'n/a' && !c.toLowerCase().includes('list of')).length > 0) && (
                                                                         <Box sx={{ mt: 1 }}>
                                                                             <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', display: 'block', mb: 0.5 }}>Citations / Source Documents:</Typography>
                                                                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                                                {b.citations.map((doc, idx) => {
+                                                                                {b.citations.filter(c => c && c.trim() !== '' && c.toLowerCase() !== 'none' && c.toLowerCase() !== 'n/a' && !c.toLowerCase().includes('list of')).map((doc, idx) => {
                                                                                     const resolvedFile = resolveCitationToFile(doc, riskData?.uploaded_documents || []);
-                                                                                    return <Chip component="a" href={`http://127.0.0.1:8000/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }}/>} sx={{ bgcolor: '#e0f2fe', color: '#0369a1', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
+                                                                                    return <Chip component="a" href={`http://127.0.0.1:8000/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={resolvedFile || doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }}/>} sx={{ bgcolor: '#e0f2fe', color: '#0369a1', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
                                                                                 })}
                                                                             </Box>
                                                                         </Box>
