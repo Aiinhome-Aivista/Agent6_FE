@@ -12,6 +12,10 @@ import { useAuth } from '../context/AuthContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditDocumentIcon from '@mui/icons-material/EditDocument';
+import AddCommentIcon from '@mui/icons-material/AddComment';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import SearchIcon from '@mui/icons-material/Search';
@@ -78,7 +82,8 @@ export default function Applications() {
     const [loading, setLoading] = useState(false);
     const [refreshingCases, setRefreshingCases] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    
+    const [openNotification, setOpenNotification] = useState(false);
+
     // New / Edit Case states
     const [openNewCase, setOpenNewCase] = useState(false);
     const [applicantName, setApplicantName] = useState('');
@@ -128,6 +133,32 @@ export default function Applications() {
     const [selectedPredefinedReason, setSelectedPredefinedReason] = useState('');
     const [rejectCustomReason, setRejectCustomReason] = useState('');
     const [rejectDoc, setRejectDoc] = useState(null);
+
+    // Add Comment States
+    const [openAddComment, setOpenAddComment] = useState(false);
+    const [commentText, setCommentText] = useState('');
+    const [commentingCase, setCommentingCase] = useState(null);
+
+    const handleAddCommentClick = (row) => {
+        setCommentingCase(row);
+        setCommentText('');
+        setOpenAddComment(true);
+    };
+
+    const handleSubmitComment = async () => {
+        if (!commentText.trim() || !commentingCase) return;
+        setDecisionLoading(true);
+        try {
+            await api.post(`/cases/${commentingCase.id}/decision`, {
+                decision: 'request_document', // Reuses status to notify broker and request info
+                remarks: commentText
+            });
+            setOpenAddComment(false);
+            setCommentingCase(null);
+            fetchCases();
+        } catch (e) { alert('Failed to send comment.'); }
+        finally { setDecisionLoading(false); }
+    };
 
     const fetchCases = async (showTableLoader = true) => {
         if (showTableLoader) setLoading(true);
@@ -436,6 +467,9 @@ export default function Applications() {
         (c.applicant_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (c.policy_type || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
+const notifications = cases.filter(
+    c => c.underwriter_remarks
+);
 
     const currentCaseForStepper = editCaseId ? cases.find(c => c.id === editCaseId) : null;
     const isEscalatedForStepper = currentCaseForStepper && (
@@ -520,6 +554,23 @@ export default function Applications() {
                                 }}
                             />
                         </IconButton>
+                         {/* Notification Bell */}
+    <Badge
+        badgeContent={notifications.length}
+        color="error"
+    >
+        <IconButton
+            onClick={() => setOpenNotification(true)}
+            sx={{
+                color: '#2563eb',
+                bgcolor: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                '&:hover': { bgcolor: '#dbeafe' }
+            }}
+        >
+            <NotificationsIcon />
+        </IconButton>
+    </Badge>
                         {isBroker && (
                             <Button variant="contained" startIcon={<PostAddIcon />} onClick={handleNewApplicationClick}
                                 sx={{ fontWeight: 700, borderRadius: 2 }}>
@@ -532,7 +583,7 @@ export default function Applications() {
                     <Table>
                         <TableHead>
                             <TableRow sx={{ bgcolor: themeColors.tableHeadBg }}>
-                                {(isBroker ? ['Case ID', 'Applicant', 'Policy', 'Assigned To', 'Status', 'Date', 'Actions'] : ['Case ID', 'Applicant', 'Policy', 'Status', 'SLA', 'Date', 'Actions']).map(h => (
+                                {(isBroker ? ['Case ID', 'Applicant', 'Policy', 'Assigned To', 'Status', 'Date', 'Actions'] : ['Case ID', 'Applicant', 'Policy', 'Status', 'Date', 'Actions']).map(h => (
                                     <TableCell key={h} sx={{ fontWeight: 700, color: themeColors.tableHeadText, borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem', textTransform: 'uppercase' }}>{h}</TableCell>
                                 ))}
                             </TableRow>
@@ -570,7 +621,7 @@ export default function Applications() {
                                             );
                                         })()}
                                     </TableCell>
-                                    {!isBroker && (
+                                    {/* {!isBroker && (
                                         <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
                                             {(() => {
                                                 if (!row.sla_due_at) return '-';
@@ -585,20 +636,20 @@ export default function Applications() {
                                                 return <Typography sx={{color: '#10b981', fontWeight: 700, fontSize: '0.8rem'}}>{diffDays} Days Left</Typography>;
                                             })()}
                                         </TableCell>
-                                    )}
+                                    )} */}
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.85rem' }}>{new Date(row.created_at).toLocaleDateString()}</TableCell>
                                     <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
                                         {isBroker && (row.status === 'Pending' || row.status === 'Pending Additional Documents' || row.status === 'Rejected') ? (
-                                            <Box>
-                                                <Button variant="outlined" color="secondary" size="small" onClick={() => {
+                                            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                                <IconButton variant="outlined" color="primary" size="small" onClick={() => {
                                                         if (row.user_id !== user.id) {
                                                             setErrorMsg('This application belongs to another broker and is not visible to you.');
                                                         } else {
                                                             openEditCase(row);
                                                         }
-                                                    }} sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2 }}>
-                                                    Edit Application & Docs
-                                                </Button>
+                                                    }} sx={{ textTransform: 'none', fontWeight: 600, border: '1px solid #bfdbfe' }}>
+                                                      <EditDocumentIcon />
+                                                </IconButton>
                                                 {row.status === 'Rejected' && row.underwriter_remarks && (
                                                     <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#ef4444', fontWeight: 600, bgcolor: '#fef2f2', p: 0.5, borderRadius: 1 }}>
                                                         Note: {row.underwriter_remarks}
@@ -618,12 +669,23 @@ export default function Applications() {
                                                         <VisibilityIcon fontSize="small" />
                                                     </IconButton>
                                                 ) : (
-                                                    <Button variant="contained" size="small" startIcon={<VisibilityIcon />}
-                                                        onClick={() => openReview(row)}
-                                                        color={row.current_role_id && user?.role_id > row.current_role_id ? 'inherit' : 'primary'}
-                                                        sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2, boxShadow: 0 }}>
-                                                        {row.current_role_id && user?.role_id > row.current_role_id ? 'View Status' : 'Review Report'}
-                                                    </Button>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <IconButton size="small"
+                                                            onClick={() => openReview(row)}
+                                                            color={row.current_role_id && user?.role_id > row.current_role_id ? 'inherit' : 'primary'}
+                                                            sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe', color: '#3b82f6', '&:hover': { bgcolor: '#dbeafe' } }}>
+                                                            <VisibilityIcon fontSize="small" />
+                                                        </IconButton>
+                                                        <Tooltip title="Quick Comment to Broker">
+                                                            <IconButton 
+                                                                size="small" 
+                                                                onClick={() => handleAddCommentClick(row)}
+                                                                sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe', color: '#3b82f6', '&:hover': { bgcolor: '#dbeafe' } }}
+                                                            >
+                                                                <AddCommentIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
                                                 )}
                                             </Box>
                                         )}
@@ -1850,6 +1912,32 @@ export default function Applications() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Add Comment Dialog */}
+            <Dialog open={openAddComment} onClose={() => setOpenAddComment(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
+                <DialogTitle sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>Add Comment</DialogTitle>
+                <DialogContent sx={{ pt: 1 }}>
+                    <TextField
+                        autoFocus
+                        fullWidth
+                        multiline
+                        rows={4}
+                        label="Comment / Instructions"
+                        variant="outlined"
+                        value={commentText}
+                        sx={{ mt: 2 }}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="e.g. Please provide a clear copy of the Aadhaar card..."
+                    />
+                </DialogContent>
+                <DialogActions sx={{ px: 3, pb: 3 }}>
+                    <Button onClick={() => setOpenAddComment(false)} color="inherit">Cancel</Button>
+                    <Button onClick={handleSubmitComment} variant="contained" disabled={decisionLoading || !commentText.trim()}>
+                        {decisionLoading ? <CircularProgress size={24} /> : 'Add'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         <Dialog open={!!errorMsg} onClose={() => setErrorMsg('')} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: 4, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' } }}>
             <DialogTitle sx={{ bgcolor: '#fef2f2', borderBottom: '1px solid #fecaca', p: 2, textAlign: 'center' }}>
                 <Typography variant="h6" sx={{ fontWeight: 900, color: '#991b1b' }}>Access Denied 🔒</Typography>
@@ -1865,6 +1953,37 @@ export default function Applications() {
                 </Button>
             </DialogActions>
         </Dialog>
+
+        {/* Notification Dialog */}
+<Dialog
+    open={openNotification}
+    onClose={() => setOpenNotification(false)}
+    maxWidth="sm"
+    fullWidth
+>
+    <DialogTitle>Notifications</DialogTitle>
+
+    <DialogContent>
+        {notifications.length === 0 ? (
+            <Typography>No notifications found.</Typography>
+        ) : (
+            <Stack spacing={1}>
+                {notifications.map(n => (
+                    <Alert key={n.id} severity="info">
+                        <b>{n.case_number}</b><br />
+                        {n.underwriter_remarks}
+                    </Alert>
+                ))}
+            </Stack>
+        )}
+    </DialogContent>
+
+    <DialogActions>
+        <Button onClick={() => setOpenNotification(false)}>
+            Close
+        </Button>
+    </DialogActions>
+</Dialog>
         </Box>
     );
 }
