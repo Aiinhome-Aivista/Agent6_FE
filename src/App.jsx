@@ -12,6 +12,7 @@ import AuditLogs from './pages/AuditLogs';
 import KnowledgeBase from './pages/KnowledgeBase';
 import RagChat from './pages/RagChat';
 import ClaimTracker from './pages/ClaimTracker';
+import HistoricalCases from './pages/HistoricalCases';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/manage-application" element={<Applications />} />
             <Route path="/case-queue" element={<Applications />} />
             <Route path="/claim-tracker" element={<ClaimTracker />} />
+            <Route path="/historical-cases" element={<HistoricalCases />} />
 
           </Route>
         </Routes>

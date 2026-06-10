@@ -297,12 +297,14 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
+import HistoryIcon from '@mui/icons-material/History';
 
 const DRAWER_WIDTH = 240;
 
 const NAV_ITEMS = {
     broker: [
         { key: 'manage-application', label: 'Applications', icon: <AssignmentIcon />, path: '/manage-application' },
+        { key: 'historical-cases', label: 'Historical Cases', icon: <HistoryIcon />, path: '/historical-cases' },
     ],
     underwriter: [
         { key: 'case-queue', label: 'Case Queue', icon: <AssignmentIcon />, path: '/case-queue' },
