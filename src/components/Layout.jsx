@@ -280,7 +280,8 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, AppBar, Toolbar, Drawer, List, ListItem, ListItemButton,
-    ListItemIcon, ListItemText, Avatar, IconButton, Stack, Menu, MenuItem, Divider, Chip
+    ListItemIcon, ListItemText, Avatar, IconButton, Stack, Menu, MenuItem, Divider, Chip,
+    Badge, Dialog, DialogTitle, DialogContent, DialogActions, Button, Alert
 } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
@@ -298,6 +299,8 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import HistoryIcon from '@mui/icons-material/History';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import api from '../api';
 
 const DRAWER_WIDTH = 240;
 
@@ -367,6 +370,25 @@ export default function Layout() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [profileAnchorEl, setProfileAnchorEl] = useState(null);
     const openProfileMenu = Boolean(profileAnchorEl);
+
+    const [notifications, setNotifications] = useState([]);
+    const [openNotification, setOpenNotification] = useState(false);
+
+    useEffect(() => {
+        if (!user) return;
+        const fetchNotifs = async () => {
+            try {
+                const r = await api.get('/cases/');
+                const notifs = r.data.filter(c => c.underwriter_remarks);
+                setNotifications(notifs);
+            } catch (e) {
+                console.error("Error fetching notifications", e);
+            }
+        };
+        fetchNotifs();
+        const intervalId = setInterval(fetchNotifs, 30000); // 30 sec polling
+        return () => clearInterval(intervalId);
+    }, [user]);
 
     const handleAvatarClick = (event) => setProfileAnchorEl(event.currentTarget);
     const handleAvatarClose = () => setProfileAnchorEl(null);
@@ -483,6 +505,16 @@ export default function Layout() {
                     <Typography variant="h6" sx={{ fontWeight: 800, flexGrow: 1, color: themeColors.textPrimary }}>
                         {getHeaderTitle()}
                     </Typography>
+
+                    <Badge badgeContent={notifications.length} color="error" sx={{ mr: 1 }}>
+                        <IconButton
+                            onClick={() => setOpenNotification(true)}
+                            sx={{ color: themeColors.textSecondary, transition: 'all 0.2s ease' }}
+                        >
+                            <NotificationsIcon sx={{ fontSize: 22 }} />
+                        </IconButton>
+                    </Badge>
+
                     <IconButton onClick={toggleTheme} sx={{ mr: 2, color: darkMode ? '#fcd34d' : '#64748b', transition: 'all 0.2s ease' }} title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
                         {darkMode ? <LightModeIcon sx={{ fontSize: 22 }} /> : <DarkModeIcon sx={{ fontSize: 22 }} />}
                     </IconButton>
@@ -560,6 +592,34 @@ export default function Layout() {
                 {/* Outlet renders the child routes, we pass themeColors and darkMode through context */}
                 <Outlet context={{ darkMode, themeColors }} />
             </Box>
+
+            <Dialog
+                open={openNotification}
+                onClose={() => setOpenNotification(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle sx={{ fontWeight: 800, bgcolor: themeColors.cardBg, color: themeColors.textPrimary }}>Notifications</DialogTitle>
+                <DialogContent sx={{ bgcolor: themeColors.cardBg, p: 3 }}>
+                    {notifications.length === 0 ? (
+                        <Typography sx={{ color: themeColors.textSecondary }}>No notifications found.</Typography>
+                    ) : (
+                        <Stack spacing={1}>
+                            {notifications.map(n => (
+                                <Alert key={n.id} severity="info">
+                                    <b>{n.case_number}</b><br />
+                                    {n.underwriter_remarks}
+                                </Alert>
+                            ))}
+                        </Stack>
+                    )}
+                </DialogContent>
+                <DialogActions sx={{ bgcolor: themeColors.cardBg, p: 2 }}>
+                    <Button onClick={() => setOpenNotification(false)} variant="contained">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
