@@ -915,74 +915,7 @@ export default function Applications() {
                     <TextField autoFocus fullWidth label="Applicant Full Name" variant="outlined" value={applicantName}
                         onChange={e => setApplicantName(e.target.value)} sx={{ mt: 3, mb: 2 }} InputProps={{ readOnly: viewMode }} />
 
-                    {/* ── Dynamic Document Checklist ── */}
-                    {(() => {
-                        const mandatory = [
-                            'Identity proof like Aadhaar/PAN',
-                            'Bank statement',
-                            'Passport size photo'
-                        ];
-                        const optional = applicationType === 'New Policy'
-                            ? ['Medical Reports']
-                            : ['Medical Reports', 'Cancelled Cheque', 'Lab Reports / Test Results', 'Referral Letter from Doctor'];
-
-                        const claimDocs = [];
-
-                        if (!mandatory.length && !claimDocs.length && !optional.length) return null;
-
-                        return (
-                            <Box sx={{ mb: 3, p: 2, bgcolor: '#f0fdf4', borderRadius: 2, border: '1px solid #bbf7d0' }}>
-                                <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
-                                    <ChecklistIcon sx={{ color: '#16a34a', fontSize: 20 }} />
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#15803d' }}>
-                                        Document Checklist — {policyType}
-                                    </Typography>
-                                </Stack>
-
-                                {mandatory.length > 0 && (
-                                    <Box sx={{ mb: (claimDocs.length || optional.length) ? 1.5 : 0 }}>
-                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#15803d', display: 'block', mb: 0.5, textTransform: 'uppercase' }}>
-                                            Mandatory Documents
-                                        </Typography>
-                                        {mandatory.map((doc, i) => (
-                                            <Stack key={i} direction="row" spacing={0.8} alignItems="center" sx={{ mb: 0.3 }}>
-                                                <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#16a34a', flexShrink: 0 }} />
-                                                <Typography variant="body2" sx={{ color: '#166534', fontWeight: 600 }}>{doc}</Typography>
-                                            </Stack>
-                                        ))}
-                                    </Box>
-                                )}
-
-                                {optional.length > 0 && (
-                                    <Box sx={{ mb: claimDocs.length ? 1.5 : 0 }}>
-                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', display: 'block', mb: 0.5, textTransform: 'uppercase' }}>
-                                            Optional Documents
-                                        </Typography>
-                                        {optional.map((doc, i) => (
-                                            <Stack key={`opt-${i}`} direction="row" spacing={0.8} alignItems="center" sx={{ mb: 0.3 }}>
-                                                <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#94a3b8', flexShrink: 0 }} />
-                                                <Typography variant="body2" sx={{ color: '#475569', fontWeight: 600 }}>{doc}</Typography>
-                                            </Stack>
-                                        ))}
-                                    </Box>
-                                )}
-
-                                {claimDocs.length > 0 && (
-                                    <Box>
-                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#d97706', display: 'block', mb: 0.5, textTransform: 'uppercase' }}>
-                                            Additional Claim Documents
-                                        </Typography>
-                                        {claimDocs.map((doc, i) => (
-                                            <Stack key={i} direction="row" spacing={0.8} alignItems="center" sx={{ mb: 0.3 }}>
-                                                <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#d97706', flexShrink: 0 }} />
-                                                <Typography variant="body2" sx={{ color: '#92400e', fontWeight: 600 }}>{doc}</Typography>
-                                            </Stack>
-                                        ))}
-                                    </Box>
-                                )}
-                            </Box>
-                        );
-                    })()}
+                    {/* ── Dynamic Document Checklist Removed as requested ── */}
 
                     <Box sx={{ display: 'flex', gap: 2, mb: applicationType === 'Existing Claim' ? 2 : 4 }}>
                         <Box sx={{ flex: 1 }}>
@@ -1090,40 +1023,83 @@ export default function Applications() {
                         </Box>
                     )}
 
-                    {!viewMode && (
-                        <>
-                            <Box sx={{ border: '2px dashed #cbd5e1', borderRadius: 3, p: 3, textAlign: 'center', bgcolor: '#f8fafc', mb: 2 }}>
-                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#334155', mb: 0.5 }}>{editCaseId ? 'Upload Missing/New Documents' : 'Upload Application Documents'}</Typography>
-                                <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mb: 1.5 }}>
-                                    Only PDF files accepted • Max size 5MB
+                    {!viewMode && (() => {
+                        const mandatory = [
+                            'Identity proof like Aadhaar/PAN',
+                            'Bank statement',
+                            'Medical Reports'
+                        ];
+                        const optional = applicationType === 'New Policy'
+                            ? ['Passport size photo']
+                            : ['Passport size photo', 'Cancelled Cheque', 'Lab Reports / Test Results', 'Referral Letter from Doctor'];
+
+                        const allDocs = [...mandatory.map(d => ({ name: d, req: true })), ...optional.map(d => ({ name: d, req: false }))];
+
+                        return (
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 1.5 }}>
+                                    {editCaseId ? 'Upload Missing/New Documents' : 'Upload Application Documents'}
                                 </Typography>
-                                <Button variant="outlined" component="label" sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2 }}>
-                                    Browse Files
-                                    <input type="file" hidden accept=".pdf" multiple onChange={handleCustomFileSelect} />
-                                </Button>
+                                <Typography variant="caption" sx={{ color: '#ef4444', fontWeight: 700, display: 'block', mb: 2 }}>
+                                    {uploadError ? `⚠️ ${uploadError}` : ''}
+                                </Typography>
+                                
+                                <Grid container spacing={0} sx={{ mt: 1 }}>
+                                    {allDocs.map((doc, idx) => {
+                                        const uploadedFile = selectedFiles.find(f => f.docCategory === doc.name);
+                                        const isPhoto = doc.name.toLowerCase().includes('photo');
+                                        return (
+                                            <Grid item xs={6} key={idx} sx={{ pr: 1, pb: 1 }}>
+                                                <Box sx={{ mb: 0 }}>
+                                                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#475569', display: 'block', mb: 0.5 }}>
+                                                        {doc.name} <span style={{color: '#94a3b8', fontWeight: 500}}>({isPhoto ? '.png, .jpg' : '.pdf'})</span> {doc.req && <span style={{color: '#ef4444'}}>*</span>}
+                                                    </Typography>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <Button variant="outlined" component="label" size="small" sx={{ textTransform: 'none', borderRadius: 1.5, py: 0.25, px: 1 }}>
+                                                            {uploadedFile ? 'Change File' : 'Choose File'}
+                                                            <input type="file" hidden accept={isPhoto ? ".png, .jpg, .jpeg" : ".pdf"} onChange={(e) => {
+                                                                const file = e.target.files[0];
+                                                                if (!file) return;
+                                                                setUploadError('');
+                                                                if (isPhoto) {
+                                                                    if (!file.name.toLowerCase().match(/\.(png|jpe?g)$/)) {
+                                                                        setUploadError('Only PNG/JPEG allowed for photo!');
+                                                                        return;
+                                                                    }
+                                                                } else {
+                                                                    if (!file.name.toLowerCase().endsWith('.pdf')) {
+                                                                        setUploadError('Only PDF files are allowed!');
+                                                                        return;
+                                                                    }
+                                                                }
+                                                                if (file.size > 5 * 1024 * 1024) {
+                                                                    setUploadError('Max file size is 5MB!');
+                                                                    return;
+                                                                }
+                                                                setSelectedFiles(prev => {
+                                                                    const newFiles = prev.filter(f => f.docCategory !== doc.name);
+                                                                    file.docCategory = doc.name;
+                                                                    return [...newFiles, file];
+                                                                });
+                                                            }} />
+                                                        </Button>
+                                                        {uploadedFile && (
+                                                            <>
+                                                                <CheckCircleIcon sx={{ color: '#16a34a', fontSize: 18 }} />
+                                                                <Typography variant="caption" sx={{ color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 100 }}>
+                                                                    {uploadedFile.name}
+                                                                </Typography>
+                                                            </>
+                                                        )}
+                                                    </Box>
+                                                </Box>
+                                            </Grid>
+                                        );
+                                    })}
+                                </Grid>
                             </Box>
-                            {uploadError && (
-                                <Typography variant="caption" sx={{ color: '#ef4444', fontWeight: 700, display: 'block', textAlign: 'center', mb: 2 }}>
-                                    ⚠️ {uploadError}
-                                </Typography>
-                            )}
-                            {selectedFiles.length > 0 && (
-                                <Box sx={{ mb: 1 }}>
-                                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#475569', display: 'block', mb: 1 }}>Selected New Files ({selectedFiles.length}):</Typography>
-                                    <Stack spacing={1}>
-                                        {selectedFiles.map((f, i) => (
-                                            <Box key={i} sx={{ p: 1, bgcolor: '#e0e7ff', borderRadius: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <Typography variant="caption" sx={{ fontWeight: 600 }}>{f.name}</Typography>
-                                                <IconButton size="small" onClick={() => removeSelectedFile(f.name)} sx={{ p: 0.5, color: '#ef4444' }}>
-                                                    <DeleteIcon fontSize="small" />
-                                                </IconButton>
-                                            </Box>
-                                        ))}
-                                    </Stack>
-                                </Box>
-                            )}
-                        </>
-                    )}
+                        );
+                    })()}
 
                 </DialogContent>
                 <DialogActions sx={{ px: 3, pb: 3, justifyContent: 'space-between' }}>
@@ -2124,18 +2100,27 @@ export default function Applications() {
                     {/* Reply input */}
                     <Box sx={{ p: 2, borderTop: '1px solid #e2e8f0', bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
                         <Stack direction="row" spacing={1} alignItems="flex-end">
-                            <TextField
-                                fullWidth multiline maxRows={3} size="small"
-                                placeholder="Add a comment..."
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
-                                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendComment(); } }}
-                                sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: darkMode ? '#1e293b' : '#fff' } }}
-                            />
-                            <IconButton onClick={handleSendComment} disabled={sendingComment || !newComment.trim()}
-                                sx={{ bgcolor: '#9333ea', color: '#fff', '&:hover': { bgcolor: '#7e22ce' }, '&:disabled': { bgcolor: '#e2e8f0', color: '#94a3b8' }, borderRadius: 2, width: 40, height: 40, flexShrink: 0 }}>
-                                {sendingComment ? <CircularProgress size={18} sx={{ color: '#fff' }} /> : <SendIcon fontSize="small" />}
-                            </IconButton>
+                            {(() => {
+                                const hasUnderwriterComment = threadComments.some(msg => msg.role_id !== 5);
+                                const disableBrokerComment = isBroker && !hasUnderwriterComment;
+                                return (
+                                    <>
+                                        <TextField
+                                            fullWidth multiline maxRows={3} size="small"
+                                            disabled={disableBrokerComment}
+                                            placeholder={disableBrokerComment ? "Waiting for underwriter's remark..." : "Add a comment..."}
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !disableBrokerComment) { e.preventDefault(); handleSendComment(); } }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: darkMode ? '#1e293b' : (disableBrokerComment ? '#f1f5f9' : '#fff') } }}
+                                        />
+                                        <IconButton onClick={handleSendComment} disabled={disableBrokerComment || sendingComment || !newComment.trim()}
+                                            sx={{ bgcolor: '#9333ea', color: '#fff', '&:hover': { bgcolor: '#7e22ce' }, '&:disabled': { bgcolor: '#e2e8f0', color: '#94a3b8' }, borderRadius: 2, width: 40, height: 40, flexShrink: 0 }}>
+                                            {sendingComment ? <CircularProgress size={18} sx={{ color: '#fff' }} /> : <SendIcon fontSize="small" />}
+                                        </IconButton>
+                                    </>
+                                );
+                            })()}
                         </Stack>
                     </Box>
                 </DialogContent>

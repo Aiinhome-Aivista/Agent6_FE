@@ -152,16 +152,16 @@ export default function HistoricalCases() {
                     <Table>
                         <TableHead>
                             <TableRow sx={{ bgcolor: themeColors.tableHeadBg }}>
-                                {(isBroker ? ['Case ID', 'Applicant', 'Policy', 'Assigned To', 'Status', 'Date'] : ['Case ID', 'Applicant', 'Policy', 'Status', 'Date']).map(h => (
+                                {['Case ID', 'Applicant', 'Policy', 'Assigned To', 'Status', 'Date'].map(h => (
                                     <TableCell key={h} sx={{ fontWeight: 700, color: themeColors.tableHeadText, borderBottom: themeColors.tableCellBorder, fontSize: '0.78rem', textTransform: 'uppercase' }}>{h}</TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {loading ? (
-                                <TableRow><TableCell colSpan={isBroker ? 7 : 6} align="center" sx={{ py: 8 }}><CircularProgress /></TableCell></TableRow>
+                                <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8 }}><CircularProgress /></TableCell></TableRow>
                             ) : cases.length === 0 ? (
-                                <TableRow><TableCell colSpan={isBroker ? 7 : 6} align="center" sx={{ py: 8, color: themeColors.textSecondary }}>
+                                <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8, color: themeColors.textSecondary }}>
                                     No historical cases found. Try adjusting your filters.
                                 </TableCell></TableRow>
                             ) : cases.map(row => (
@@ -169,9 +169,7 @@ export default function HistoricalCases() {
                                     <TableCell sx={{ fontWeight: 700, color: '#2563eb', fontFamily: 'monospace', borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem' }}>{row.case_number}</TableCell>
                                     <TableCell sx={{ fontWeight: 700, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{row.applicant_name}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.85rem' }}>{row.policy_type}</TableCell>
-                                    {isBroker && (
-                                        <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>{row.assigned_user || 'Pending Assignment'}</TableCell>
-                                    )}
+                                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>{row.assigned_user || 'Pending Assignment'}</TableCell>
                                     <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>{statusChip(row.status)}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>
                                         {new Date(row.created_at).toLocaleDateString('en-IN')}
