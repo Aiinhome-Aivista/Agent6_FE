@@ -1319,7 +1319,216 @@ export default function Applications() {
                                                             </Box>
                                                         )}
 
-                                                        {/* Risk Score Formula Table Moved to Bottom Section */}
+                                                        {riskData.past_cases_comparison && (
+                                                            <Box sx={{ p: 3, bgcolor: '#fafafa', border: '1px solid #e5e7eb', borderRadius: 2, mt: 2 }}>
+                                                                <Typography variant="overline" sx={{ fontWeight: 800, color: '#374151', display: 'block', mb: 2, fontSize: '0.8rem', letterSpacing: 0.5 }}>
+                                                                    Actuarial Historical Comparison
+                                                                </Typography>
+                                                                
+                                                                {riskData.past_cases_comparison.compared_cases_count > 0 ? (
+                                                                    <Box>
+                                                                        <Grid container spacing={3} sx={{ mb: 3 }}>
+                                                                            {(() => {
+                                                                                const pcc = riskData.past_cases_comparison;
+                                                                                const total = pcc.compared_cases_count;
+                                                                                const approvedCount = pcc.compared_cases.filter(c => c.status.toLowerCase() === 'approved').length;
+                                                                                const rejectedCount = pcc.compared_cases.filter(c => c.status.toLowerCase() === 'rejected').length;
+                                                                                const acceptTooltip = (
+                                                                                    <Box sx={{ p: 1 }}>
+                                                                                        <Typography variant="caption" sx={{ fontWeight: 800, display: 'block', mb: 0.5 }}>How is this calculated?</Typography>
+                                                                                        <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                                            Approved Cases ÷ Total Similar Cases × 100
+                                                                                        </Typography>
+                                                                                        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, fontFamily: 'monospace', bgcolor: 'rgba(255,255,255,0.15)', px: 1, py: 0.5, borderRadius: 1 }}>
+                                                                                            {approvedCount} Approved ÷ {total} Total × 100 = {pcc.acceptance_probability}%
+                                                                                        </Typography>
+                                                                                        <Typography variant="caption" sx={{ display: 'block', mt: 1, opacity: 0.8 }}>
+                                                                                            Only cases with similarity ≥ 50% are included.
+                                                                                        </Typography>
+                                                                                    </Box>
+                                                                                );
+                                                                                const rejectTooltip = (
+                                                                                    <Box sx={{ p: 1 }}>
+                                                                                        <Typography variant="caption" sx={{ fontWeight: 800, display: 'block', mb: 0.5 }}>How is this calculated?</Typography>
+                                                                                        <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                                            Rejected Cases ÷ Total Similar Cases × 100
+                                                                                        </Typography>
+                                                                                        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, fontFamily: 'monospace', bgcolor: 'rgba(255,255,255,0.15)', px: 1, py: 0.5, borderRadius: 1 }}>
+                                                                                            {rejectedCount} Rejected ÷ {total} Total × 100 = {pcc.rejection_probability}%
+                                                                                        </Typography>
+                                                                                        <Typography variant="caption" sx={{ display: 'block', mt: 1, opacity: 0.8 }}>
+                                                                                            Only cases with similarity ≥ 50% are included.
+                                                                                        </Typography>
+                                                                                    </Box>
+                                                                                );
+                                                                                return (
+                                                                                    <>
+                                                                                        <Grid item xs={12} sm={6}>
+                                                                                            <Tooltip title={acceptTooltip} arrow placement="top" componentsProps={{ tooltip: { sx: { bgcolor: '#065f46', maxWidth: 280, fontSize: '0.75rem' } }, arrow: { sx: { color: '#065f46' } } }}>
+                                                                                                <Box sx={{ p: 2, bgcolor: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'box-shadow 0.2s', '&:hover': { boxShadow: '0 4px 16px rgba(16,185,129,0.25)' } }}>
+                                                                                                    <Typography variant="caption" sx={{ color: '#047857', fontWeight: 700, mb: 1 }}>Acceptance Probability</Typography>
+                                                                                                    <Typography variant="h4" sx={{ color: '#065f46', fontWeight: 900 }}>
+                                                                                                        {pcc.acceptance_probability}%
+                                                                                                    </Typography>
+                                                                                                </Box>
+                                                                                            </Tooltip>
+                                                                                        </Grid>
+                                                                                        <Grid item xs={12} sm={6}>
+                                                                                            <Tooltip title={rejectTooltip} arrow placement="top" componentsProps={{ tooltip: { sx: { bgcolor: '#991b1b', maxWidth: 280, fontSize: '0.75rem' } }, arrow: { sx: { color: '#991b1b' } } }}>
+                                                                                                <Box sx={{ p: 2, bgcolor: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'box-shadow 0.2s', '&:hover': { boxShadow: '0 4px 16px rgba(239,68,68,0.25)' } }}>
+                                                                                                    <Typography variant="caption" sx={{ color: '#b91c1c', fontWeight: 700, mb: 1 }}>Rejection Probability</Typography>
+                                                                                                    <Typography variant="h4" sx={{ color: '#991b1b', fontWeight: 900 }}>
+                                                                                                        {pcc.rejection_probability}%
+                                                                                                    </Typography>
+                                                                                                </Box>
+                                                                                            </Tooltip>
+                                                                                        </Grid>
+                                                                                    </>
+                                                                                );
+                                                                            })()}
+                                                                        </Grid>
+
+                                                                        <Box sx={{ mb: 2 }}>
+                                                                            <Typography variant="body2" sx={{ fontWeight: 700, mb: 1.5, color: '#4b5563' }}>
+                                                                                Compared Past Cases ({riskData.past_cases_comparison.compared_cases_count})
+                                                                            </Typography>
+                                                                            <Table size="small" sx={{ border: '1px solid #f3f4f6', borderRadius: 1.5, overflow: 'hidden' }}>
+                                                                                <TableHead sx={{ bgcolor: '#f9fafb' }}>
+                                                                                    <TableRow>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Case Number</TableCell>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Applicant</TableCell>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Medical Condition</TableCell>
+                                                                                        {/* <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Requested Coverage</TableCell> */}
+                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }} align="right">Similarity Match</TableCell>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }} align="center">Decision</TableCell>
+                                                                                    </TableRow>
+                                                                                </TableHead>
+                                                                                <TableBody>
+                                                                                    {riskData.past_cases_comparison.compared_cases.map((pastCase, idx) => (
+                                                                                        <TableRow key={idx} sx={{ '&:hover': { bgcolor: '#f9fafb', transition: 'background-color 0.2s' } }}>
+                                                                                            <TableCell sx={{ fontFamily: 'monospace', fontWeight: 600, py: 1 }}>{pastCase.case_number}</TableCell>
+                                                                                            <TableCell sx={{ fontWeight: 500, py: 1 }}>{pastCase.applicant_name}</TableCell>
+                                                                                            <TableCell sx={{ color: '#4b5563', py: 1 }}>{pastCase.medical_condition}</TableCell>
+                                                                                            <TableCell align="right" sx={{ py: 1 }}>
+                                                                                                <Tooltip 
+                                                                                                    title={
+                                                                                                        pastCase.similarity_breakdown ? (
+                                                                                                            <Box sx={{ p: 1.5 }}>
+                                                                                                                <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1, borderBottom: '1px solid rgba(255,255,255,0.2)', pb: 0.5, fontSize: '0.8rem' }}>
+                                                                                                                    Similarity Breakdown: {pastCase.similarity_score}%
+                                                                                                                </Typography>
+                                                                                                                <Grid container spacing={1} sx={{ fontSize: '0.75rem', minWidth: 260 }}>
+                                                                                                                    <Grid item xs={8}>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', fontWeight: 600 }}>Medical Condition (max 35%):</Typography>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', opacity: 0.85, fontSize: '0.65rem' }}>
+                                                                                                                            {pastCase.similarity_breakdown.medical_condition.detail}
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+                                                                                                                    <Grid item xs={4} sx={{ textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#a7f3d0' }}>
+                                                                                                                            +{pastCase.similarity_breakdown.medical_condition.score}%
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+                                                                                                                    
+                                                                                                                    <Grid item xs={8}>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', fontWeight: 600 }}>Policy Type Match (max 25%):</Typography>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', opacity: 0.85, fontSize: '0.65rem' }}>
+                                                                                                                            {pastCase.similarity_breakdown.policy_type.detail}
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+                                                                                                                    <Grid item xs={4} sx={{ textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#a7f3d0' }}>
+                                                                                                                            +{pastCase.similarity_breakdown.policy_type.score}%
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+
+                                                                                                                    <Grid item xs={8}>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', fontWeight: 600 }}>Age Proximity (max 15%):</Typography>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', opacity: 0.85, fontSize: '0.65rem' }}>
+                                                                                                                            {pastCase.similarity_breakdown.age.detail}
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+                                                                                                                    <Grid item xs={4} sx={{ textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#a7f3d0' }}>
+                                                                                                                            +{pastCase.similarity_breakdown.age.score}%
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+
+                                                                                                                    <Grid item xs={8}>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', fontWeight: 600 }}>Application Type (max 15%):</Typography>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', opacity: 0.85, fontSize: '0.65rem' }}>
+                                                                                                                            {pastCase.similarity_breakdown.application_type.detail}
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+                                                                                                                    <Grid item xs={4} sx={{ textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#a7f3d0' }}>
+                                                                                                                            +{pastCase.similarity_breakdown.application_type.score}%
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+
+                                                                                                                    <Grid item xs={8}>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', fontWeight: 600 }}>Coverage Proximity (max 10%):</Typography>
+                                                                                                                        <Typography variant="caption" sx={{ display: 'block', opacity: 0.85, fontSize: '0.65rem' }}>
+                                                                                                                            {pastCase.similarity_breakdown.coverage.detail}
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+                                                                                                                    <Grid item xs={4} sx={{ textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#a7f3d0' }}>
+                                                                                                                            +{pastCase.similarity_breakdown.coverage.score}%
+                                                                                                                        </Typography>
+                                                                                                                    </Grid>
+                                                                                                                </Grid>
+                                                                                                            </Box>
+                                                                                                        ) : (
+                                                                                                            "Hover to see breakdown details"
+                                                                                                        )
+                                                                                                    }
+                                                                                                    arrow
+                                                                                                    placement="left"
+                                                                                                    componentsProps={{
+                                                                                                        tooltip: {
+                                                                                                            sx: {
+                                                                                                                bgcolor: '#1e293b',
+                                                                                                                color: '#f8fafc',
+                                                                                                                boxShadow: 3,
+                                                                                                                maxWidth: 320,
+                                                                                                                borderRadius: 1.5,
+                                                                                                                border: '1px solid #475569'
+                                                                                                            }
+                                                                                                        },
+                                                                                                        arrow: {
+                                                                                                            sx: {
+                                                                                                                color: '#1e293b'
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <Box component="span" sx={{ fontWeight: 700, color: '#4f46e5', cursor: 'pointer', textDecoration: 'underline dotted #818cf8', '&:hover': { color: '#3730a3' } }}>
+                                                                                                        {pastCase.similarity_score}%
+                                                                                                    </Box>
+                                                                                                </Tooltip>
+                                                                                            </TableCell>
+                                                                                            <TableCell align="center" sx={{ py: 1 }}>
+                                                                                                <Chip 
+                                                                                                    label={pastCase.status} 
+                                                                                                    size="small" 
+                                                                                                    color={pastCase.status.toLowerCase() === 'approved' ? 'success' : 'error'} 
+                                                                                                    sx={{ fontWeight: 700, fontSize: '0.7rem', height: 20 }}
+                                                                                                />
+                                                                                            </TableCell>
+                                                                                        </TableRow>
+                                                                                    ))}
+                                                                                </TableBody>
+                                                                            </Table>
+                                                                        </Box>
+                                                                    </Box>
+                                                                ) : (
+                                                                    <Typography variant="body2" sx={{ color: '#6b7280', fontStyle: 'italic', textAlign: 'center', py: 2 }}>
+                                                                        No matching historical cases found in the database yet.
+                                                                    </Typography>
+                                                                )}
+                                                            </Box>
+                                                        )}
 
                                                         <Grid container spacing={2}>
                                                             <Grid xs={12} sm={4}>
