@@ -611,7 +611,7 @@ export default function Applications() {
                         <TableHead>
                             <TableRow sx={{ bgcolor: themeColors.tableHeadBg }}>
                                 {(isBroker ? ['Case ID', 'Applicant', 'Policy', 'Assigned To', 'Status', 'Date', 'Actions'] : ['Case ID', 'Applicant', 'Policy', 'Status', 'Date', 'Actions']).map(h => (
-                                    <TableCell key={h} sx={{ fontWeight: 700, color: themeColors.tableHeadText, borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem', textTransform: 'uppercase' }}>{h}</TableCell>
+                                    <TableCell key={h} align={h === 'Actions' ? 'center' : 'left'} sx={{ fontWeight: 700, color: themeColors.tableHeadText, borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem', textTransform: 'uppercase' }}>{h}</TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
@@ -665,7 +665,7 @@ export default function Applications() {
                                         </TableCell>
                                     )} */}
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.85rem' }}>{new Date(row.created_at).toLocaleDateString()}</TableCell>
-                                    <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
+                                    <TableCell align="center" sx={{ borderBottom: themeColors.tableCellBorder }}>
                                         {isBroker && (row.status === 'Pending' || row.status === 'Pending Additional Documents' || row.status === 'Rejected') ? (
                                             <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
                                                 <IconButton variant="outlined" color="primary" size="small" onClick={() => {
@@ -686,7 +686,7 @@ export default function Applications() {
                                         ) : (
                                             <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
                                                 {isBroker ? (
-                                                    <Stack direction="row" spacing={0.5}>
+                                                    <Stack direction="row" spacing={0.5} justifyContent="center">
                                                         <Tooltip title="View Application Details">
                                                             <IconButton size="small" color="primary" onClick={() => {
                                                                 if (row.user_id !== user.id) {
@@ -712,7 +712,7 @@ export default function Applications() {
                                                         </Tooltip>
                                                     </Stack>
                                                 ) : (
-                                                    <Stack direction="row" spacing={0.5}>
+                                                    <Stack direction="row" spacing={0.5} justifyContent="center">
                                                         <Tooltip title="Review Case">
                                                             <IconButton size="small"
                                                                 onClick={() => openReview(row)}
@@ -1043,7 +1043,7 @@ export default function Applications() {
                                 <Typography variant="caption" sx={{ color: '#ef4444', fontWeight: 700, display: 'block', mb: 2 }}>
                                     {uploadError ? `⚠️ ${uploadError}` : ''}
                                 </Typography>
-                                
+
                                 <Grid container spacing={0} sx={{ mt: 1 }}>
                                     {allDocs.map((doc, idx) => {
                                         const uploadedFile = selectedFiles.find(f => f.docCategory === doc.name);
@@ -1052,7 +1052,7 @@ export default function Applications() {
                                             <Grid item xs={6} key={idx} sx={{ pr: 1, pb: 1 }}>
                                                 <Box sx={{ mb: 0 }}>
                                                     <Typography variant="caption" sx={{ fontWeight: 700, color: '#475569', display: 'block', mb: 0.5 }}>
-                                                        {doc.name} <span style={{color: '#94a3b8', fontWeight: 500}}>({isPhoto ? '.png, .jpg' : '.pdf'})</span> {doc.req && <span style={{color: '#ef4444'}}>*</span>}
+                                                        {doc.name} <span style={{ color: '#94a3b8', fontWeight: 500 }}>({isPhoto ? '.png, .jpg' : '.pdf'})</span> {doc.req && <span style={{ color: '#ef4444' }}>*</span>}
                                                     </Typography>
                                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                         <Button variant="outlined" component="label" size="small" sx={{ textTransform: 'none', borderRadius: 1.5, py: 0.25, px: 1 }}>
@@ -1248,7 +1248,8 @@ export default function Applications() {
                                         <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800, lineHeight: 1 }}>AI Risk Score</Typography>
                                         <Typography variant="h5" sx={{ fontWeight: 900, color: riskData.risk_score <= 20 ? '#16a34a' : riskData.risk_score <= 40 ? '#d97706' : '#ef4444', lineHeight: 1 }}>
                                             {(() => {
-                                                const computedScore = riskData.findings?.breakdown ? riskData.findings.breakdown.reduce((sum, b) => sum + (b.weighted_score || 0), 0) : (riskData.findings?.risk_score ?? riskData.risk_score ?? 0);
+                                                let computedScore = riskData.findings?.breakdown ? riskData.findings.breakdown.reduce((sum, b) => sum + (b.weighted_score || 0), 0) : (riskData.findings?.risk_score ?? riskData.risk_score ?? 0);
+                                                computedScore = Math.min(100, Math.max(0, computedScore));
                                                 return computedScore % 1 === 0 ? computedScore.toFixed(0) : computedScore.toFixed(1);
                                             })()}<Box component="span" sx={{ fontSize: '0.9rem', color: '#94a3b8' }}>/100</Box>
                                         </Typography>
