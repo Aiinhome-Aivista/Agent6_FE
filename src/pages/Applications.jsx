@@ -33,6 +33,7 @@ import SendIcon from '@mui/icons-material/Send';
 import api from '../api';
 
 const resolveCitationToFile = (citationStr, uploadedDocs) => {
+    citationStr = citationStr.replace(/\*/g, '').trim();
     if (!uploadedDocs || uploadedDocs.length === 0) return citationStr;
     const lowerCitation = citationStr.toLowerCase();
 
@@ -572,68 +573,29 @@ export default function Applications() {
         <Box sx={{ pb: 6 }}>
             <Card sx={{ borderRadius: 3, boxShadow: '0 4px 24px rgba(0,0,0,0.06)', border: themeColors.border, bgcolor: themeColors.cardBg, color: themeColors.textPrimary, transition: 'all 0.2s ease' }}>
                 <Box sx={{ p: 3, borderBottom: themeColors.border }}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2} sx={{ flexGrow: 1 }}>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                            <AssignmentIcon sx={{ color: '#3b82f6' }} />
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2} sx={{ width: '100%' }}>
+                        <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="h6" sx={{ fontWeight: 800, color: themeColors.textPrimary }}>
                                 {isBroker ? 'My Applications' : (isAdmin ? 'Manage Cases' : 'Case Queue')}
                             </Typography>
-                            <Chip label={`${filteredCases.length} cases`} size="small" sx={{ bgcolor: '#eff6ff', color: '#2563eb', fontWeight: 700, fontSize: '0.72rem' }} />
                         </Stack>
 
-                        <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
-                            {/* Search */}
-                            <TextField
-                                size="small"
-                                placeholder="Search case / applicant / UW..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                InputProps={{ startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} /> }}
-                                sx={{ width: 240, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc' } }}
-                            />
-
-                            {/* Status filter */}
-                            <FormControl size="small" sx={{ minWidth: 150 }}>
-                                <InputLabel>Status</InputLabel>
-                                <Select value={filterStatus} label="Status" onChange={(e) => setFilterStatus(e.target.value)}
-                                    sx={{ borderRadius: 2, bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc' }}>
-                                    <MenuItem value="">All Statuses</MenuItem>
-                                    <MenuItem value="Submitted">Submitted</MenuItem>
-                                    <MenuItem value="Underwriter Review">Underwriter Review</MenuItem>
-                                    <MenuItem value="Pending Additional Documents">Pending Docs</MenuItem>
-                                    <MenuItem value="Referred">Referred</MenuItem>
-                                    <MenuItem value="Risk Analysis In Progress">In Progress</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {/* Policy Type filter */}
-                            <FormControl size="small" sx={{ minWidth: 160 }}>
-                                <InputLabel>Policy Type</InputLabel>
-                                <Select value={filterPolicyType} label="Policy Type" onChange={(e) => setFilterPolicyType(e.target.value)}
-                                    sx={{ borderRadius: 2, bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc' }}>
-                                    <MenuItem value="">All Types</MenuItem>
-                                    <MenuItem value="Health Insurance">Health Insurance</MenuItem>
-                                    <MenuItem value="Life Insurance">Life Insurance</MenuItem>
-                                    <MenuItem value="Auto Insurance">Auto Insurance</MenuItem>
-                                    <MenuItem value="Property Insurance">Property Insurance</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {/* Reset filters */}
-                            {(filterStatus || filterPolicyType || searchQuery) && (
-                                <Button size="small" onClick={() => { setFilterStatus(''); setFilterPolicyType(''); setSearchQuery(''); }}
-                                    sx={{ fontWeight: 700, color: '#64748b', fontSize: '0.75rem', textTransform: 'none', px: 1 }}>
-                                    ✕ Reset
-                                </Button>
-                            )}
-
-                            {/* Refresh */}
+                        <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" sx={{ ml: 'auto' }}>
                             <Tooltip title="Refresh Cases">
                                 <IconButton onClick={handleRefreshCases} disabled={loading}
                                     sx={{ color: '#3b82f6', bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' }, width: 34, height: 34 }}>
                                     <RefreshIcon sx={{ fontSize: 18, animation: refreshingCases ? 'spin 1s linear infinite' : 'none', '@keyframes spin': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } } }} />
                                 </IconButton>
                             </Tooltip>
+
+                            {/* Search */}
+                            <TextField
+                                size="small"
+                                placeholder="Search here..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                sx={{ width: 240, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc' } }}
+                            />
 
                             {isBroker && (
                                 <Button variant="contained" startIcon={<PostAddIcon />} onClick={handleNewApplicationClick}
@@ -655,9 +617,9 @@ export default function Applications() {
                         </TableHead>
                         <TableBody>
                             {loading ? (
-                                <TableRow><TableCell colSpan={7} align="center" sx={{ py: 8, borderBottom: themeColors.tableCellBorder }}><CircularProgress /></TableCell></TableRow>
+                                <TableRow><TableCell colSpan={isBroker ? 7 : 6} align="center" sx={{ py: 8, borderBottom: themeColors.tableCellBorder }}><CircularProgress /></TableCell></TableRow>
                             ) : filteredCases.length === 0 ? (
-                                <TableRow><TableCell colSpan={7} align="center" sx={{ py: 8, color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>
+                                <TableRow><TableCell colSpan={isBroker ? 7 : 6} align="center" sx={{ py: 8, color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>
                                     {searchQuery ? 'No cases match your search query.' : (isBroker ? 'No cases yet — click "New Application" above!' : 'Queue is empty.')}
                                 </TableCell></TableRow>
                             ) : filteredCases.map(row => (
@@ -2137,27 +2099,21 @@ export default function Applications() {
                         ) : threadComments.map((msg, idx) => {
                             const isMe = msg.user_id === user?.id;
                             const isBrokerMsg = msg.role_id === 5;
-                            const bubbleColor = isMe
-                                ? (darkMode ? '#3b82f6' : '#2563eb')
-                                : (darkMode ? '#334155' : '#f1f5f9');
-                            const textColor = isMe ? '#fff' : (darkMode ? '#f1f5f9' : '#1e293b');
                             const roleColor = isBrokerMsg ? '#16a34a' : '#9333ea';
                             return (
-                                <Box key={msg.id} sx={{ display: 'flex', flexDirection: isMe ? 'row-reverse' : 'row', gap: 1, alignItems: 'flex-end' }}>
-                                    <Avatar sx={{ width: 30, height: 30, bgcolor: roleColor, fontSize: '0.75rem', fontWeight: 700, flexShrink: 0 }}>
+                                <Box key={msg.id} sx={{ display: 'flex', gap: 2, p: 2, bgcolor: darkMode ? '#1e293b' : '#f8fafc', borderRadius: 2, border: '1px solid', borderColor: darkMode ? '#334155' : '#e2e8f0' }}>
+                                    <Avatar sx={{ width: 36, height: 36, bgcolor: roleColor, fontSize: '0.9rem', fontWeight: 700, flexShrink: 0 }}>
                                         {(msg.author_name || 'U').charAt(0).toUpperCase()}
                                     </Avatar>
-                                    <Box sx={{ maxWidth: '75%' }}>
-                                        <Stack direction={isMe ? 'row-reverse' : 'row'} spacing={0.5} alignItems="center" sx={{ mb: 0.3 }}>
-                                            <Typography sx={{ fontWeight: 700, fontSize: '0.75rem', color: roleColor }}>{msg.author_name}</Typography>
-                                            <Chip label={msg.role_label} size="small" sx={{ height: 16, fontSize: '0.6rem', bgcolor: `${roleColor}15`, color: roleColor, fontWeight: 700 }} />
+                                    <Box sx={{ flex: 1 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
+                                            <Typography sx={{ fontWeight: 800, fontSize: '0.85rem', color: themeColors.textPrimary }}>{msg.author_name}</Typography>
+                                            <Chip label={msg.role_label} size="small" sx={{ height: 18, fontSize: '0.65rem', bgcolor: `${roleColor}15`, color: roleColor, fontWeight: 700 }} />
+                                            <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.75rem', ml: 'auto !important' }}>
+                                                {new Date(msg.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                            </Typography>
                                         </Stack>
-                                        <Box sx={{ bgcolor: bubbleColor, color: textColor, px: 2, py: 1.2, borderRadius: isMe ? '12px 12px 4px 12px' : '12px 12px 12px 4px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', wordBreak: 'break-word' }}>
-                                            <Typography variant="body2" sx={{ color: textColor, lineHeight: 1.5 }}>{msg.comment_text}</Typography>
-                                        </Box>
-                                        <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.68rem', display: 'block', mt: 0.3, textAlign: isMe ? 'right' : 'left' }}>
-                                            {new Date(msg.created_at).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: themeColors.textSecondary, lineHeight: 1.6, wordBreak: 'break-word', mt: 0.5 }}>{msg.comment_text}</Typography>
                                     </Box>
                                 </Box>
                             );
@@ -2170,7 +2126,7 @@ export default function Applications() {
                         <Stack direction="row" spacing={1} alignItems="flex-end">
                             <TextField
                                 fullWidth multiline maxRows={3} size="small"
-                                placeholder="Type a message..."
+                                placeholder="Add a comment..."
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendComment(); } }}

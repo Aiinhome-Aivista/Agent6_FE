@@ -7,6 +7,7 @@ import {
     Divider, LinearProgress
 } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import TimelineIcon from '@mui/icons-material/Timeline';
@@ -22,14 +23,14 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import api from '../api';
 
 const EVENT_ICON_MAP = {
-    case_created:       { icon: <CreateIcon fontSize="small" />,      color: '#3b82f6', bg: '#eff6ff' },
-    document_uploaded:  { icon: <UploadFileIcon fontSize="small" />,  color: '#8b5cf6', bg: '#f5f3ff' },
-    risk_analyzed:      { icon: <PsychologyIcon fontSize="small" />,  color: '#7c3aed', bg: '#fdf4ff' },
-    comment_added:      { icon: <AddCommentIcon fontSize="small" />,  color: '#0891b2', bg: '#ecfeff' },
+    case_created: { icon: <CreateIcon fontSize="small" />, color: '#3b82f6', bg: '#eff6ff' },
+    document_uploaded: { icon: <UploadFileIcon fontSize="small" />, color: '#8b5cf6', bg: '#f5f3ff' },
+    risk_analyzed: { icon: <PsychologyIcon fontSize="small" />, color: '#7c3aed', bg: '#fdf4ff' },
+    comment_added: { icon: <AddCommentIcon fontSize="small" />, color: '#0891b2', bg: '#ecfeff' },
     'decision_approve': { icon: <CheckCircleIcon fontSize="small" />, color: '#16a34a', bg: '#f0fdf4' },
-    'decision_reject':  { icon: <CancelIcon fontSize="small" />,      color: '#dc2626', bg: '#fef2f2' },
-    'decision_escalate':{ icon: <GavelIcon fontSize="small" />,       color: '#d97706', bg: '#fffbeb' },
-    default:            { icon: <GavelIcon fontSize="small" />,       color: '#64748b', bg: '#f8fafc' },
+    'decision_reject': { icon: <CancelIcon fontSize="small" />, color: '#dc2626', bg: '#fef2f2' },
+    'decision_escalate': { icon: <GavelIcon fontSize="small" />, color: '#d97706', bg: '#fffbeb' },
+    default: { icon: <GavelIcon fontSize="small" />, color: '#64748b', bg: '#f8fafc' },
 };
 
 function getEventStyle(eventType) {
@@ -44,31 +45,33 @@ function formatTs(ts) {
 
 export default function HistoricalCases() {
     const { themeColors, darkMode } = useOutletContext();
+    const { user } = useAuth();
+    const isBroker = user?.role_id === 5;
 
-    const [cases, setCases]         = useState([]);
-    const [loading, setLoading]     = useState(false);
+    const [cases, setCases] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     // Filters
-    const [search, setSearch]           = useState('');
-    const [filterStatus, setFilterStatus]       = useState('');
-    const [filterPolicy, setFilterPolicy]       = useState('');
-    const [filterDateFrom, setFilterDateFrom]   = useState('');
-    const [filterDateTo, setFilterDateTo]       = useState('');
+    const [search, setSearch] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
+    const [filterPolicy, setFilterPolicy] = useState('');
+    const [filterDateFrom, setFilterDateFrom] = useState('');
+    const [filterDateTo, setFilterDateTo] = useState('');
 
     // Timeline modal
-    const [timelineCase, setTimelineCase]       = useState(null);
-    const [timelineEvents, setTimelineEvents]   = useState([]);
+    const [timelineCase, setTimelineCase] = useState(null);
+    const [timelineEvents, setTimelineEvents] = useState([]);
     const [timelineLoading, setTimelineLoading] = useState(false);
 
     const fetchCases = useCallback(async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            if (search)         params.append('search', search);
-            if (filterStatus)   params.append('status', filterStatus);
-            if (filterPolicy)   params.append('policy_type', filterPolicy);
+            if (search) params.append('search', search);
+            if (filterStatus) params.append('status', filterStatus);
+            if (filterPolicy) params.append('policy_type', filterPolicy);
             if (filterDateFrom) params.append('date_from', filterDateFrom);
-            if (filterDateTo)   params.append('date_to', filterDateTo);
+            if (filterDateTo) params.append('date_to', filterDateTo);
             const res = await api.get(`/cases/historical?${params.toString()}`);
             setCases(res.data);
         } catch (e) {
@@ -116,81 +119,30 @@ export default function HistoricalCases() {
 
                 {/* ── Header ── */}
                 <Box sx={{ p: 3, borderBottom: themeColors.border }}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2}>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                            <HistoryIcon sx={{ color: '#3b82f6' }} />
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2} sx={{ width: '100%' }}>
+                        <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="h6" sx={{ fontWeight: 800, color: themeColors.textPrimary }}>
                                 Historical Cases
                             </Typography>
-                            <Chip label={`${cases.length} records`} size="small" sx={{ bgcolor: '#eff6ff', color: '#2563eb', fontWeight: 700 }} />
                         </Stack>
 
-                        <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
-                            {/* Search */}
-                            <TextField
-                                size="small"
-                                placeholder="Search case / applicant..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                InputProps={{ startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} /> }}
-                                sx={{ width: 260, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc' } }}
-                            />
-
-                            {/* Status filter */}
-                            <FormControl size="small" sx={{ minWidth: 160 }}>
-                                <InputLabel>Status</InputLabel>
-                                <Select value={filterStatus} label="Status" onChange={(e) => setFilterStatus(e.target.value)} sx={{ borderRadius: 2 }}>
-                                    <MenuItem value="">All</MenuItem>
-                                    <MenuItem value="Approved">Approved</MenuItem>
-                                    <MenuItem value="Rejected">Rejected</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {/* Policy Type filter */}
-                            <FormControl size="small" sx={{ minWidth: 180 }}>
-                                <InputLabel>Policy Type</InputLabel>
-                                <Select value={filterPolicy} label="Policy Type" onChange={(e) => setFilterPolicy(e.target.value)} sx={{ borderRadius: 2 }}>
-                                    <MenuItem value="">All Types</MenuItem>
-                                    <MenuItem value="Health Insurance">Health Insurance</MenuItem>
-                                    <MenuItem value="Life Insurance">Life Insurance</MenuItem>
-                                    <MenuItem value="Auto Insurance">Auto Insurance</MenuItem>
-                                    <MenuItem value="Property Insurance">Property Insurance</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {/* Date From */}
-                            <TextField
-                                size="small" type="date" label="From"
-                                slotProps={{ inputLabel: { shrink: true } }}
-                                value={filterDateFrom}
-                                onChange={(e) => setFilterDateFrom(e.target.value)}
-                                sx={{ width: 160, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                            />
-                            {/* Date To */}
-                            <TextField
-                                size="small" type="date" label="To"
-                                slotProps={{ inputLabel: { shrink: true } }}
-                                value={filterDateTo}
-                                onChange={(e) => setFilterDateTo(e.target.value)}
-                                sx={{ width: 160, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                            />
-
-                            <Button
-                                variant="contained" size="small"
-                                startIcon={<FilterAltIcon />}
-                                onClick={handleSearch}
-                                sx={{ fontWeight: 700, borderRadius: 2, px: 2 }}
-                            >
-                                Apply
-                            </Button>
-
+                        <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" sx={{ ml: 'auto' }}>
                             <Tooltip title="Refresh">
                                 <IconButton onClick={fetchCases} disabled={loading}
                                     sx={{ color: '#3b82f6', bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' }, width: 34, height: 34 }}>
                                     <RefreshIcon sx={{ fontSize: 18, animation: loading ? 'spin 1s linear infinite' : 'none', '@keyframes spin': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } } }} />
                                 </IconButton>
                             </Tooltip>
+
+                            {/* Search */}
+                            <TextField
+                                size="small"
+                                placeholder="Search here..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                sx={{ width: 260, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc' } }}
+                            />
                         </Stack>
                     </Stack>
                 </Box>
@@ -200,16 +152,16 @@ export default function HistoricalCases() {
                     <Table>
                         <TableHead>
                             <TableRow sx={{ bgcolor: themeColors.tableHeadBg }}>
-                                {['Case ID', 'Applicant', 'Policy', 'Type', 'Broker', 'Assigned UW', 'Risk Score', 'Status', 'Closed Date', 'Actions'].map(h => (
+                                {(isBroker ? ['Case ID', 'Applicant', 'Policy', 'Assigned To', 'Status', 'Date'] : ['Case ID', 'Applicant', 'Policy', 'Status', 'Date']).map(h => (
                                     <TableCell key={h} sx={{ fontWeight: 700, color: themeColors.tableHeadText, borderBottom: themeColors.tableCellBorder, fontSize: '0.78rem', textTransform: 'uppercase' }}>{h}</TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {loading ? (
-                                <TableRow><TableCell colSpan={10} align="center" sx={{ py: 8 }}><CircularProgress /></TableCell></TableRow>
+                                <TableRow><TableCell colSpan={isBroker ? 7 : 6} align="center" sx={{ py: 8 }}><CircularProgress /></TableCell></TableRow>
                             ) : cases.length === 0 ? (
-                                <TableRow><TableCell colSpan={10} align="center" sx={{ py: 8, color: themeColors.textSecondary }}>
+                                <TableRow><TableCell colSpan={isBroker ? 7 : 6} align="center" sx={{ py: 8, color: themeColors.textSecondary }}>
                                     No historical cases found. Try adjusting your filters.
                                 </TableCell></TableRow>
                             ) : cases.map(row => (
@@ -217,32 +169,21 @@ export default function HistoricalCases() {
                                     <TableCell sx={{ fontWeight: 700, color: '#2563eb', fontFamily: 'monospace', borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem' }}>{row.case_number}</TableCell>
                                     <TableCell sx={{ fontWeight: 700, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{row.applicant_name}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.85rem' }}>{row.policy_type}</TableCell>
-                                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>{row.application_type}</TableCell>
-                                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>{row.broker_name || '—'}</TableCell>
-                                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>{row.assigned_user || '—'}</TableCell>
-                                    <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
-                                        {row.risk_score != null ? (
-                                            <Box>
-                                                <Typography sx={{ fontWeight: 800, color: riskColor(row.risk_score), fontSize: '0.9rem' }}>
-                                                    {row.risk_score}<Box component="span" sx={{ color: '#94a3b8', fontWeight: 500, fontSize: '0.7rem' }}>/100</Box>
-                                                </Typography>
-                                                <LinearProgress variant="determinate" value={Math.min(row.risk_score, 100)}
-                                                    sx={{ height: 4, borderRadius: 2, bgcolor: '#e2e8f0', '& .MuiLinearProgress-bar': { bgcolor: riskColor(row.risk_score), borderRadius: 2 } }} />
-                                            </Box>
-                                        ) : <Typography sx={{ color: '#94a3b8', fontSize: '0.8rem' }}>N/A</Typography>}
-                                    </TableCell>
+                                    {isBroker && (
+                                        <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>{row.assigned_user || 'Pending Assignment'}</TableCell>
+                                    )}
                                     <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>{statusChip(row.status)}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>
                                         {new Date(row.created_at).toLocaleDateString('en-IN')}
                                     </TableCell>
-                                    <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
+                                    {/* <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
                                         <Tooltip title="View Case Timeline">
                                             <IconButton size="small" onClick={() => openTimeline(row)}
                                                 sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe', color: '#3b82f6', '&:hover': { bgcolor: '#dbeafe' } }}>
                                                 <TimelineIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             ))}
                         </TableBody>
