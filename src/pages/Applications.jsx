@@ -2392,7 +2392,7 @@ export default function Applications() {
                                                 {(evt.actor || 'S').charAt(0).toUpperCase()}
                                             </Avatar>
                                             <Box sx={{ flex: 1, pt: 0.5, pb: 1, px: 2, bgcolor: darkMode ? '#1e293b' : '#f8fafc', borderRadius: 2, border: '1px solid', borderColor: darkMode ? '#334155' : '#e2e8f0' }}>
-                                                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" gap={1}>
+                                                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" gap={1} sx={{ width: '100%' }}>
                                                     <Box>
                                                         <Typography sx={{ fontWeight: 800, color, fontSize: '0.88rem' }}>{evt.title}</Typography>
                                                         {evt.description && (
@@ -2401,7 +2401,7 @@ export default function Applications() {
                                                             </Typography>
                                                         )}
                                                     </Box>
-                                                    <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
+                                                    <Box sx={{ textAlign: 'right', flexShrink: 0, ml: 'auto' }}>
                                                         <Typography variant="caption" sx={{ color: '#94a3b8', display: 'block', fontSize: '0.7rem', fontWeight: 600 }}>
                                                             {new Date(evt.timestamp).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                                         </Typography>

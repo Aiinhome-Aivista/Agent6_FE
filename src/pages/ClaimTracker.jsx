@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Box, Typography, TextField, Button, CircularProgress, Paper, Grid, List, ListItem, ListItemIcon, ListItemText, Chip, Divider, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Select, MenuItem, FormControl, InputLabel, Tooltip, Menu, Stack, Tabs, Tab } from '@mui/material';
+import { Box, Typography, TextField, Button, CircularProgress, Paper, Grid, List, ListItem, ListItemIcon, ListItemText, Chip, Divider, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Select, MenuItem, FormControl, InputLabel, Tooltip, Menu, Stack, Tabs, Tab, Card, TableContainer } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -9,6 +9,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 
@@ -220,136 +221,165 @@ export default function ClaimTracker() {
   });
 
   return (
-    <Box sx={{ width: '100%', color: themeColors.textPrimary }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800 }}>
-          Claim Tracker
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <TextField
-            size="small"
-            placeholder="Search by Aadhaar, PAN, Policy..."
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              if (!e.target.value) {
-                fetchAllClaims();
-              }
-            }}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
-            slotProps={{
-              input: {
-                startAdornment: <SearchIcon sx={{ mr: 0.5, color: themeColors.textSecondary, cursor: 'pointer' }} onClick={handleSearch} />
-              }
-            }}
-            sx={{
-              width: 280,
-              backgroundColor: themeColors.bg,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-                border: themeColors.border,
-              }
-            }}
-          />
-          {!isBroker && (
-            <Button
-              variant="contained"
-              endIcon={<ArrowDropDownIcon />}
-              onClick={handleConnectorClick}
-              sx={{
-                bgcolor: '#2563eb',
-                color: '#fff',
-                fontWeight: 600,
-                px: 3,
-                height: 40,
-                borderRadius: 2,
-                '&:hover': { bgcolor: '#1e40af' }
-              }}
-            >
-              Connector
-            </Button>
-          )}
-          <Menu
-            anchorEl={connectorAnchor}
-            open={Boolean(connectorAnchor)}
-            onClose={handleConnectorClose}
-            slotProps={{
-              paper: {
-                sx: {
-                  bgcolor: themeColors.cardBg,
-                  color: themeColors.textPrimary,
-                  border: themeColors.border,
-                  mt: 1,
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
-                }
-              }
-            }}
-          >
-            <MenuItem onClick={handleOpenCsvUploadOption}>
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                <CloudUploadIcon fontSize="small" sx={{ color: themeColors.textSecondary }} />
-              </ListItemIcon>
-              <ListItemText primary="Upload .CSV" />
-            </MenuItem>
-          </Menu>
+    <Box sx={{ pb: 6 }}>
+      <Card sx={{ borderRadius: 3, boxShadow: '0 4px 24px rgba(0,0,0,0.06)', border: themeColors.border, bgcolor: themeColors.cardBg, color: themeColors.textPrimary, transition: 'all 0.2s ease' }}>
+        <Box sx={{ p: 3, borderBottom: themeColors.border }}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2} sx={{ width: '100%' }}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: themeColors.textPrimary }}>
+                Claim Tracker
+              </Typography>
+            </Stack>
+
+            <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" sx={{ ml: 'auto' }}>
+              <Tooltip title="Refresh Claims">
+                <IconButton onClick={fetchAllClaims} disabled={fetchingAll || loading}
+                  sx={{ color: '#3b82f6', bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' }, width: 34, height: 34 }}>
+                  <RefreshIcon sx={{ fontSize: 18, animation: fetchingAll ? 'spin 1s linear infinite' : 'none', '@keyframes spin': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } } }} />
+                </IconButton>
+              </Tooltip>
+
+              {/* Search */}
+              <TextField
+                size="small"
+                placeholder="Search by Aadhaar, PAN, Policy..."
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  if (!e.target.value) {
+                    fetchAllClaims();
+                  }
+                }}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+                slotProps={{
+                  input: {
+                    startAdornment: <SearchIcon sx={{ mr: 0.5, color: themeColors.textSecondary, cursor: 'pointer' }} onClick={handleSearch} />
+                  }
+                }}
+                sx={{
+                  width: 280,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc'
+                  }
+                }}
+              />
+
+              {!isBroker && (
+                <Button
+                  variant="contained"
+                  endIcon={<ArrowDropDownIcon />}
+                  onClick={handleConnectorClick}
+                  sx={{
+                    bgcolor: '#2563eb',
+                    color: '#fff',
+                    fontWeight: 700,
+                    borderRadius: 2,
+                    height: 40,
+                    px: 3,
+                    '&:hover': { bgcolor: '#1e40af' }
+                  }}
+                >
+                  Connector
+                </Button>
+              )}
+              <Menu
+                anchorEl={connectorAnchor}
+                open={Boolean(connectorAnchor)}
+                onClose={handleConnectorClose}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      bgcolor: themeColors.cardBg,
+                      color: themeColors.textPrimary,
+                      border: themeColors.border,
+                      mt: 1,
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+                    }
+                  }
+                }}
+              >
+                <MenuItem onClick={handleOpenCsvUploadOption}>
+                  <ListItemIcon sx={{ minWidth: 36 }}>
+                    <CloudUploadIcon fontSize="small" sx={{ color: themeColors.textSecondary }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Upload .CSV" />
+                </MenuItem>
+              </Menu>
+            </Stack>
+          </Stack>
         </Box>
-      </Box>
 
-      {error && (
-        <Paper sx={{ p: 2, mb: 4, bgcolor: '#fef2f2', border: '1px solid #fee2e2' }}>
-          <Typography color="#ef4444" sx={{ fontWeight: 500 }}>
-            {error}
-          </Typography>
-        </Paper>
-      )}
-
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: themeColors.textPrimary }}>
-          All Historical Claims & Records
-        </Typography>
-        {fetchingAll || loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-            <CircularProgress />
+        {error && (
+          <Box sx={{ p: 2, borderBottom: themeColors.border, bgcolor: '#fef2f2', color: '#ef4444' }}>
+            <Typography variant="body2" sx={{ fontWeight: 500 }}>
+              {error}
+            </Typography>
           </Box>
-        ) : displayedClaims.length === 0 ? (
-          <Paper sx={{ p: 4, textAlign: 'center', bgcolor: themeColors.cardBg, border: themeColors.border }}>
-            <Typography sx={{ color: themeColors.textSecondary }}>No claims found. Upload CSV claims to populate.</Typography>
-          </Paper>
-        ) : (
-          <Paper sx={{ bgcolor: themeColors.cardBg, border: themeColors.border, p: 2, overflowX: 'auto' }}>
-            <Table size="small">
-              <TableHead sx={{ backgroundColor: themeColors.sidebarBg }}>
+        )}
+
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: themeColors.tableHeadBg }}>
+                {['Customer Name', 'Aadhaar', 'PAN', 'Previous Claims', 'Status', 'Assigned To'].map(h => (
+                  <TableCell key={h} align="left" sx={{ fontWeight: 700, color: themeColors.tableHeadText, borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem', textTransform: 'uppercase' }}>
+                    {h}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {fetchingAll || loading ? (
                 <TableRow>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Customer Name</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Aadhaar</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>PAN</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Previous Claims</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Status</TableCell>
-                  <TableCell sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>Assigned To</TableCell>
+                  <TableCell colSpan={6} align="center" sx={{ py: 8, borderBottom: themeColors.tableCellBorder }}>
+                    <CircularProgress />
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {displayedClaims.map((c, idx) => (
-                  <TableRow key={idx} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell sx={{ color: themeColors.textSecondary, fontWeight: 500 }}>{c.customer_name}</TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary }}>{c.aadhaar || 'N/A'}</TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary }}>{c.pan || 'N/A'}</TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary }}>
-                        {c.previous_claims && c.previous_claims !== 'None' ? 'Yes' : 'No'}
+              ) : displayedClaims.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center" sx={{ py: 8, color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>
+                    {query ? 'No claims match your search query.' : 'No claims found. Upload CSV claims to populate.'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                displayedClaims.map((c, idx) => (
+                  <TableRow key={idx} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
+                    <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>
+                      {c.customer_name}
                     </TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary }}>
-                        <Chip label={c.status || 'Unknown'} size="small" sx={{ fontWeight: 600 }} />
+                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontFamily: 'monospace' }}>
+                      {c.aadhaar || 'N/A'}
                     </TableCell>
-                    <TableCell sx={{ color: themeColors.textSecondary, fontWeight: 600 }}>
-                        {c.assigned_user || 'None'}
+                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontFamily: 'monospace' }}>
+                      {c.pan || 'N/A'}
+                    </TableCell>
+                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>
+                      {c.previous_claims && c.previous_claims !== 'None' ? 'Yes' : 'No'}
+                    </TableCell>
+                    <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
+                      {(() => {
+                        const displayStatus = (c.status || 'Unknown').toUpperCase();
+                        const chipColor = c.status === 'Approved' ? 'success' : c.status === 'Rejected' ? 'error' : (c.status === 'Pending' || c.status === 'On Hold' ? 'warning' : 'default');
+                        return (
+                          <Chip
+                            label={displayStatus} size="small"
+                            color={chipColor}
+                            sx={{ fontWeight: 700, fontSize: '0.7rem' }}
+                          />
+                        );
+                      })()}
+                    </TableCell>
+                    <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontWeight: 500 }}>
+                      {c.assigned_user || 'None'}
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        )}
-      </Box>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
 
       {/* Customer Details Dialog */}
       <Dialog
