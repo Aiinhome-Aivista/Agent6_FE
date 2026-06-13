@@ -638,14 +638,22 @@ export default function Applications() {
                                             const isReferredStatus = row.status === 'Referred' || row.status === 'REFERRED';
                                             const isEscalatedGlobal = row.current_role_id && row.current_role_id < 4;
                                             const displayStatus = (isEscalatedPastUser || isReferredStatus || isEscalatedGlobal) ? 'ESCALATED' : row.status.replace('_', ' ').toUpperCase();
-                                            const chipColor = (isEscalatedPastUser || isReferredStatus || isEscalatedGlobal) ? 'error' : (row.status === 'Pending' || row.status === 'Pending Additional Documents' ? 'warning' : row.status === 'Underwriter Review' ? 'info' : row.status === 'Approved' ? 'success' : row.status === 'Rejected' ? 'error' : 'default');
-                                            return (
+                                            const chipColor = (isEscalatedPastUser || isReferredStatus || isEscalatedGlobal) ? 'error' : (row.status === 'Pending' || row.status === 'Pending Additional Documents' || row.status === 'On Hold' ? 'warning' : row.status === 'Underwriter Review' ? 'info' : row.status === 'Approved' ? 'success' : row.status === 'Rejected' ? 'error' : 'default');
+                                            const chipElement = (
                                                 <Chip
                                                     label={displayStatus} size="small"
                                                     color={chipColor}
-                                                    sx={{ fontWeight: 700, fontSize: '0.7rem' }}
+                                                    sx={{ fontWeight: 700, fontSize: '0.7rem', cursor: row.status === 'Rejected' ? 'help' : 'default' }}
                                                 />
                                             );
+                                            if (row.status === 'Rejected' && row.underwriter_remarks) {
+                                                return (
+                                                    <Tooltip title={`Note: ${row.underwriter_remarks}`} arrow placement="top">
+                                                        <span>{chipElement}</span>
+                                                    </Tooltip>
+                                                );
+                                            }
+                                            return chipElement;
                                         })()}
                                     </TableCell>
                                     {/* {!isBroker && (
@@ -677,11 +685,7 @@ export default function Applications() {
                                                 }} sx={{ textTransform: 'none', fontWeight: 600, border: '1px solid #bfdbfe' }}>
                                                     <EditDocumentIcon />
                                                 </IconButton>
-                                                {row.status === 'Rejected' && row.underwriter_remarks && (
-                                                    <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#ef4444', fontWeight: 600, bgcolor: '#fef2f2', p: 0.5, borderRadius: 1 }}>
-                                                        Note: {row.underwriter_remarks}
-                                                    </Typography>
-                                                )}
+
                                             </Box>
                                         ) : (
                                             <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -704,11 +708,20 @@ export default function Applications() {
                                                                 <TimelineIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
-                                                        <Tooltip title="Comment Thread">
-                                                            <IconButton size="small" onClick={() => openCommentThreadFor(row)}
-                                                                sx={{ bgcolor: '#fdf4ff', border: '1px solid #e9d5ff', color: '#9333ea', '&:hover': { bgcolor: '#f3e8ff' } }}>
-                                                                <ForumIcon fontSize="small" />
-                                                            </IconButton>
+                                                        <Tooltip title={(!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? "No underwriter comments yet" : "Comment Thread"}>
+                                                            <span>
+                                                                <IconButton size="small" onClick={() => openCommentThreadFor(row)}
+                                                                    disabled={!row.underwriter_comment_count || row.underwriter_comment_count <= 0}
+                                                                    sx={{ 
+                                                                        bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : '#fdf4ff', 
+                                                                        border: '1px solid',
+                                                                        borderColor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#e2e8f0' : '#e9d5ff', 
+                                                                        color: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#94a3b8' : '#9333ea', 
+                                                                        '&:hover': { bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : '#f3e8ff' } 
+                                                                    }}>
+                                                                    <ForumIcon fontSize="small" />
+                                                                </IconButton>
+                                                            </span>
                                                         </Tooltip>
                                                     </Stack>
                                                 ) : (
