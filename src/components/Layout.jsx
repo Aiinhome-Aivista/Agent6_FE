@@ -373,14 +373,21 @@ export default function Layout() {
 
     const [notifications, setNotifications] = useState([]);
     const [openNotification, setOpenNotification] = useState(false);
+    const [viewedNotifs, setViewedNotifs] = useState(() => {
+        try {
+            const saved = localStorage.getItem('viewedNotifs');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
 
     useEffect(() => {
         if (!user) return;
         const fetchNotifs = async () => {
             try {
-                const r = await api.get('/cases/');
-                const notifs = r.data.filter(c => c.underwriter_remarks);
-                setNotifications(notifs);
+                const r = await api.get('/cases/notifications');
+                setNotifications(r.data);
             } catch (e) {
                 console.error("Error fetching notifications", e);
             }
@@ -389,6 +396,21 @@ export default function Layout() {
         const intervalId = setInterval(fetchNotifs, 30000); // 30 sec polling
         return () => clearInterval(intervalId);
     }, [user]);
+
+    const handleMarkAsViewed = (id) => {
+        const updated = [...viewedNotifs, id];
+        setViewedNotifs(updated);
+        localStorage.setItem('viewedNotifs', JSON.stringify(updated));
+    };
+
+    const handleClearAll = () => {
+        const allIds = notifications.map(n => n.id);
+        const updated = [...new Set([...viewedNotifs, ...allIds])];
+        setViewedNotifs(updated);
+        localStorage.setItem('viewedNotifs', JSON.stringify(updated));
+    };
+
+    const unreadCount = notifications.filter(n => !viewedNotifs.includes(n.id)).length;
 
     const handleAvatarClick = (event) => setProfileAnchorEl(event.currentTarget);
     const handleAvatarClose = () => setProfileAnchorEl(null);
@@ -506,7 +528,7 @@ export default function Layout() {
                         {getHeaderTitle()}
                     </Typography>
 
-                    <Badge badgeContent={notifications.length} color="error" sx={{ mr: 1 }}>
+                    <Badge badgeContent={unreadCount} color="error" sx={{ mr: 1 }}>
                         <IconButton
                             onClick={() => setOpenNotification(true)}
                             sx={{ color: themeColors.textSecondary, transition: 'all 0.2s ease' }}
@@ -600,21 +622,36 @@ export default function Layout() {
                 fullWidth
             >
                 <DialogTitle sx={{ fontWeight: 800, bgcolor: themeColors.cardBg, color: themeColors.textPrimary }}>Notifications</DialogTitle>
-                <DialogContent sx={{ bgcolor: themeColors.cardBg, p: 3 }}>
+                <DialogContent dividers sx={{ bgcolor: themeColors.cardBg, p: 3, maxHeight: '60vh', overflowY: 'auto', borderColor: themeColors.borderHex }}>
                     {notifications.length === 0 ? (
                         <Typography sx={{ color: themeColors.textSecondary }}>No notifications found.</Typography>
                     ) : (
                         <Stack spacing={1}>
-                            {notifications.map(n => (
-                                <Alert key={n.id} severity="info">
+                            {notifications.map(n => {
+                                const isRead = viewedNotifs.includes(n.id);
+                                return (
+                                <Alert 
+                                    key={n.id} 
+                                    severity={isRead ? "success" : "info"}
+                                    action={
+                                        !isRead && (
+                                            <Button color="inherit" size="small" onClick={() => handleMarkAsViewed(n.id)}>
+                                                Mark Read
+                                            </Button>
+                                        )
+                                    }
+                                >
                                     <b>{n.case_number}</b><br />
                                     {n.underwriter_remarks}
                                 </Alert>
-                            ))}
+                            )})}
                         </Stack>
                     )}
                 </DialogContent>
-                <DialogActions sx={{ bgcolor: themeColors.cardBg, p: 2 }}>
+                <DialogActions sx={{ bgcolor: themeColors.cardBg, p: 2, display: 'flex', justifyContent: 'space-between' }}>
+                    <Button onClick={handleClearAll} color="inherit" sx={{ color: themeColors.textSecondary }}>
+                        Mark All as Read
+                    </Button>
                     <Button onClick={() => setOpenNotification(false)} variant="contained">
                         Close
                     </Button>
