@@ -360,7 +360,7 @@ export default function ClaimTracker() {
                     <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
                       {(() => {
                         const displayStatus = (c.status || 'Unknown').toUpperCase();
-                        const chipColor = c.status === 'Approved' ? 'success' : c.status === 'Rejected' ? 'error' : (c.status === 'Pending' || c.status === 'On Hold' ? 'warning' : 'default');
+                        const chipColor = c.status === 'Approved' ? 'success' : c.status === 'Rejected' ? 'error' : (c.status === 'Pending' || c.status === 'On Hold' ? 'warning' : (c.status === 'Referred' ? 'secondary' : 'default'));
                         return (
                           <Chip
                             label={displayStatus} size="small"
