@@ -467,7 +467,7 @@ export default function Layout() {
                                 sx={{
                                     borderRadius: 2, mb: 0.5,
                                     bgcolor: isActive ? themeColors.navActiveBg : 'transparent',
-                                    '&:hover': { bgcolor: themeColors.navHoverBg },
+                                    '&:hover': {bgcolor: isActive ? themeColors.navActiveBg : themeColors.navHoverBg},
                                     px: sidebarOpen ? 2 : 1.5,
                                     justifyContent: sidebarOpen ? 'flex-start' : 'center',
                                     transition: 'all 0.2s ease'
