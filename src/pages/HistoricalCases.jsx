@@ -4,7 +4,7 @@ import {
     TableHead, TableRow, TextField, Stack, IconButton, Chip, Select,
     MenuItem, FormControl, InputLabel, CircularProgress, Tooltip,
     Dialog, DialogTitle, DialogContent, DialogActions, Button, Avatar,
-    Divider, LinearProgress
+    Divider, LinearProgress, InputAdornment
 } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -140,7 +140,13 @@ export default function HistoricalCases() {
                                 placeholder="Search here..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
                                 sx={{ width: 260, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: darkMode ? 'rgba(255,255,255,0.03)' : '#f8fafc' } }}
                             />
                         </Stack>
@@ -160,11 +166,28 @@ export default function HistoricalCases() {
                         <TableBody>
                             {loading ? (
                                 <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8 }}><CircularProgress /></TableCell></TableRow>
-                            ) : cases.length === 0 ? (
-                                <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8, color: themeColors.textSecondary }}>
-                                    No historical cases found. Try adjusting your filters.
-                                </TableCell></TableRow>
-                            ) : cases.map(row => (
+                            ) : (() => {
+                                const filteredCases = cases.filter(c => {
+                                    if (!search) return true;
+                                    const s = search.toLowerCase();
+                                    return (
+                                        (c.case_number || '').toLowerCase().includes(s) ||
+                                        (c.applicant_name || '').toLowerCase().includes(s) ||
+                                        (c.policy_type || '').toLowerCase().includes(s) ||
+                                        (c.assigned_user || '').toLowerCase().includes(s) ||
+                                        (c.status || '').toLowerCase().includes(s)
+                                    );
+                                });
+
+                                if (filteredCases.length === 0) {
+                                    return (
+                                        <TableRow><TableCell colSpan={6} align="center" sx={{ py: 8, color: themeColors.textSecondary }}>
+                                            No historical cases found. Try adjusting your filters.
+                                        </TableCell></TableRow>
+                                    );
+                                }
+
+                                return filteredCases.map(row => (
                                 <TableRow key={row.id} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
                                     <TableCell sx={{ fontWeight: 700, color: '#2563eb', fontFamily: 'monospace', borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem' }}>{row.case_number}</TableCell>
                                     <TableCell sx={{ fontWeight: 700, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{row.applicant_name}</TableCell>
@@ -183,7 +206,8 @@ export default function HistoricalCases() {
                                         </Tooltip>
                                     </TableCell> */}
                                 </TableRow>
-                            ))}
+                                ));
+                            })()}
                         </TableBody>
                     </Table>
                 </TableContainer>
