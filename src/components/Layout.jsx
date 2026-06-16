@@ -381,6 +381,14 @@ export default function Layout() {
             return [];
         }
     });
+    const [seenNotifIds, setSeenNotifIds] = useState(() => {
+        try {
+            const saved = localStorage.getItem('seenNotifIds');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
 
     useEffect(() => {
         if (!user) return;
@@ -410,7 +418,15 @@ export default function Layout() {
         localStorage.setItem('viewedNotifs', JSON.stringify(updated));
     };
 
-    const unreadCount = notifications.filter(n => !viewedNotifs.includes(n.id)).length;
+    const handleOpenNotification = () => {
+        setOpenNotification(true);
+        const allIds = notifications.map(n => n.id);
+        const updated = [...new Set([...seenNotifIds, ...allIds])];
+        setSeenNotifIds(updated);
+        localStorage.setItem('seenNotifIds', JSON.stringify(updated));
+    };
+
+    const unreadCount = notifications.filter(n => !seenNotifIds.includes(n.id)).length;
 
     const handleAvatarClick = (event) => setProfileAnchorEl(event.currentTarget);
     const handleAvatarClose = () => setProfileAnchorEl(null);
@@ -530,7 +546,7 @@ export default function Layout() {
 
                     <Badge badgeContent={unreadCount} color="error" sx={{ mr: 1 }}>
                         <IconButton
-                            onClick={() => setOpenNotification(true)}
+                            onClick={handleOpenNotification}
                             sx={{ color: themeColors.textSecondary, transition: 'all 0.2s ease' }}
                         >
                             <NotificationsIcon sx={{ fontSize: 22 }} />
@@ -633,13 +649,6 @@ export default function Layout() {
                                 <Alert 
                                     key={n.id} 
                                     severity={isRead ? "success" : "info"}
-                                    action={
-                                        !isRead && (
-                                            <Button color="inherit" size="small" onClick={() => handleMarkAsViewed(n.id)}>
-                                                Mark Read
-                                            </Button>
-                                        )
-                                    }
                                 >
                                     <b>{n.case_number}</b><br />
                                     {n.underwriter_remarks}
@@ -648,10 +657,7 @@ export default function Layout() {
                         </Stack>
                     )}
                 </DialogContent>
-                <DialogActions sx={{ bgcolor: themeColors.cardBg, p: 2, display: 'flex', justifyContent: 'space-between' }}>
-                    <Button onClick={handleClearAll} color="inherit" sx={{ color: themeColors.textSecondary }}>
-                        Mark All as Read
-                    </Button>
+                <DialogActions sx={{ bgcolor: themeColors.cardBg, p: 2, display: 'flex', justifyContent: 'flex-end' }}>
                     <Button onClick={() => setOpenNotification(false)} variant="contained">
                         Close
                     </Button>
