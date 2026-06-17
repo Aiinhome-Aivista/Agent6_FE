@@ -648,7 +648,7 @@ export default function Layout() {
                                 return (
                                 <Alert 
                                     key={n.id} 
-                                    severity={isRead ? "success" : "info"}
+                                    severity="info"
                                 >
                                     <b>{n.case_number}</b><br />
                                     {n.underwriter_remarks}
