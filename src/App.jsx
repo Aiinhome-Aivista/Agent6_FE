@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeContextProvider } from './context/ThemeContext';
 import Landing from './components/Landing';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -16,29 +17,31 @@ import HistoricalCases from './pages/HistoricalCases';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <ThemeContextProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route element={<Layout />}>
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/cases" element={<Applications />} />
-            <Route path="/users" element={<UserManagement />} />
-            <Route path="/audit" element={<AuditLogs />} />
-            <Route path="/knowledge-base" element={<KnowledgeBase />} />
-            <Route path="/rag-chat" element={<RagChat />} />
-            <Route path="/manage-application" element={<Applications />} />
-            <Route path="/case-queue" element={<Applications />} />
-            <Route path="/claim-tracker" element={<ClaimTracker />} />
-            <Route path="/historical-cases" element={<HistoricalCases />} />
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<AdminDashboard />} />
+              <Route path="/cases" element={<Applications />} />
+              <Route path="/users" element={<UserManagement />} />
+              <Route path="/audit" element={<AuditLogs />} />
+              <Route path="/knowledge-base" element={<KnowledgeBase />} />
+              <Route path="/rag-chat" element={<RagChat />} />
+              <Route path="/manage-application" element={<Applications />} />
+              <Route path="/case-queue" element={<Applications />} />
+              <Route path="/claim-tracker" element={<ClaimTracker />} />
+              <Route path="/historical-cases" element={<HistoricalCases />} />
 
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+            </Route>
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ThemeContextProvider>
   );
 }
 

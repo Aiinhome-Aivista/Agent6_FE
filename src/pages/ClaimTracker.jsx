@@ -234,7 +234,7 @@ export default function ClaimTracker() {
             <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" sx={{ ml: 'auto' }}>
               <Tooltip title="Refresh Claims">
                 <IconButton onClick={fetchAllClaims} disabled={fetchingAll || loading}
-                  sx={{ color: '#3b82f6', bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' }, width: 34, height: 34 }}>
+                  sx={{ color: '#FF5A14', bgcolor: '#FFF7F2', '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' }, width: 34, height: 34 }}>
                   <RefreshIcon sx={{ fontSize: 18, animation: fetchingAll ? 'spin 1s linear infinite' : 'none', '@keyframes spin': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } } }} />
                 </IconButton>
               </Tooltip>
@@ -271,13 +271,13 @@ export default function ClaimTracker() {
                   endIcon={<ArrowDropDownIcon />}
                   onClick={handleConnectorClick}
                   sx={{
-                    bgcolor: '#2563eb',
+                    bgcolor: '#FF5A14',
                     color: '#fff',
                     fontWeight: 700,
                     borderRadius: 2,
                     height: 40,
                     px: 3,
-                    '&:hover': { bgcolor: '#1e40af' }
+                    '&:hover': { bgcolor: '#F56B2F' }
                   }}
                 >
                   Connector
@@ -539,7 +539,7 @@ export default function ClaimTracker() {
                               .filter(c => c.claim_id.startsWith('CASE-'))
                               .map((c, idx) => (
                                 <Box key={idx} sx={{ p: 2, bgcolor: themeColors.sidebarBg, borderRadius: 2 }}>
-                                  <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1, color: '#2563eb' }}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1, color: '#FF5A14' }}>
                                     Case: {c.claim_id}
                                   </Typography>
                                   <Grid container spacing={2}>
@@ -603,7 +603,7 @@ export default function ClaimTracker() {
                                 <ListItem key={eIdx} divider={eIdx !== customerDetails.arango_data.edges.length - 1}>
                                   <ListItemText
                                     primary={`${edge.from_id} ➔ [${edge.type}] ➔ ${edge.to_id}`}
-                                    primaryTypographyProps={{ fontFamily: 'monospace', color: '#2563eb', fontWeight: 'bold' }}
+                                    primaryTypographyProps={{ fontFamily: 'monospace', color: '#FF5A14', fontWeight: 'bold' }}
                                   />
                                 </ListItem>
                               ))}
@@ -623,7 +623,7 @@ export default function ClaimTracker() {
                         </Typography>
                         {customerDetails.case_ids.map(caseId => (
                           <Box key={caseId} sx={{ mb: 4 }}>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1, color: '#2563eb' }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1, color: '#FF5A14' }}>
                               Underwriting Graph for Case: CASE-{caseId}
                             </Typography>
                             <iframe
@@ -742,7 +742,7 @@ export default function ClaimTracker() {
                       <Stack spacing={2}>
                         {customerDetails.chroma_data.map((chunk, idx) => (
                           <Paper key={idx} sx={{ p: 2, bgcolor: themeColors.cardBg, border: themeColors.border }}>
-                            <Typography variant="caption" sx={{ color: '#2563eb', fontWeight: 'bold', display: 'block', mb: 1 }}>
+                            <Typography variant="caption" sx={{ color: '#FF5A14', fontWeight: 'bold', display: 'block', mb: 1 }}>
                               Chunk ID: {chunk.id} | Metadata: {JSON.stringify(chunk.metadata)}
                             </Typography>
                             <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
@@ -801,7 +801,7 @@ export default function ClaimTracker() {
           })()}
         </DialogContent>
         <DialogActions sx={{ p: 2, borderTop: themeColors.border }}>
-          <Button onClick={() => setOpenDetailsDialog(false)} variant="contained" sx={{ bgcolor: '#2563eb', color: '#fff', '&:hover': { bgcolor: '#1e40af' } }}>
+          <Button onClick={() => setOpenDetailsDialog(false)} variant="contained" sx={{ bgcolor: '#FF5A14', color: '#fff', '&:hover': { bgcolor: '#F56B2F' } }}>
             Close
           </Button>
         </DialogActions>
@@ -838,7 +838,7 @@ export default function ClaimTracker() {
               onDrop={handleDrop}
               sx={{
                 border: '2px dashed',
-                borderColor: csvDragOver ? '#2563eb' : themeColors.textSecondary,
+                borderColor: csvDragOver ? '#FF5A14' : themeColors.textSecondary,
                 borderRadius: 3,
                 p: 4,
                 textAlign: 'center',
@@ -855,7 +855,7 @@ export default function ClaimTracker() {
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
-              <CloudUploadIcon sx={{ fontSize: 48, color: '#2563eb', mb: 2 }} />
+              <CloudUploadIcon sx={{ fontSize: 48, color: '#FF5A14', mb: 2 }} />
               <Typography variant="body1" sx={{ fontWeight: 600 }}>
                 {csvFile ? csvFile.name : 'Drag & Drop CSV File here or Click to Browse'}
               </Typography>
@@ -885,12 +885,12 @@ export default function ClaimTracker() {
                 onClick={handleCsvUpload}
                 disabled={csvLoading}
                 sx={{
-                  bgcolor: '#2563eb',
+                  bgcolor: '#FF5A14',
                   color: '#fff',
                   fontWeight: 600,
                   borderRadius: 2,
                   py: 1,
-                  '&:hover': { bgcolor: '#1e40af' }
+                  '&:hover': { bgcolor: '#F56B2F' }
                 }}
               >
                 {csvLoading ? <CircularProgress size={24} color="inherit" /> : 'Ingest Claims CSV'}

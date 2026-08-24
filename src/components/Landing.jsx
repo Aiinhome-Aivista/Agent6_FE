@@ -21,7 +21,7 @@ const features = [
         icon: <HubIcon sx={{ fontSize: 36 }} />,
         title: 'Universal Ingestion',
         desc: 'One-click integration with CRMs, Legacy databases, Document scanners, and Policy APIs.',
-        color: '#2563eb',
+        color: '#FF5A14',
     },
     {
         icon: <MonitorHeartIcon sx={{ fontSize: 36 }} />,
@@ -33,7 +33,7 @@ const features = [
         icon: <PsychologyIcon sx={{ fontSize: 36 }} />,
         title: 'AI Risk Assessment',
         desc: 'NLP-powered confidence scoring and document interpretation for complex medical records.',
-        color: '#7c3aed',
+        color: '#FF7A45',
     },
     {
         icon: <PrivacyTipIcon sx={{ fontSize: 36 }} />,
@@ -179,15 +179,15 @@ const Landing = () => {
                                 <CardContent>
                                     <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 600 }}>Live Application Risk Score</Typography>
                                     <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', mb: 2 }}>
-                                        <Typography variant="h2" sx={{ fontWeight: 800, color: 'success.main' }}>84.2</Typography>
+                                        <Typography variant="h2" sx={{ fontWeight: 800, color: 'primary.main' }}>84.2</Typography>
                                         <Typography variant="h5" sx={{ color: '#94a3b8' }}>/100</Typography>
                                     </Stack>
                                     <Stack spacing={1.5}>
                                         {[
-                                            { label: 'Medical History', val: 92, color: 'success.main' },
-                                            { label: 'Financial Stability', val: 88, color: 'success.main' },
-                                            { label: 'Lifestyle Check', val: 76, color: 'success.main' },
-                                            { label: 'Fraud Probability', val: 89, color: 'success.main' },
+                                            { label: 'Medical History', val: 92, color: 'primary.main' },
+                                            { label: 'Financial Stability', val: 88, color: 'primary.main' },
+                                            { label: 'Lifestyle Check', val: 76, color: 'primary.main' },
+                                            { label: 'Fraud Probability', val: 89, color: 'primary.main' },
                                         ].map((b) => (
                                             <Box key={b.label}>
                                                 <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
@@ -283,7 +283,7 @@ const Landing = () => {
             </Container>
 
             {/* CTA */}
-            <Box sx={{ py: { xs: 8, md: 10 }, background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)' }}>
+            <Box sx={{ py: { xs: 8, md: 10 }, background: 'linear-gradient(135deg, #FF5A14 0%, #FF7A45 100%)' }}>
                 <Container maxWidth="md">
                     <Stack spacing={4} sx={{ alignItems: 'center' }}>
                         <Typography variant="h3" sx={{ color: 'white', fontWeight: 800, textAlign: 'center' }}>

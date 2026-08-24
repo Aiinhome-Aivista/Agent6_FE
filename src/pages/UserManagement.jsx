@@ -50,9 +50,9 @@ export default function UserManagement() {
                     onClick={handleRefreshUsers}
                     disabled={usersLoading}
                     sx={{
-                        color: '#3b82f6',
-                        bgcolor: '#eff6ff',
-                        '&:hover': { bgcolor: '#dbeafe' },
+                        color: '#FF5A14',
+                        bgcolor: '#FFF7F2',
+                        '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' },
                         width: 32,
                         height: 32,
                         p: 0
@@ -98,8 +98,8 @@ export default function UserManagement() {
                                         sx={{
                                             fontWeight: 700,
                                             fontSize: '0.7rem',
-                                            bgcolor: u.role === 'Admin' ? '#fee2e2' : u.role === 'Manager' ? '#fef3c7' : u.role === 'Senior_Underwriter' ? '#faf5ff' : u.role === 'Underwriter' ? '#eff6ff' : '#f0fdf4',
-                                            color: u.role === 'Admin' ? '#991b1b' : u.role === 'Manager' ? '#92400e' : u.role === 'Senior_Underwriter' ? '#6b21a8' : u.role === 'Underwriter' ? '#1e40af' : '#166534'
+                                            bgcolor: u.role === 'Admin' ? '#fee2e2' : u.role === 'Manager' ? '#fef3c7' : u.role === 'Senior_Underwriter' ? '#faf5ff' : u.role === 'Underwriter' ? '#FFF7F2' : '#f0fdf4',
+                                            color: u.role === 'Admin' ? '#991b1b' : u.role === 'Manager' ? '#92400e' : u.role === 'Senior_Underwriter' ? '#6b21a8' : u.role === 'Underwriter' ? '#F56B2F' : '#166534'
                                         }}
                                     />
                                 </TableCell>

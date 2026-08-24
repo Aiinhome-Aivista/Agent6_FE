@@ -20,7 +20,7 @@ const formatChatMessage = (text, role, darkMode, themeColors) => {
         return (
             <Box key={i} sx={{ display: 'flex', mb: 0.5 }}>
                 {isBullet && (
-                    <Box component="span" sx={{ mr: 1, fontSize: '1.2rem', color: role === 'user' ? '#fff' : '#7c3aed', mt: '-4px' }}>•</Box>
+                    <Box component="span" sx={{ mr: 1, fontSize: '1.2rem', color: role === 'user' ? '#fff' : '#FF7A45', mt: '-4px' }}>•</Box>
                 )}
                 <Typography sx={{ fontSize: '0.95rem', fontWeight: role === 'user' ? 600 : 500, lineHeight: 1.6, color: role === 'user' ? '#ffffff' : themeColors.textPrimary, display: 'inline' }}>
                     {parts.map((part, j) => {
@@ -106,7 +106,7 @@ export default function RagChat() {
             <Box sx={{ p: 3, borderBottom: themeColors.border, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box>
                     <Typography variant="h6" sx={{ fontWeight: 800, color: themeColors.textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <PsychologyIcon sx={{ color: '#7c3aed' }} />
+                        <PsychologyIcon sx={{ color: '#FF7A45' }} />
                         AI RAG Document Chat
                     </Typography>
                     <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600 }}>
@@ -144,14 +144,14 @@ export default function RagChat() {
                         {chatMessages.map((msg, idx) => (
                             <Box key={idx} sx={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', gap: 2 }}>
                                 {msg.role !== 'user' && (
-                                    <Avatar sx={{ bgcolor: '#7c3aed', width: 40, height: 40, boxShadow: '0 4px 10px rgba(124,58,237,0.3)' }}>
+                                    <Avatar sx={{ bgcolor: '#FF7A45', width: 40, height: 40, boxShadow: '0 4px 10px rgba(124,58,237,0.3)' }}>
                                         <SmartToyIcon fontSize="small" />
                                     </Avatar>
                                 )}
                                 <Box sx={{
                                     maxWidth: '75%', p: 2.5,
                                     borderRadius: msg.role === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
-                                    bgcolor: msg.role === 'user' ? '#2563eb' : (darkMode ? '#1f2937' : '#ffffff'),
+                                    bgcolor: msg.role === 'user' ? '#FF5A14' : (darkMode ? '#1f2937' : '#ffffff'),
                                     color: msg.role === 'user' ? '#ffffff' : themeColors.textPrimary,
                                     boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: msg.role === 'user' ? 'none' : themeColors.border
                                 }}>
@@ -160,7 +160,7 @@ export default function RagChat() {
                                     </Box>
                                 </Box>
                                 {msg.role === 'user' && (
-                                    <Avatar sx={{ bgcolor: '#2563eb', width: 40, height: 40, boxShadow: '0 4px 10px rgba(37,99,235,0.3)' }}>
+                                    <Avatar sx={{ bgcolor: '#FF5A14', width: 40, height: 40, boxShadow: '0 4px 10px rgba(37,99,235,0.3)' }}>
                                         <PersonIcon fontSize="small" />
                                     </Avatar>
                                 )}
@@ -168,7 +168,7 @@ export default function RagChat() {
                         ))}
                         {chatSending && (
                             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                <Avatar sx={{ bgcolor: '#7c3aed', width: 40, height: 40, boxShadow: '0 4px 10px rgba(124,58,237,0.3)' }}>
+                                <Avatar sx={{ bgcolor: '#FF7A45', width: 40, height: 40, boxShadow: '0 4px 10px rgba(124,58,237,0.3)' }}>
                                     <SmartToyIcon fontSize="small" />
                                 </Avatar>
                                 <Box sx={{ p: 2, borderRadius: '20px 20px 20px 4px', bgcolor: darkMode ? '#1f2937' : '#ffffff', border: themeColors.border, minWidth: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -180,7 +180,7 @@ export default function RagChat() {
                                                     width: 8,
                                                     height: 8,
                                                     borderRadius: '50%',
-                                                    bgcolor: '#7c3aed',
+                                                    bgcolor: '#FF7A45',
                                                     animation: 'chatBounce 1.4s infinite ease-in-out both',
                                                     animationDelay: `${i * 0.16}s`,
                                                     '@keyframes chatBounce': {
@@ -222,7 +222,7 @@ export default function RagChat() {
                             onClick={() => handleSendChatMessage()}
                             disabled={!chatInput.trim() || chatSending}
                             sx={{
-                                bgcolor: '#7c3aed',
+                                bgcolor: '#FF7A45',
                                 color: '#ffffff',
                                 width: 56,
                                 height: 56,

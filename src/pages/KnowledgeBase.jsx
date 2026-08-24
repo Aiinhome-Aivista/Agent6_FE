@@ -86,9 +86,9 @@ export default function KnowledgeBase() {
                     id: ent.id,
                     label: ent.name,
                     title: `${ent.label}: ${ent.name}`,
-                    color: ent.label === 'Patient' ? '#3b82f6' :
+                    color: ent.label === 'Patient' ? '#FF5A14' :
                         ent.label === 'Disease' ? '#ef4444' :
-                            ent.label === 'Medication' ? '#10b981' : '#8b5cf6',
+                            ent.label === 'Medication' ? '#10b981' : '#F56B2F',
                     font: { color: darkMode ? '#ffffff' : '#000000', size: 13, bold: true }
                 }));
 
@@ -214,9 +214,9 @@ export default function KnowledgeBase() {
                             onClick={handleRefreshRulebooks}
                             disabled={rbLoading}
                             sx={{
-                                color: '#3b82f6',
-                                bgcolor: darkMode ? '#1e3a5f' : '#eff6ff',
-                                '&:hover': { bgcolor: darkMode ? '#1e40af' : '#dbeafe' },
+                                color: '#FF5A14',
+                                bgcolor: darkMode ? '#4A4A4A' : '#FFF7F2',
+                                '&:hover': { bgcolor: darkMode ? '#F56B2F' : 'rgba(255, 90, 20, 0.08)' },
                                 width: 32,
                                 height: 32,
                                 p: 0
@@ -294,12 +294,12 @@ export default function KnowledgeBase() {
                                                 sx={{
                                                     fontWeight: 800,
                                                     fontSize: '0.7rem',
-                                                    bgcolor: rb.relevance_score >= 90 ? (darkMode ? '#052e16' : '#f0fdf4') :
-                                                        rb.relevance_score >= 75 ? (darkMode ? '#172554' : '#eff6ff') :
+                                                    bgcolor: rb.relevance_score >= 90 ? (darkMode ? 'rgba(255, 90, 20, 0.1)' : '#FFF7F2') :
+                                                        rb.relevance_score >= 75 ? (darkMode ? 'rgba(255, 90, 20, 0.1)' : '#FFF7F2') :
                                                             (darkMode ? '#451a03' : '#fff7ed'),
-                                                    color: rb.relevance_score >= 90 ? '#16a34a' :
-                                                        rb.relevance_score >= 75 ? '#2563eb' : '#d97706',
-                                                    border: `1px solid ${rb.relevance_score >= 90 ? '#16a34a' : rb.relevance_score >= 75 ? '#3b82f6' : '#d97706'}40`
+                                                    color: rb.relevance_score >= 90 ? '#FF5A14' :
+                                                        rb.relevance_score >= 75 ? '#FF5A14' : '#d97706',
+                                                    border: `1px solid ${rb.relevance_score >= 90 ? '#FF5A14' : rb.relevance_score >= 75 ? '#FF5A14' : '#d97706'}40`
                                                 }}
                                             />
                                         ) : (
@@ -313,8 +313,8 @@ export default function KnowledgeBase() {
                                             sx={{
                                                 fontWeight: 700,
                                                 fontSize: '0.7rem',
-                                                bgcolor: rb.graph_processed === 1 ? (darkMode ? '#052e16' : '#f0fdf4') : (darkMode ? '#451a03' : '#fff7ed'),
-                                                color: rb.graph_processed === 1 ? '#16a34a' : '#d97706'
+                                                bgcolor: rb.graph_processed === 1 ? (darkMode ? 'rgba(255, 90, 20, 0.1)' : '#FFF7F2') : (darkMode ? '#451a03' : '#fff7ed'),
+                                                color: rb.graph_processed === 1 ? '#FF5A14' : '#d97706'
                                             }}
                                         />
                                     </TableCell>
@@ -407,7 +407,7 @@ export default function KnowledgeBase() {
                                 <Stack spacing={1}>
                                     {(selectedKb.entities || []).slice(0, 15).map(e => (
                                         <Box key={e.id} sx={{ p: 1, bgcolor: themeColors.cardBg, borderRadius: 1, border: themeColors.border }}>
-                                            <Typography variant="caption" sx={{ fontWeight: 800, color: '#3b82f6', display: 'block' }}>{e.label}</Typography>
+                                            <Typography variant="caption" sx={{ fontWeight: 800, color: '#FF5A14', display: 'block' }}>{e.label}</Typography>
                                             <Typography variant="body2" sx={{ color: themeColors.textPrimary }}>{e.name}</Typography>
                                         </Box>
                                     ))}

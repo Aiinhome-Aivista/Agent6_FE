@@ -22,7 +22,7 @@ body {
 .hero {
   text-align: center;
   padding: 5rem 2rem;
-  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  background: linear-gradient(135deg, #FF5A14, #FF7A45);
   color: white;
   border-radius: 12px;
   margin-bottom: 2rem;
@@ -62,7 +62,7 @@ body {
 
 .btn-primary {
   background-color: white;
-  color: #1e3a8a;
+  color: #FF5A14;
 }
 
 .btn-primary:hover {
@@ -92,13 +92,13 @@ body {
 
 .btn-submit {
   width: 100%;
-  background-color: #2563eb;
+  background-color: #FF5A14;
   color: white;
   margin-top: 1rem;
 }
 
 .btn-submit:hover {
-  background-color: #1d4ed8;
+  background-color: #F56B2F;
 }
 
 .form-container {
@@ -139,8 +139,8 @@ body {
 
 .form-group input:focus, .form-group select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #FF8A55;
+  box-shadow: 0 0 0 3px rgba(255, 138, 85, 0.1);
 }
 
 .error-msg {

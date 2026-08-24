@@ -583,7 +583,7 @@ export default function Applications() {
                         <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" sx={{ ml: 'auto' }}>
                             <Tooltip title="Refresh Cases">
                                 <IconButton onClick={handleRefreshCases} disabled={loading}
-                                    sx={{ color: '#3b82f6', bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' }, width: 34, height: 34 }}>
+                                    sx={{ color: '#FF5A14', bgcolor: '#FFF7F2', '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' }, width: 34, height: 34 }}>
                                     <RefreshIcon sx={{ fontSize: 18, animation: refreshingCases ? 'spin 1s linear infinite' : 'none', '@keyframes spin': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } } }} />
                                 </IconButton>
                             </Tooltip>
@@ -624,7 +624,7 @@ export default function Applications() {
                                 </TableCell></TableRow>
                             ) : filteredCases.map(row => (
                                 <TableRow key={row.id} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
-                                    <TableCell sx={{ fontWeight: 700, color: '#2563eb', borderBottom: themeColors.tableCellBorder, fontFamily: 'monospace' }}>{row.case_number}</TableCell>
+                                    <TableCell sx={{ fontWeight: 700, color: '#FF5A14', borderBottom: themeColors.tableCellBorder, fontFamily: 'monospace' }}>{row.case_number}</TableCell>
                                     <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{row.applicant_name}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>{row.policy_type}</TableCell>
                                     {isBroker && (
@@ -682,7 +682,7 @@ export default function Applications() {
                                                     } else {
                                                         openEditCase(row);
                                                     }
-                                                }} sx={{ textTransform: 'none', fontWeight: 600, border: '1px solid #bfdbfe' }}>
+                                                }} sx={{ textTransform: 'none', fontWeight: 600, border: '1px solid #FF8A55' }}>
                                                     <EditDocumentIcon />
                                                 </IconButton>
 
@@ -698,13 +698,13 @@ export default function Applications() {
                                                                 } else {
                                                                     openEditCase(row, true);
                                                                 }
-                                                            }} sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe', color: '#3b82f6', '&:hover': { bgcolor: '#dbeafe' } }}>
+                                                            }} sx={{ bgcolor: '#FFF7F2', border: '1px solid #FF8A55', color: '#FF5A14', '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' } }}>
                                                                 <VisibilityIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
                                                         <Tooltip title="Case Timeline">
                                                             <IconButton size="small" onClick={() => openBrokerTimelineFor(row)}
-                                                                sx={{ bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', color: '#16a34a', '&:hover': { bgcolor: '#dcfce7' } }}>
+                                                                sx={{ bgcolor: '#FFF7F2', border: '1px solid #FF8A55', color: '#FF5A14', '&:hover': { bgcolor: '#dcfce7' } }}>
                                                                 <TimelineIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
@@ -713,11 +713,11 @@ export default function Applications() {
                                                                 <IconButton size="small" onClick={() => openCommentThreadFor(row)}
                                                                     disabled={!row.underwriter_comment_count || row.underwriter_comment_count <= 0}
                                                                     sx={{ 
-                                                                        bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : '#fdf4ff', 
+                                                                        bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : '#FFF7F2', 
                                                                         border: '1px solid',
-                                                                        borderColor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#e2e8f0' : '#e9d5ff', 
-                                                                        color: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#94a3b8' : '#9333ea', 
-                                                                        '&:hover': { bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : '#f3e8ff' } 
+                                                                        borderColor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#e2e8f0' : '#FF8A55', 
+                                                                        color: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#94a3b8' : '#FF5A14', 
+                                                                        '&:hover': { bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : 'rgba(255, 90, 20, 0.08)' } 
                                                                     }}>
                                                                     <ForumIcon fontSize="small" />
                                                                 </IconButton>
@@ -729,7 +729,7 @@ export default function Applications() {
                                                         <Tooltip title="Review Case">
                                                             <IconButton size="small"
                                                                 onClick={() => openReview(row)}
-                                                                sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe', color: '#3b82f6', '&:hover': { bgcolor: '#dbeafe' } }}>
+                                                                sx={{ bgcolor: '#FFF7F2', border: '1px solid #FF8A55', color: '#FF5A14', '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' } }}>
                                                                 <VisibilityIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
@@ -737,7 +737,7 @@ export default function Applications() {
                                                             <IconButton
                                                                 size="small"
                                                                 onClick={() => openCommentThreadFor(row)}
-                                                                sx={{ bgcolor: '#fdf4ff', border: '1px solid #e9d5ff', color: '#9333ea', '&:hover': { bgcolor: '#f3e8ff' } }}>
+                                                                sx={{ bgcolor: '#FFF7F2', border: '1px solid #FF8A55', color: '#FF5A14', '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' } }}>
                                                                 <ForumIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
@@ -755,12 +755,12 @@ export default function Applications() {
 
             {/* Upload Docs Dialog */}
             <Dialog open={openUploadDialog} onClose={() => !uploading && setOpenUploadDialog(false)} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-                <DialogTitle sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>Upload Application Documents</DialogTitle>
+                <DialogTitle sx={{ fontWeight: 800, bgcolor: themeColors.cardBg, borderBottom: '1px solid #e2e8f0' }}>Upload Application Documents</DialogTitle>
                 <DialogContent sx={{ pt: 3 }}>
-                    <Box sx={{ border: '2px dashed #cbd5e1', borderRadius: 3, p: 3, textAlign: 'center', bgcolor: '#f8fafc', mb: 2 }}>
+                    <Box sx={{ border: '2px dashed #cbd5e1', borderRadius: 3, p: 3, textAlign: 'center', bgcolor: themeColors.cardBg, mb: 2 }}>
                         <UploadFileIcon sx={{ fontSize: 48, color: '#94a3b8', mb: 1.5 }} />
-                        <Typography variant="body2" sx={{ fontWeight: 700, color: '#334155', mb: 0.5 }}>Select application files</Typography>
-                        <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mb: 1.5 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary, mb: 0.5 }}>Select application files</Typography>
+                        <Typography variant="caption" sx={{ color: themeColors.textSecondary, display: 'block', mb: 1.5 }}>
                             Only PDF files accepted • Max size 3MB
                         </Typography>
                         <Button variant="outlined" component="label" disabled={uploading} sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2 }}>
@@ -779,16 +779,16 @@ export default function Applications() {
 
                     {selectedFiles.length > 0 && (
                         <Box sx={{ mb: 1 }}>
-                            <Typography variant="caption" sx={{ fontWeight: 700, color: '#475569', display: 'block', mb: 1 }}>
+                            <Typography variant="caption" sx={{ fontWeight: 700, color: themeColors.textSecondary, display: 'block', mb: 1 }}>
                                 Selected Files ({selectedFiles.length}):
                             </Typography>
                             <Stack spacing={1}>
                                 {selectedFiles.map((file, idx) => (
-                                    <Box key={idx} sx={{ p: 1, bgcolor: '#f1f5f9', borderRadius: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Typography variant="caption" sx={{ fontWeight: 600, color: '#0f172a', maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    <Box key={idx} sx={{ p: 1, bgcolor: themeColors.cardBg, borderRadius: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography variant="caption" sx={{ fontWeight: 600, color: themeColors.textPrimary, maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                             {file.name}
                                         </Typography>
-                                        <Typography variant="caption" sx={{ color: '#64748b' }}>
+                                        <Typography variant="caption" sx={{ color: themeColors.textSecondary }}>
                                             {(file.size / (1024 * 1024)).toFixed(2)} MB
                                         </Typography>
                                     </Box>
@@ -798,7 +798,7 @@ export default function Applications() {
                     )}
                 </DialogContent>
                 <DialogActions sx={{ px: 3, pb: 3 }}>
-                    <Button onClick={() => setOpenUploadDialog(false)} disabled={uploading} sx={{ color: '#64748b', fontWeight: 600 }}>Cancel</Button>
+                    <Button onClick={() => setOpenUploadDialog(false)} disabled={uploading} sx={{ color: themeColors.textSecondary, fontWeight: 600 }}>Cancel</Button>
                     <Button onClick={handleCustomUploadProcess} variant="contained" disabled={selectedFiles.length === 0 || uploading} sx={{ fontWeight: 700, borderRadius: 2, minWidth: 100 }}>
                         {uploading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : 'Process'}
                     </Button>
@@ -807,9 +807,9 @@ export default function Applications() {
 
             {/* Upload Results Dialog */}
             <Dialog open={openResultDialog} onClose={() => setOpenResultDialog(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 4 } }}>
-                <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', p: 3 }}>
+                <DialogTitle sx={{ bgcolor: themeColors.cardBg, borderBottom: '1px solid #e2e8f0', p: 3 }}>
                     <Stack direction="row" alignItems="center" spacing={1}>
-                        <CheckCircleIcon sx={{ color: '#16a34a', fontSize: 28 }} />
+                        <CheckCircleIcon sx={{ color: '#FF5A14', fontSize: 28 }} />
                         <Typography variant="h6" sx={{ fontWeight: 800 }}>Application Processed Successfully!</Typography>
                     </Stack>
                 </DialogTitle>
@@ -817,7 +817,7 @@ export default function Applications() {
                     {uploadResult && (
                         <Box>
                             {isBroker ? (
-                                <Box sx={{ p: 3, mt: 3, bgcolor: '#f0fdf4', borderRadius: 2, border: '1px solid #86efac', textAlign: 'center' }}>
+                                <Box sx={{ p: 3, mt: 3, bgcolor: '#FFF7F2', borderRadius: 2, border: '1px solid #86efac', textAlign: 'center' }}>
                                     <Typography variant="h6" sx={{ color: '#166534', fontWeight: 700, mb: 1 }}>
                                         Application Under Processing
                                     </Typography>
@@ -827,17 +827,17 @@ export default function Applications() {
                                 </Box>
                             ) : (
                                 <>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, p: 2.5, bgcolor: uploadResult.risk_score <= 20 ? '#f0fdf4' : uploadResult.risk_score <= 40 ? '#fff7ed' : '#fef2f2', borderRadius: 3, border: `1px solid ${uploadResult.risk_score <= 20 ? '#86efac' : uploadResult.risk_score <= 40 ? '#fed7aa' : '#fca5a5'}` }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, p: 2.5, bgcolor: uploadResult.risk_score <= 20 ? '#FFF7F2' : uploadResult.risk_score <= 40 ? '#fff7ed' : '#fef2f2', borderRadius: 3, border: `1px solid ${uploadResult.risk_score <= 20 ? '#86efac' : uploadResult.risk_score <= 40 ? '#fed7aa' : '#fca5a5'}` }}>
                                         <Box>
-                                            <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>Risk Recommendation</Typography>
+                                            <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Risk Recommendation</Typography>
                                             <Typography variant="h5" sx={{ fontWeight: 900, color: uploadResult.risk_score <= 20 ? '#166534' : uploadResult.risk_score <= 40 ? '#9a3412' : '#991b1b', mt: 0.5 }}>
                                                 {uploadResult.recommendation}
                                             </Typography>
                                         </Box>
                                         <Box sx={{ textAlign: 'right' }}>
-                                            <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>Risk Score</Typography>
+                                            <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Risk Score</Typography>
                                             <Stack direction="row" alignItems="baseline" justifyContent="flex-end" sx={{ mt: 0.5 }}>
-                                                <Typography variant="h3" sx={{ fontWeight: 900, color: uploadResult.risk_score <= 20 ? '#16a34a' : uploadResult.risk_score <= 40 ? '#d97706' : '#ef4444' }}>
+                                                <Typography variant="h3" sx={{ fontWeight: 900, color: uploadResult.risk_score <= 20 ? '#FF5A14' : uploadResult.risk_score <= 40 ? '#d97706' : '#ef4444' }}>
                                                     {uploadResult.risk_score}
                                                 </Typography>
                                                 <Typography variant="h6" sx={{ color: '#94a3b8', ml: 0.5 }}>/100</Typography>
@@ -847,36 +847,36 @@ export default function Applications() {
 
                                     {/* Health Insurance Specifics */}
                                     {(uploadResult.ped_waiting_period_months != null || uploadResult.base_premium_inr != null) && (
-                                        <Box sx={{ mb: 3, p: 2, bgcolor: '#f8fafc', borderRadius: 3, border: '1px solid #e2e8f0' }}>
+                                        <Box sx={{ mb: 3, p: 2, bgcolor: themeColors.cardBg, borderRadius: 3, border: themeColors.border }}>
                                             <Grid container spacing={2}>
                                                 <Grid item xs={6}>
-                                                    <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>Tier</Typography>
-                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#0f172a' }}>{uploadResult.recommended_plan_tier}</Typography>
+                                                    <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Tier</Typography>
+                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>{uploadResult.recommended_plan_tier}</Typography>
                                                 </Grid>
                                                 <Grid item xs={6}>
-                                                    <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>Base Premium</Typography>
-                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#0f172a' }}>₹{uploadResult.base_premium_inr} / Year</Typography>
+                                                    <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Base Premium</Typography>
+                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>₹{uploadResult.base_premium_inr} / Year</Typography>
                                                 </Grid>
                                                 <Grid item xs={6}>
-                                                    <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>Loading</Typography>
-                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#0f172a' }}>{uploadResult.loading_percentage}%</Typography>
+                                                    <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Loading</Typography>
+                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>{uploadResult.loading_percentage}%</Typography>
                                                 </Grid>
                                                 <Grid item xs={6}>
-                                                    <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>Final Premium</Typography>
-                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#0f172a' }}>₹{uploadResult.final_premium_inr} / Year</Typography>
+                                                    <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Final Premium</Typography>
+                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>₹{uploadResult.final_premium_inr} / Year</Typography>
                                                 </Grid>
                                                 {uploadResult.ped_waiting_period_months > 0 && (
                                                     <Grid item xs={12}>
-                                                        <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>PED Waiting Period</Typography>
+                                                        <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>PED Waiting Period</Typography>
                                                         <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#ef4444' }}>{uploadResult.ped_waiting_period_months} Months</Typography>
                                                     </Grid>
                                                 )}
                                                 {uploadResult.exclusions && uploadResult.exclusions.length > 0 && (
                                                     <Grid item xs={12}>
-                                                        <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800 }}>Exclusions</Typography>
+                                                        <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Exclusions</Typography>
                                                         <Stack spacing={0.5}>
                                                             {uploadResult.exclusions.map((ex, idx) => (
-                                                                <Typography key={idx} variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}>• {ex}</Typography>
+                                                                <Typography key={idx} variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.8rem' }}>• {ex}</Typography>
                                                             ))}
                                                         </Stack>
                                                     </Grid>
@@ -885,13 +885,13 @@ export default function Applications() {
                                         </Box>
                                     )}
 
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#475569', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#3b82f6', borderRadius: 1 }} />
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textSecondary, mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#FF5A14', borderRadius: 1 }} />
                                         Process Stats
                                     </Typography>
                                     <Stack spacing={1.5}>
-                                        <Box sx={{ p: 2, bgcolor: '#f8fafc', borderRadius: 2, border: '1px solid #e2e8f0' }}>
-                                            <Typography variant="body2" sx={{ color: '#0f172a', fontWeight: 600 }}>
+                                        <Box sx={{ p: 2, bgcolor: themeColors.cardBg, borderRadius: 2, border: themeColors.border }}>
+                                            <Typography variant="body2" sx={{ color: themeColors.textPrimary, fontWeight: 600 }}>
                                                 {uploadResult.message || 'The insurance application files have been successfully processed and analysed. The Risk Assessment Engine has computed a blended underwriting recommendation score.'}
                                             </Typography>
                                         </Box>
@@ -910,7 +910,7 @@ export default function Applications() {
 
             {/* New / Edit Case Dialog */}
             <Dialog open={openNewCase} onClose={() => setOpenNewCase(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-                <DialogTitle sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                <DialogTitle sx={{ fontWeight: 800, bgcolor: themeColors.cardBg, borderBottom: '1px solid #e2e8f0' }}>
                     {viewMode ? 'Application & Documents View' : (editCaseId ? 'Edit Application & Documents' : 'New Insurance Application')}
                 </DialogTitle>
                 {viewMode && isBroker && currentCaseForStepper && (
@@ -932,24 +932,24 @@ export default function Applications() {
 
                     <Box sx={{ display: 'flex', gap: 2, mb: applicationType === 'Existing Claim' ? 2 : 4 }}>
                         <Box sx={{ flex: 1 }}>
-                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, mb: 0.5, display: 'block' }}>Application Type</Typography>
+                            <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, mb: 0.5, display: 'block' }}>Application Type</Typography>
                             <select
                                 value={applicationType}
                                 onChange={e => setApplicationType(e.target.value)}
                                 disabled={viewMode}
-                                style={{ width: '100%', padding: '14px 40px 14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', backgroundColor: viewMode ? '#f1f5f9' : '#fff', cursor: viewMode ? 'default' : 'pointer', outline: 'none', appearance: 'none', backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '20px' }}
+                                style={{ width: '100%', padding: '14px 40px 14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', backgroundColor: viewMode ? themeColors.bg : themeColors.cardBg, cursor: viewMode ? 'default' : 'pointer', outline: 'none', appearance: 'none', backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '20px' }}
                             >
                                 <option value="Existing Claim">Existing Claim</option>
                                 <option value="New Policy">New Policy</option>
                             </select>
                         </Box>
                         <Box sx={{ flex: 1 }}>
-                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, mb: 0.5, display: 'block' }}>Insurance Type</Typography>
+                            <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, mb: 0.5, display: 'block' }}>Insurance Type</Typography>
                             <select
                                 value={policyType}
                                 onChange={e => setPolicyType(e.target.value)}
                                 disabled={viewMode}
-                                style={{ width: '100%', padding: '14px 40px 14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', backgroundColor: viewMode ? '#f1f5f9' : '#fff', cursor: viewMode ? 'default' : 'pointer', outline: 'none', appearance: 'none', backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '20px' }}
+                                style={{ width: '100%', padding: '14px 40px 14px 12px', fontSize: '1rem', border: '1px solid #c4c4c4', borderRadius: '6px', backgroundColor: viewMode ? themeColors.bg : themeColors.cardBg, cursor: viewMode ? 'default' : 'pointer', outline: 'none', appearance: 'none', backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '20px' }}
                             >
                                 <option value="Health Insurance">Health Insurance</option>
                                 <option value="Life Insurance">Life Insurance</option>
@@ -961,7 +961,7 @@ export default function Applications() {
 
                     {/* applicationType === 'Existing Claim' && (
                         <Box sx={{ mb: 4 }}>
-                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, mb: 0.5, display: 'block' }}>Claim Category</Typography>
+                            <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, mb: 0.5, display: 'block' }}>Claim Category</Typography>
                             <select
                                 value={claimType}
                                 onChange={e => setClaimType(e.target.value)}
@@ -992,7 +992,7 @@ export default function Applications() {
                         if (policies.length > 0) {
                             return (
                                 <Box sx={{ mb: 4 }}>
-                                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: 0.5 }}>Suggested Add-on Sub-Policies</Typography>
+                                    <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: 0.5 }}>Suggested Add-on Sub-Policies</Typography>
                                     <Grid container spacing={1.5}>
                                         {policies.map(p => (
                                             <Grid item xs={4} key={p}>
@@ -1010,18 +1010,18 @@ export default function Applications() {
 
                     {editCaseId && existingDocs.length > 0 && (
                         <Box sx={{ mb: 3 }}>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1, color: '#334155' }}>Already Uploaded Documents:</Typography>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1, color: themeColors.textPrimary }}>Already Uploaded Documents:</Typography>
                             <Stack spacing={1}>
                                 {existingDocs.map((doc, idx) => (
-                                    <Box key={idx} sx={{ p: 1.5, bgcolor: '#f1f5f9', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+                                    <Box key={idx} sx={{ p: 1.5, bgcolor: themeColors.cardBg, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                             <DescriptionIcon color="primary" />
-                                            <Typography variant="body2" sx={{ fontWeight: 600, color: '#334155' }}>
+                                            <Typography variant="body2" sx={{ fontWeight: 600, color: themeColors.textPrimary }}>
                                                 {doc.file_name}
                                             </Typography>
                                         </Box>
                                         <Box>
-                                            <IconButton size="small" component="a" href={`http://127.0.0.1:8000/uploads/${doc.file_name}`} target="_blank" rel="noopener noreferrer" sx={{ color: '#3b82f6' }}>
+                                            <IconButton size="small" component="a" href={`http://127.0.0.1:8000/uploads/${doc.file_name}`} target="_blank" rel="noopener noreferrer" sx={{ color: '#FF5A14' }}>
                                                 <VisibilityIcon fontSize="small" />
                                             </IconButton>
                                             {!viewMode && (
@@ -1050,7 +1050,7 @@ export default function Applications() {
 
                         return (
                             <Box sx={{ mb: 2 }}>
-                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 1.5 }}>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: themeColors.textPrimary, mb: 1.5 }}>
                                     {editCaseId ? 'Upload Missing/New Documents' : 'Upload Application Documents'}
                                 </Typography>
                                 <Typography variant="caption" sx={{ color: '#ef4444', fontWeight: 700, display: 'block', mb: 2 }}>
@@ -1064,7 +1064,7 @@ export default function Applications() {
                                         return (
                                             <Grid item xs={6} key={idx} sx={{ pr: 1, pb: 1 }}>
                                                 <Box sx={{ mb: 0 }}>
-                                                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#475569', display: 'block', mb: 0.5 }}>
+                                                    <Typography variant="caption" sx={{ fontWeight: 700, color: themeColors.textSecondary, display: 'block', mb: 0.5 }}>
                                                         {doc.name} <span style={{ color: '#94a3b8', fontWeight: 500 }}>({isPhoto ? '.png, .jpg' : '.pdf'})</span> {doc.req && <span style={{ color: '#ef4444' }}>*</span>}
                                                     </Typography>
                                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -1098,8 +1098,8 @@ export default function Applications() {
                                                         </Button>
                                                         {uploadedFile && (
                                                             <>
-                                                                <CheckCircleIcon sx={{ color: '#16a34a', fontSize: 18 }} />
-                                                                <Typography variant="caption" sx={{ color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 100 }}>
+                                                                <CheckCircleIcon sx={{ color: '#FF5A14', fontSize: 18 }} />
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 100 }}>
                                                                     {uploadedFile.name}
                                                                 </Typography>
                                                             </>
@@ -1120,7 +1120,7 @@ export default function Applications() {
                         <Button onClick={() => setOpenNewCase(false)} variant="contained" sx={{ fontWeight: 700, borderRadius: 2, ml: 'auto' }}>Close</Button>
                     ) : (
                         <>
-                            <Button onClick={() => setOpenNewCase(false)} sx={{ color: '#64748b', fontWeight: 600 }}>Cancel</Button>
+                            <Button onClick={() => setOpenNewCase(false)} sx={{ color: themeColors.textSecondary, fontWeight: 600 }}>Cancel</Button>
                             <Button onClick={handleCreateCase} variant="contained" disabled={!applicantName || submitting} sx={{ fontWeight: 700, borderRadius: 2 }}>
                                 {submitting ? (
                                     <>
@@ -1136,7 +1136,7 @@ export default function Applications() {
 
             {/* Validation Documents Dialog */}
             <Dialog open={missingDocsDialog} onClose={() => setMissingDocsDialog(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-                <DialogTitle sx={{ bgcolor: missingDocsList.length > 0 ? '#fef2f2' : '#f0fdf4', borderBottom: `1px solid ${missingDocsList.length > 0 ? '#fca5a5' : '#86efac'}`, p: 3 }}>
+                <DialogTitle sx={{ bgcolor: missingDocsList.length > 0 ? '#fef2f2' : '#FFF7F2', borderBottom: `1px solid ${missingDocsList.length > 0 ? '#fca5a5' : '#86efac'}`, p: 3 }}>
                     <Stack direction="row" alignItems="center" spacing={1}>
                         <Typography variant="h6" sx={{ fontWeight: 800, color: missingDocsList.length > 0 ? '#b91c1c' : '#166534' }}>
                             {missingDocsList.length > 0 ? '⚠️ Missing Required Documents' : '✅ All Required Documents Detected'}
@@ -1144,12 +1144,12 @@ export default function Applications() {
                     </Stack>
                 </DialogTitle>
                 <DialogContent sx={{ p: 4 }}>
-                    <Typography variant="body1" sx={{ color: '#334155', fontWeight: 600, mb: 2 }}>
+                    <Typography variant="body1" sx={{ color: themeColors.textPrimary, fontWeight: 600, mb: 2 }}>
                         Here is the document validation summary for your upload:
                     </Typography>
 
                     {/* Mandatory section label */}
-                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, display: 'block', mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>
+                    <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, display: 'block', mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>
                         📋 Mandatory Documents
                     </Typography>
                     <Stack spacing={1.5} sx={{ mb: 3 }}>
@@ -1181,7 +1181,7 @@ export default function Applications() {
 
                     {/* Optional documents */}
                     <>
-                        <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, display: 'block', mb: 1, mt: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
+                        <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, display: 'block', mb: 1, mt: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
                             📎 Additional Documents (Optional)
                         </Typography>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
@@ -1195,9 +1195,9 @@ export default function Applications() {
                                     icon={<span style={{ fontSize: '14px', marginLeft: 8 }}>📄</span>}
                                     variant="outlined"
                                     sx={{
-                                        bgcolor: '#f8fafc',
+                                        bgcolor: themeColors.cardBg,
                                         border: '1px dashed #cbd5e1',
-                                        color: '#475569',
+                                        color: themeColors.textSecondary,
                                         fontWeight: 600,
                                         py: 1,
                                         '& .MuiChip-icon': { color: '#94a3b8' }
@@ -1227,17 +1227,17 @@ export default function Applications() {
             <Dialog open={Boolean(selectedCase)} onClose={() => setSelectedCase(null)} maxWidth="lg" fullWidth slotProps={{ paper: { sx: { borderRadius: 4, border: 'none', outline: 'none', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' } } }}>
                 {selectedCase && (
                     <>
-                        <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <DialogTitle sx={{ bgcolor: themeColors.cardBg, borderBottom: '1px solid #e2e8f0', p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Box>
                                 <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                                    Underwriter Review — <Box component="span" sx={{ color: '#2563eb', fontFamily: 'monospace' }}>{selectedCase.case_number}</Box>
+                                    Underwriter Review — <Box component="span" sx={{ color: '#FF5A14', fontFamily: 'monospace' }}>{selectedCase.case_number}</Box>
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">{selectedCase.applicant_name} · {selectedCase.policy_type}</Typography>
                                 <Box sx={{ mt: 1, display: 'flex', gap: 2 }}>
                                     <Chip
                                         label={`Assigned To: ${selectedCase.assigned_to === user?.id ? 'Self' : (selectedCase.assigned_user || 'Pending Assignment')}`}
                                         size="small"
-                                        sx={{ bgcolor: '#f1f5f9', color: '#334155', fontWeight: 600, fontSize: '0.75rem' }}
+                                        sx={{ bgcolor: themeColors.cardBg, color: themeColors.textPrimary, fontWeight: 600, fontSize: '0.75rem' }}
                                     />
                                     <Chip
                                         label={`SLA Due: ${selectedCase.sla_due_at ? new Date(selectedCase.sla_due_at).toLocaleDateString() : 'N/A'} (${(() => {
@@ -1250,7 +1250,7 @@ export default function Applications() {
                                             return diffDays > 0 ? `${diffDays} Days Left` : diffDays === 0 ? 'Due Today' : `Overdue by ${Math.abs(diffDays)} Days`;
                                         })()})`}
                                         size="small"
-                                        color="warning"
+                                        color="primary"
                                         sx={{ fontWeight: 600, fontSize: '0.75rem' }}
                                     />
                                 </Box>
@@ -1258,8 +1258,8 @@ export default function Applications() {
                             {riskData && (
                                 <Stack direction="row" spacing={3} alignItems="center">
                                     <Box sx={{ textAlign: 'right' }}>
-                                        <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800, lineHeight: 1 }}>AI Risk Score</Typography>
-                                        <Typography variant="h5" sx={{ fontWeight: 900, color: riskData.risk_score <= 20 ? '#16a34a' : riskData.risk_score <= 40 ? '#d97706' : '#ef4444', lineHeight: 1 }}>
+                                        <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800, lineHeight: 1 }}>AI Risk Score</Typography>
+                                        <Typography variant="h5" sx={{ fontWeight: 900, color: riskData.risk_score <= 20 ? '#FF5A14' : riskData.risk_score <= 40 ? '#d97706' : '#ef4444', lineHeight: 1 }}>
                                             {(() => {
                                                 let computedScore = riskData.findings?.breakdown ? riskData.findings.breakdown.reduce((sum, b) => sum + (b.weighted_score || 0), 0) : (riskData.findings?.risk_score ?? riskData.risk_score ?? 0);
                                                 computedScore = Math.min(100, Math.max(0, computedScore));
@@ -1268,8 +1268,8 @@ export default function Applications() {
                                         </Typography>
                                     </Box>
                                     <Box sx={{ textAlign: 'center', px: 2, borderLeft: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0' }}>
-                                        <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800, lineHeight: 1 }}>Recommendation</Typography>
-                                        <Typography variant="h6" sx={{ fontWeight: 900, color: riskData.risk_score <= 20 ? '#16a34a' : riskData.risk_score <= 40 ? '#d97706' : '#ef4444', lineHeight: 1 }}>
+                                        <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800, lineHeight: 1 }}>Recommendation</Typography>
+                                        <Typography variant="h6" sx={{ fontWeight: 900, color: riskData.risk_score <= 20 ? '#FF5A14' : riskData.risk_score <= 40 ? '#d97706' : '#ef4444', lineHeight: 1 }}>
                                             {(() => {
                                                 const rec = riskData.findings?.recommendation || riskData.findings?.decision || '';
                                                 if (rec.toLowerCase().includes('approve')) return 'Approve';
@@ -1281,8 +1281,8 @@ export default function Applications() {
                                         </Typography>
                                     </Box>
                                     <Box sx={{ textAlign: 'right' }}>
-                                        <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800, lineHeight: 1 }}>Confidence</Typography>
-                                        <Typography variant="h5" sx={{ fontWeight: 900, color: '#7c3aed', lineHeight: 1 }}>
+                                        <Typography variant="overline" sx={{ color: themeColors.textSecondary, fontWeight: 800, lineHeight: 1 }}>Confidence</Typography>
+                                        <Typography variant="h5" sx={{ fontWeight: 900, color: '#FF7A45', lineHeight: 1 }}>
                                             {riskData.confidence_score != null ? Math.round(riskData.confidence_score > 1 ? riskData.confidence_score : riskData.confidence_score * 100) : (riskData.findings?.ai_confidence != null ? Math.round(riskData.findings.ai_confidence > 1 ? riskData.findings.ai_confidence : riskData.findings.ai_confidence * 100) : 85)}<Box component="span" sx={{ fontSize: '0.9rem', color: '#94a3b8' }}>%</Box>
                                         </Typography>
                                     </Box>
@@ -1291,7 +1291,7 @@ export default function Applications() {
                         </DialogTitle>
                         <DialogContent sx={{ p: 4, pt: 1.5 }}>
                             {riskLoading ? (
-                                <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /><Typography sx={{ mt: 2, color: '#64748b' }}>Loading AI risk analysis…</Typography></Box>
+                                <Box sx={{ textAlign: 'center', py: 8 }}><CircularProgress /><Typography sx={{ mt: 2, color: themeColors.textSecondary }}>Loading AI risk analysis…</Typography></Box>
                             ) : (
                                 <Stack spacing={3} sx={{ mt: 1 }}>
                                     {/* AI Summaries & Discrepancy Warning */}
@@ -1318,14 +1318,14 @@ export default function Applications() {
                                                 return (
                                                     <Stack spacing={3}>
                                                         {riskData.findings?.ai_narrative && (
-                                                            <Box sx={{ p: 3, bgcolor: '#f1f5f9', borderLeft: '4px solid #3b82f6', borderRadius: 2 }}>
-                                                                <Typography variant="overline" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 1, fontSize: '0.8rem' }}>AI Underwriting Narrative</Typography>
-                                                                <Typography variant="body1" sx={{ color: '#1e293b', fontWeight: 500, lineHeight: 1.6, fontSize: '1.15rem' }}>{riskData.findings.ai_narrative}</Typography>
+                                                            <Box sx={{ p: 3, bgcolor: themeColors.cardBg, borderLeft: '4px solid #FF5A14', borderRadius: 2 }}>
+                                                                <Typography variant="overline" sx={{ fontWeight: 800, color: themeColors.textSecondary, display: 'block', mb: 1, fontSize: '0.8rem' }}>AI Underwriting Narrative</Typography>
+                                                                <Typography variant="body1" sx={{ color: themeColors.textPrimary, fontWeight: 500, lineHeight: 1.6, fontSize: '1.15rem' }}>{riskData.findings.ai_narrative}</Typography>
                                                             </Box>
                                                         )}
 
                                                         {(riskData.findings?.explainability?.chance_of_approval_justification || riskData.findings?.explainability?.why_approved_or_rejected) && (
-                                                            <Box sx={{ p: 3, bgcolor: '#fdf4ff', borderLeft: '4px solid #d946ef', borderRadius: 2, mt: 2 }}>
+                                                            <Box sx={{ p: 3, bgcolor: '#FFF7F2', borderLeft: '4px solid #d946ef', borderRadius: 2, mt: 2 }}>
                                                                 <Typography variant="overline" sx={{ fontWeight: 800, color: '#86198f', display: 'block', mb: 1, fontSize: '0.8rem' }}>Approval Probability & Justification</Typography>
                                                                 <Typography variant="body1" sx={{ color: '#4a044e', fontWeight: 600, lineHeight: 1.6, fontSize: '1.15rem' }}>
                                                                     {riskData.findings.explainability.chance_of_approval_justification || riskData.findings.explainability.why_approved_or_rejected}
@@ -1334,8 +1334,8 @@ export default function Applications() {
                                                         )}
 
                                                         {riskData.past_cases_comparison && (
-                                                            <Box sx={{ p: 3, bgcolor: '#fafafa', border: '1px solid #e5e7eb', borderRadius: 2, mt: 2 }}>
-                                                                <Typography variant="overline" sx={{ fontWeight: 800, color: '#374151', display: 'block', mb: 2, fontSize: '0.8rem', letterSpacing: 0.5 }}>
+                                                            <Box sx={{ p: 3, bgcolor: themeColors.cardBg, border: themeColors.border, borderRadius: 2, mt: 2 }}>
+                                                                <Typography variant="overline" sx={{ fontWeight: 800, color: themeColors.textPrimary, display: 'block', mb: 2, fontSize: '0.8rem', letterSpacing: 0.5 }}>
                                                                     Actuarial Historical Comparison
                                                                 </Typography>
                                                                 
@@ -1409,12 +1409,12 @@ export default function Applications() {
                                                                             <Table size="small" sx={{ border: '1px solid #f3f4f6', borderRadius: 1.5, overflow: 'hidden' }}>
                                                                                 <TableHead sx={{ bgcolor: '#f9fafb' }}>
                                                                                     <TableRow>
-                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Case Number</TableCell>
-                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Applicant</TableCell>
-                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Medical Condition</TableCell>
-                                                                                        {/* <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }}>Requested Coverage</TableCell> */}
-                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }} align="right">Similarity Match</TableCell>
-                                                                                        <TableCell sx={{ fontWeight: 800, color: '#374151', py: 1 }} align="center">Decision</TableCell>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, py: 1 }}>Case Number</TableCell>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, py: 1 }}>Applicant</TableCell>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, py: 1 }}>Medical Condition</TableCell>
+                                                                                        {/* <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, py: 1 }}>Requested Coverage</TableCell> */}
+                                                                                        <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, py: 1 }} align="right">Similarity Match</TableCell>
+                                                                                        <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, py: 1 }} align="center">Decision</TableCell>
                                                                                     </TableRow>
                                                                                 </TableHead>
                                                                                 <TableBody>
@@ -1502,7 +1502,7 @@ export default function Applications() {
                                                                                                     componentsProps={{
                                                                                                         tooltip: {
                                                                                                             sx: {
-                                                                                                                bgcolor: '#1e293b',
+                                                                                                                bgcolor: themeColors.textPrimary,
                                                                                                                 color: '#f8fafc',
                                                                                                                 boxShadow: 3,
                                                                                                                 maxWidth: 320,
@@ -1512,12 +1512,12 @@ export default function Applications() {
                                                                                                         },
                                                                                                         arrow: {
                                                                                                             sx: {
-                                                                                                                color: '#1e293b'
+                                                                                                                color: themeColors.textPrimary
                                                                                                             }
                                                                                                         }
                                                                                                     }}
                                                                                                 >
-                                                                                                    <Box component="span" sx={{ fontWeight: 700, color: '#4f46e5', cursor: 'pointer', textDecoration: 'underline dotted #818cf8', '&:hover': { color: '#3730a3' } }}>
+                                                                                                    <Box component="span" sx={{ fontWeight: 700, color: '#FF5A14', cursor: 'pointer', textDecoration: 'underline dotted #818cf8', '&:hover': { color: '#3730a3' } }}>
                                                                                                         {pastCase.similarity_score}%
                                                                                                     </Box>
                                                                                                 </Tooltip>
@@ -1546,28 +1546,28 @@ export default function Applications() {
 
                                                         <Grid container spacing={2}>
                                                             <Grid xs={12} sm={4}>
-                                                                <Box sx={{ p: 2, bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2 }}>
-                                                                    <Typography variant="overline" sx={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Application Type</Typography>
-                                                                    <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800, fontSize: '1.15rem' }}>
+                                                                <Box sx={{ p: 2, bgcolor: themeColors.cardBg, border: themeColors.border, borderRadius: 2 }}>
+                                                                    <Typography variant="overline" sx={{ fontWeight: 800, color: themeColors.textSecondary, display: 'block', fontSize: '0.75rem' }}>Application Type</Typography>
+                                                                    <Typography variant="h6" sx={{ color: themeColors.textPrimary, fontWeight: 800, fontSize: '1.15rem' }}>
                                                                         {selectedCase.application_type || 'Existing Claim'} &nbsp;
-                                                                        <Box component="span" sx={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                                                                        <Box component="span" sx={{ fontSize: '0.75rem', color: themeColors.textSecondary, fontWeight: 600 }}>
                                                                             ({selectedCase.policy_type || 'Health Insurance'})
                                                                         </Box>
                                                                     </Typography>
                                                                 </Box>
                                                             </Grid>
                                                             <Grid xs={12} sm={4}>
-                                                                <Box sx={{ p: 2, bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2 }}>
-                                                                    <Typography variant="overline" sx={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Total Coverage</Typography>
-                                                                    <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800, fontSize: '1.15rem' }}>
+                                                                <Box sx={{ p: 2, bgcolor: themeColors.cardBg, border: themeColors.border, borderRadius: 2 }}>
+                                                                    <Typography variant="overline" sx={{ fontWeight: 800, color: themeColors.textSecondary, display: 'block', fontSize: '0.75rem' }}>Total Coverage</Typography>
+                                                                    <Typography variant="h6" sx={{ color: themeColors.textPrimary, fontWeight: 800, fontSize: '1.15rem' }}>
                                                                         {selectedCase.requested_coverage ? `₹${Number(selectedCase.requested_coverage).toLocaleString()}` : (aiCovStr || 'Not Specified')}
                                                                     </Typography>
                                                                 </Box>
                                                             </Grid>
                                                             <Grid xs={12} sm={4}>
-                                                                <Box sx={{ p: 2, bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2 }}>
-                                                                    <Typography variant="overline" sx={{ fontWeight: 800, color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Coverage Type</Typography>
-                                                                    <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800, fontSize: '1.15rem' }}>
+                                                                <Box sx={{ p: 2, bgcolor: themeColors.cardBg, border: themeColors.border, borderRadius: 2 }}>
+                                                                    <Typography variant="overline" sx={{ fontWeight: 800, color: themeColors.textSecondary, display: 'block', fontSize: '0.75rem' }}>Coverage Type</Typography>
+                                                                    <Typography variant="h6" sx={{ color: themeColors.textPrimary, fontWeight: 800, fontSize: '1.15rem' }}>
                                                                         {riskData.findings?.extracted_details?.policy_details?.coverage_type || 'Single (Individual)'}
                                                                     </Typography>
                                                                 </Box>
@@ -1709,105 +1709,105 @@ export default function Applications() {
 
 
                                                         {selectedCase.application_type === 'Existing Claim' && riskData.findings?.claim_decision_engine?.decision !== 'Not Applicable' ? (
-                                                            <Box sx={{ p: 2, bgcolor: '#f8fafc', borderLeft: '4px solid #10b981', borderRadius: 1, mt: 2 }}>
+                                                            <Box sx={{ p: 2, bgcolor: themeColors.cardBg, borderLeft: '4px solid #10b981', borderRadius: 1, mt: 2 }}>
                                                                 <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#047857', mb: 1.5, textTransform: 'uppercase' }}>Claim Adjudication Decision</Typography>
                                                                 <Grid container spacing={2}>
                                                                     <Grid item xs={12} md={6}>
-                                                                        <Box sx={{ p: 1.5, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
+                                                                        <Box sx={{ p: 1.5, bgcolor: themeColors.cardBg, border: themeColors.border, borderRadius: 2 }}>
                                                                             <Stack spacing={1}>
                                                                                 <Stack direction="row" justifyContent="space-between">
-                                                                                    <Typography variant="body2" sx={{ color: '#64748b' }}>Claim Eligibility</Typography>
-                                                                                    <Typography variant="body2" sx={{ fontWeight: 700, color: riskData.findings.claim_decision_engine.claim_eligibility ? '#16a34a' : '#ef4444' }}>
+                                                                                    <Typography variant="body2" sx={{ color: themeColors.textSecondary }}>Claim Eligibility</Typography>
+                                                                                    <Typography variant="body2" sx={{ fontWeight: 700, color: riskData.findings.claim_decision_engine.claim_eligibility ? '#FF5A14' : '#ef4444' }}>
                                                                                         {riskData.findings.claim_decision_engine.claim_eligibility ? 'Eligible' : 'Not Eligible'}
                                                                                     </Typography>
                                                                                 </Stack>
                                                                                 <Stack direction="row" justifyContent="space-between">
-                                                                                    <Typography variant="body2" sx={{ color: '#64748b' }}>Approved Amount</Typography>
+                                                                                    <Typography variant="body2" sx={{ color: themeColors.textSecondary }}>Approved Amount</Typography>
                                                                                     <Typography variant="body2" sx={{ fontWeight: 600 }}>₹{Number(riskData.findings?.claim_decision_engine?.approved_amount || 0).toLocaleString()}</Typography>
                                                                                 </Stack>
                                                                                 {riskData.findings.claim_decision_engine.deductions?.map((deduction, idx) => (
                                                                                     <Stack key={idx} direction="row" justifyContent="space-between">
-                                                                                        <Typography variant="body2" sx={{ color: '#64748b', textTransform: 'capitalize' }}>Deduction ({deduction.type})</Typography>
+                                                                                        <Typography variant="body2" sx={{ color: themeColors.textSecondary, textTransform: 'capitalize' }}>Deduction ({deduction.type})</Typography>
                                                                                         <Typography variant="body2" sx={{ fontWeight: 600, color: '#ef4444' }}>- ₹{Number(deduction.amount || 0).toLocaleString()}</Typography>
                                                                                     </Stack>
                                                                                 ))}
                                                                                 <Divider sx={{ my: 1 }} />
                                                                                 <Stack direction="row" justifyContent="space-between">
-                                                                                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0f172a' }}>Final Payable Amount</Typography>
-                                                                                    <Typography variant="subtitle2" sx={{ fontWeight: 900, color: '#16a34a' }}>₹{Number(riskData.findings?.claim_decision_engine?.final_payable_amount || 0).toLocaleString()}</Typography>
+                                                                                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textPrimary }}>Final Payable Amount</Typography>
+                                                                                    <Typography variant="subtitle2" sx={{ fontWeight: 900, color: '#FF5A14' }}>₹{Number(riskData.findings?.claim_decision_engine?.final_payable_amount || 0).toLocaleString()}</Typography>
                                                                                 </Stack>
                                                                             </Stack>
                                                                         </Box>
                                                                     </Grid>
                                                                     <Grid item xs={12} md={6}>
                                                                         {riskData.findings.policy_information && (
-                                                                            <Box sx={{ p: 1.5, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2, height: '100%' }}>
-                                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, display: 'block', mb: 1 }}>Policy Information</Typography>
+                                                                            <Box sx={{ p: 1.5, bgcolor: themeColors.cardBg, border: themeColors.border, borderRadius: 2, height: '100%' }}>
+                                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, display: 'block', mb: 1 }}>Policy Information</Typography>
                                                                                 <Stack spacing={0.5}>
-                                                                                    <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Policy No:</strong> {riskData.findings.policy_information.policy_number || 'N/A'}</Typography>
-                                                                                    <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Sum Insured:</strong> {riskData.findings.policy_information.sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.sum_insured).toLocaleString()}`}</Typography>
-                                                                                    <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Used So Far:</strong> {riskData.findings.policy_information.used_sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.used_sum_insured).toLocaleString()}`}</Typography>
-                                                                                    <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Remaining:</strong> {riskData.findings.policy_information.remaining_sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.remaining_sum_insured).toLocaleString()}`}</Typography>
-                                                                                    <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}><strong>Waiting Period Completed:</strong> {riskData.findings.policy_information.waiting_period_completed ? 'Yes' : 'No'}</Typography>
+                                                                                    <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.8rem' }}><strong>Policy No:</strong> {riskData.findings.policy_information.policy_number || 'N/A'}</Typography>
+                                                                                    <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.8rem' }}><strong>Sum Insured:</strong> {riskData.findings.policy_information.sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.sum_insured).toLocaleString()}`}</Typography>
+                                                                                    <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.8rem' }}><strong>Used So Far:</strong> {riskData.findings.policy_information.used_sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.used_sum_insured).toLocaleString()}`}</Typography>
+                                                                                    <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.8rem' }}><strong>Remaining:</strong> {riskData.findings.policy_information.remaining_sum_insured === 'UNKNOWN' ? 'UNKNOWN' : `₹${Number(riskData.findings.policy_information.remaining_sum_insured).toLocaleString()}`}</Typography>
+                                                                                    <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.8rem' }}><strong>Waiting Period Completed:</strong> {riskData.findings.policy_information.waiting_period_completed ? 'Yes' : 'No'}</Typography>
                                                                                 </Stack>
                                                                             </Box>
                                                                         )}
                                                                     </Grid>
                                                                     <Grid item xs={12}>
-                                                                        <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800 }}>Decision Justification</Typography>
-                                                                        <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.85rem', mt: 0.5 }}>
+                                                                        <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800 }}>Decision Justification</Typography>
+                                                                        <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.85rem', mt: 0.5 }}>
                                                                             {riskData.findings.claim_decision_engine.reason}
                                                                         </Typography>
                                                                     </Grid>
                                                                 </Grid>
                                                             </Box>
                                                         ) : riskData.findings?.premium_calculation?.premium_output?.length > 0 && (
-                                                            <Box sx={{ p: 2, bgcolor: '#f8fafc', borderLeft: '4px solid #8b5cf6', borderRadius: 1, mt: 2 }}>
+                                                            <Box sx={{ p: 2, bgcolor: themeColors.cardBg, borderLeft: '4px solid #F56B2F', borderRadius: 1, mt: 2 }}>
                                                                 <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#5b21b6', mb: 1.5, textTransform: 'uppercase' }}>Policy Eligibility & Premium Details</Typography>
                                                                 <Grid container spacing={2}>
                                                                     {riskData.findings.policy_eligibility?.eligible_plans && (
                                                                         <Grid item xs={12}>
-                                                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, display: 'block' }}>Eligible Plans</Typography>
+                                                                            <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, mb: 1, display: 'block' }}>Eligible Plans</Typography>
                                                                             <Stack spacing={1} direction="row" flexWrap="wrap" useFlexGap>
                                                                                 {riskData.findings.policy_eligibility.eligible_plans.map((plan, idx) => (
-                                                                                    <Box key={idx} sx={{ p: 1.5, minWidth: 250, flexGrow: 1, bgcolor: plan.allowed ? '#f0fdf4' : '#fef2f2', border: `1px solid ${plan.allowed ? '#bbf7d0' : '#fecaca'}`, borderRadius: 1 }}>
+                                                                                    <Box key={idx} sx={{ p: 1.5, minWidth: 250, flexGrow: 1, bgcolor: plan.allowed ? '#FFF7F2' : '#fef2f2', border: `1px solid ${plan.allowed ? '#FF8A55' : '#fecaca'}`, borderRadius: 1 }}>
                                                                                         <Typography variant="body2" sx={{ fontWeight: 700, color: plan.allowed ? '#166534' : '#991b1b' }}>{plan.plan_name} {plan.allowed ? '✅' : '❌'}</Typography>
-                                                                                        <Typography variant="caption" sx={{ color: '#475569' }}>{plan.reason}</Typography>
+                                                                                        <Typography variant="caption" sx={{ color: themeColors.textSecondary }}>{plan.reason}</Typography>
                                                                                     </Box>
                                                                                 ))}
                                                                             </Stack>
                                                                         </Grid>
                                                                     )}
                                                                     <Grid item xs={12}>
-                                                                        <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mb: 1, mt: riskData.findings.policy_eligibility?.eligible_plans ? 1 : 0, display: 'block' }}>Premium Breakdown by Sum Assured</Typography>
+                                                                        <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, mb: 1, mt: riskData.findings.policy_eligibility?.eligible_plans ? 1 : 0, display: 'block' }}>Premium Breakdown by Sum Assured</Typography>
                                                                         <Grid container spacing={1.5}>
                                                                             {riskData.findings.premium_calculation.premium_output.map((po, idx) => (
                                                                                 <Grid item xs={12} sm={6} md={4} xl={3} key={idx}>
-                                                                                    <Box sx={{ p: 1.2, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
-                                                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1e293b', mb: 1, fontSize: '0.8rem' }}>Sum Assured: ₹{(po.sum_assured || 0).toLocaleString()}</Typography>
+                                                                                    <Box sx={{ p: 1.2, bgcolor: themeColors.cardBg, border: themeColors.border, borderRadius: 2 }}>
+                                                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textPrimary, mb: 1, fontSize: '0.8rem' }}>Sum Assured: ₹{(po.sum_assured || 0).toLocaleString()}</Typography>
                                                                                         <Stack spacing={0.5}>
                                                                                             <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                                                                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.7rem' }}>Base Premium</Typography>
+                                                                                                <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.7rem' }}>Base Premium</Typography>
                                                                                                 <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.7rem' }}>₹{(po.base_premium || 0).toLocaleString()} <Box component="span" sx={{ fontSize: '0.65rem', color: '#94a3b8' }}>/ Yr</Box></Typography>
                                                                                             </Stack>
                                                                                             <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                                                                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.7rem' }}>Risk Loading</Typography>
+                                                                                                <Typography variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.7rem' }}>Risk Loading</Typography>
                                                                                                 <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.7rem' }}>{po.risk_loading_percent || 0}%</Typography>
                                                                                             </Stack>
                                                                                             <Divider sx={{ my: 0.5 }} />
                                                                                             <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                                                                <Typography sx={{ fontWeight: 800, color: '#0f172a', fontSize: '0.65rem' }}>Final (incl. ₹{((po.final_premium || 0) - ((po.base_premium || 0) * (1 + (po.risk_loading_percent || 0) / 100))).toLocaleString()} GST)</Typography>
-                                                                                                <Typography sx={{ fontWeight: 900, color: '#16a34a', fontSize: '0.8rem' }}>₹{(po.final_premium || 0).toLocaleString()} <Box component="span" sx={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600 }}>/ Yr</Box></Typography>
+                                                                                                <Typography sx={{ fontWeight: 800, color: themeColors.textPrimary, fontSize: '0.65rem' }}>Final (incl. ₹{((po.final_premium || 0) - ((po.base_premium || 0) * (1 + (po.risk_loading_percent || 0) / 100))).toLocaleString()} GST)</Typography>
+                                                                                                <Typography sx={{ fontWeight: 900, color: '#FF5A14', fontSize: '0.8rem' }}>₹{(po.final_premium || 0).toLocaleString()} <Box component="span" sx={{ fontSize: '0.65rem', color: themeColors.textSecondary, fontWeight: 600 }}>/ Yr</Box></Typography>
                                                                                             </Stack>
                                                                                         </Stack>
 
                                                                                         {po.addons && po.addons.length > 0 && (
-                                                                                            <Box sx={{ mt: 1.5, p: 1, bgcolor: '#f8fafc', borderRadius: 1, border: '1px solid #e2e8f0' }}>
-                                                                                                <Typography variant="caption" sx={{ color: '#475569', fontWeight: 800, display: 'block', mb: 0.5 }}>Recommended Add-ons:</Typography>
+                                                                                            <Box sx={{ mt: 1.5, p: 1, bgcolor: themeColors.cardBg, borderRadius: 1, border: themeColors.border }}>
+                                                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, display: 'block', mb: 0.5 }}>Recommended Add-ons:</Typography>
                                                                                                 {po.addons.map((addon, aIdx) => (
                                                                                                     <Stack key={aIdx} direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.2 }}>
-                                                                                                        <Typography variant="body2" sx={{ fontSize: '0.65rem', color: '#64748b' }}>+ {addon.name}</Typography>
-                                                                                                        <Typography variant="body2" sx={{ fontSize: '0.65rem', fontWeight: 700, color: '#0f172a' }}>₹{addon.price.toLocaleString()}</Typography>
+                                                                                                        <Typography variant="body2" sx={{ fontSize: '0.65rem', color: themeColors.textSecondary }}>+ {addon.name}</Typography>
+                                                                                                        <Typography variant="body2" sx={{ fontSize: '0.65rem', fontWeight: 700, color: themeColors.textPrimary }}>₹{addon.price.toLocaleString()}</Typography>
                                                                                                     </Stack>
                                                                                                 ))}
                                                                                             </Box>
@@ -1819,9 +1819,9 @@ export default function Applications() {
                                                                     </Grid>
                                                                     {(riskData.findings.exclusions || []).length > 0 && (
                                                                         <Grid xs={12}>
-                                                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, mt: 1, display: 'block' }}>Exclusions</Typography>
+                                                                            <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, mt: 1, display: 'block' }}>Exclusions</Typography>
                                                                             {riskData.findings.exclusions.map((ex, idx) => (
-                                                                                <Typography key={idx} variant="body2" sx={{ color: '#475569', fontSize: '0.8rem' }}>• {ex}</Typography>
+                                                                                <Typography key={idx} variant="body2" sx={{ color: themeColors.textSecondary, fontSize: '0.8rem' }}>• {ex}</Typography>
                                                                             ))}
                                                                         </Grid>
                                                                     )}
@@ -1840,8 +1840,8 @@ export default function Applications() {
                                     {riskData?.findings?.extracted_details && (
                                         <Card sx={{
                                             borderRadius: 4,
-                                            border: '1px solid #e2e8f0',
-                                            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                                            border: themeColors.border,
+                                            bgcolor: themeColors.cardBg,
                                             boxShadow: '0 10px 30px -10px rgba(0,0,0,0.08)',
                                             mb: 1,
                                             overflow: 'hidden'
@@ -1849,14 +1849,14 @@ export default function Applications() {
                                             <Box sx={{
                                                 px: 3,
                                                 py: 2,
-                                                background: 'linear-gradient(90deg, #1e293b 0%, #0f172a 100%)',
+                                                bgcolor: themeColors.sidebarBg,
                                                 color: '#ffffff',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between'
                                             }}>
                                                 <Stack direction="row" alignItems="center" spacing={1}>
-                                                    <AssignmentIcon sx={{ color: '#60a5fa' }} />
+                                                    <AssignmentIcon sx={{ color: themeColors.textPrimary }} />
                                                     <Typography sx={{ fontWeight: 800, fontSize: '0.9rem', letterSpacing: 0.5 }}>
                                                         APPLICANT & POLICY SUMMARY CARD
                                                     </Typography>
@@ -1866,40 +1866,40 @@ export default function Applications() {
                                             <CardContent sx={{ p: 4 }}>
                                                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} divider={<Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' }, borderColor: '#e2e8f0' }} />} sx={{ width: '100%' }}>
                                                     <Box sx={{ flex: 1 }}>
-                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#475569', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                            <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#3b82f6', borderRadius: 1 }} />
+                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textSecondary, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                            <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#FF5A14', borderRadius: 1 }} />
                                                             Patient Bio-Data
                                                         </Typography>
                                                         <Stack spacing={1.5}>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Age</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Age</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.patient_details?.age ? `${riskData.findings.extracted_details.patient_details.age} years` : '—'}
                                                                 </Typography>
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Gender</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b', textTransform: 'capitalize' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Gender</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary, textTransform: 'capitalize' }}>
                                                                     {riskData.findings.extracted_details.patient_details?.gender || '—'}
                                                                 </Typography>
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>BMI</Typography>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>BMI</Typography>
                                                                 <Chip
                                                                     label={riskData.findings.extracted_details.patient_details?.bmi ? `${riskData.findings.extracted_details.patient_details.bmi}` : '—'}
                                                                     size="small"
                                                                     sx={{
                                                                         fontWeight: 700,
                                                                         height: 24,
-                                                                        bgcolor: !riskData.findings.extracted_details.patient_details?.bmi ? '#e2e8f0' : parseFloat(riskData.findings.extracted_details.patient_details.bmi) > 27.5 || parseFloat(riskData.findings.extracted_details.patient_details.bmi) < 18.5 ? '#fef2f2' : '#f0fdf4',
-                                                                        color: !riskData.findings.extracted_details.patient_details?.bmi ? '#475569' : parseFloat(riskData.findings.extracted_details.patient_details.bmi) > 27.5 || parseFloat(riskData.findings.extracted_details.patient_details.bmi) < 18.5 ? '#ef4444' : '#16a34a',
+                                                                        bgcolor: !riskData.findings.extracted_details.patient_details?.bmi ? '#e2e8f0' : parseFloat(riskData.findings.extracted_details.patient_details.bmi) > 27.5 || parseFloat(riskData.findings.extracted_details.patient_details.bmi) < 18.5 ? '#fef2f2' : '#FFF7F2',
+                                                                        color: !riskData.findings.extracted_details.patient_details?.bmi ? themeColors.textSecondary : parseFloat(riskData.findings.extracted_details.patient_details.bmi) > 27.5 || parseFloat(riskData.findings.extracted_details.patient_details.bmi) < 18.5 ? '#ef4444' : '#FF5A14',
                                                                         border: 'none'
                                                                     }}
                                                                 />
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Blood Pressure</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Blood Pressure</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.patient_details?.blood_pressure || '—'}
                                                                 </Typography>
                                                             </Box>
@@ -1907,32 +1907,32 @@ export default function Applications() {
                                                     </Box>
 
                                                     <Box sx={{ flex: 1 }}>
-                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#475569', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                            <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#3b82f6', borderRadius: 1 }} />
+                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textSecondary, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                            <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#FF5A14', borderRadius: 1 }} />
                                                             Contact & Medical
                                                         </Typography>
                                                         <Stack spacing={1.5}>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Occupation</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Occupation</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.patient_details?.occupation || '—'}
                                                                 </Typography>
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Marital Status</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Marital Status</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.patient_details?.marital_status || '—'}
                                                                 </Typography>
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Contact Number</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Contact Number</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.patient_details?.contact_number || '—'}
                                                                 </Typography>
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Email ID</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b', overflowWrap: 'anywhere' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Email ID</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary, overflowWrap: 'anywhere' }}>
                                                                     {riskData.findings.extracted_details.patient_details?.email || '—'}
                                                                 </Typography>
                                                             </Box>
@@ -1946,19 +1946,19 @@ export default function Applications() {
                                                     </Box>
 
                                                     <Box sx={{ flex: 1 }}>
-                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#475569', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textSecondary, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                                                             <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#10b981', borderRadius: 1 }} />
                                                             Policy & Nominee
                                                         </Typography>
                                                         <Stack spacing={1.5}>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Proposal ID / Quote No</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Proposal ID / Quote No</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.policy_details?.policy_number || '—'}
                                                                 </Typography>
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Coverage Amount (AI Detected)</Typography>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Coverage Amount (AI Detected)</Typography>
                                                                 <Typography variant="body2" sx={{ fontWeight: 800, color: '#059669' }}>
                                                                     {riskData.findings.extracted_details.policy_details?.coverage_amount || '—'}
                                                                 </Typography>
@@ -1966,14 +1966,14 @@ export default function Applications() {
 
 
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Policy Term</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Policy Term</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.policy_details?.policy_term_years ? `${riskData.findings.extracted_details.policy_details.policy_term_years} Years` : '—'}
                                                                 </Typography>
                                                             </Box>
                                                             <Box>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block' }}>Nominee Details</Typography>
-                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block' }}>Nominee Details</Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>
                                                                     {riskData.findings.extracted_details.policy_details?.nominee || '—'}
                                                                 </Typography>
                                                             </Box>
@@ -1981,21 +1981,21 @@ export default function Applications() {
                                                     </Box>
 
                                                     <Box sx={{ flex: 1 }}>
-                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#475569', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textSecondary, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                                                             <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#f59e0b', borderRadius: 1 }} />
                                                             Application Summary
                                                         </Typography>
                                                         <Stack spacing={2}>
                                                             <Box sx={{ mt: 1 }}>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block', mb: 0.5 }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600, display: 'block', mb: 0.5 }}>
                                                                     POLICY SUMMARY
                                                                 </Typography>
-                                                                <Typography variant="body2" sx={{ color: '#334155', fontStyle: 'italic', fontWeight: 500 }}>
+                                                                <Typography variant="body2" sx={{ color: themeColors.textPrimary, fontStyle: 'italic', fontWeight: 500 }}>
                                                                     "{riskData.findings.extracted_details.policy_details.policy_summary?.replace?.(/(^|\s)I(\d)/g, '$1$2') || riskData.findings.extracted_details.policy_details.policy_summary}"
                                                                 </Typography>
                                                             </Box>
                                                             <Box sx={{ mt: 2, pt: 2, borderTop: '1px dashed #cbd5e1' }}>
-                                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 800, display: 'block', mb: 1 }}>
+                                                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 800, display: 'block', mb: 1 }}>
                                                                     UPLOADED DOCUMENTS
                                                                 </Typography>
                                                                 {riskData.uploaded_documents && riskData.uploaded_documents.length > 0 ? (
@@ -2006,7 +2006,7 @@ export default function Applications() {
                                                                                 <Typography
                                                                                     variant="caption"
                                                                                     onClick={() => window.open(`http://127.0.0.1:8000/uploads/${doc.file_name}`, '_blank')}
-                                                                                    sx={{ fontWeight: 600, color: '#3b82f6', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                                                                                    sx={{ fontWeight: 600, color: '#FF5A14', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
                                                                                 >
                                                                                     {doc.file_name} <VisibilityIcon sx={{ fontSize: 12, ml: 0.5, verticalAlign: 'middle' }} />
                                                                                 </Typography>
@@ -2025,12 +2025,12 @@ export default function Applications() {
                                     )}
                                     <Box>
                                         <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                                            <PsychologyIcon sx={{ color: '#7c3aed', fontSize: 28 }} />
+                                            <PsychologyIcon sx={{ color: '#FF7A45', fontSize: 28 }} />
                                             <Typography variant="h6" sx={{ fontWeight: 800 }}>Analysis of Patient Files</Typography>
                                         </Stack>
                                         {riskData ? (
                                             <Box>
-                                                <Typography variant="body2" sx={{ color: '#475569', mb: 2 }}>
+                                                <Typography variant="body2" sx={{ color: themeColors.textSecondary, mb: 2 }}>
                                                     Risk Assessment Engine evaluated {riskData.findings?.rules_total || 4} deterministic underwriting rules against the applicant's document profile.
                                                 </Typography>
                                                 <Box sx={{ mb: 3, p: 2, bgcolor: '#f0fdfa', border: '1px solid #ccfbf1', borderRadius: 2 }}>
@@ -2052,41 +2052,41 @@ export default function Applications() {
                                                         const finalScore = b.weighted_score ?? (Number.isInteger(b.score * b.weight) ? (b.score * b.weight) : (b.score * b.weight).toFixed(1));
 
                                                         return (
-                                                            <Paper key={i} variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: '#f8fafc', borderColor: '#e2e8f0' }}>
+                                                            <Paper key={i} variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: themeColors.cardBg, borderColor: '#e2e8f0' }}>
                                                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                                                                     <Box>
-                                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#334155', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                                                                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: themeColors.textPrimary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
                                                                             {b.factor || b.label}
                                                                         </Typography>
-                                                                        <Typography variant="caption" sx={{ fontWeight: 600, color: '#64748b', display: 'block' }}>
+                                                                        <Typography variant="caption" sx={{ fontWeight: 600, color: themeColors.textSecondary, display: 'block' }}>
                                                                             Calculation: {raw} (Raw Score) × {weight / 100} (Weightage of {weight}%) = {finalScore}
                                                                         </Typography>
                                                                     </Box>
-                                                                    <Typography variant="subtitle2" sx={{ fontWeight: 900, color: finalScore <= weight * 0.4 ? '#16a34a' : (finalScore <= weight * 0.7 ? '#f59e0b' : '#ef4444') }}>
+                                                                    <Typography variant="subtitle2" sx={{ fontWeight: 900, color: finalScore <= weight * 0.4 ? '#FF5A14' : (finalScore <= weight * 0.7 ? '#f59e0b' : '#ef4444') }}>
                                                                         {finalScore} <Box component="span" sx={{ color: '#94a3b8', fontWeight: 600, fontSize: '0.75rem' }}>/ {weight}</Box>
                                                                     </Typography>
                                                                 </Box>
 
-                                                                <Typography variant="body2" sx={{ color: '#475569', mb: 1.5 }}>
-                                                                    <Box component="span" sx={{ fontWeight: 700, color: '#1e293b' }}>Justification:</Box> {b.justification || 'No justification provided.'}
+                                                                <Typography variant="body2" sx={{ color: themeColors.textSecondary, mb: 1.5 }}>
+                                                                    <Box component="span" sx={{ fontWeight: 700, color: themeColors.textPrimary }}>Justification:</Box> {b.justification || 'No justification provided.'}
                                                                 </Typography>
 
                                                                 {(b.triggered_rules?.length > 0) && (
                                                                     <Box sx={{ mb: 1 }}>
-                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', display: 'block', mb: 0.5 }}>Triggered Rules:</Typography>
+                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: themeColors.textSecondary, display: 'block', mb: 0.5 }}>Triggered Rules:</Typography>
                                                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                                            {b.triggered_rules.map((rule, idx) => <Chip key={`rule-${idx}`} label={rule} size="small" sx={{ bgcolor: '#f3e8ff', color: '#7e22ce', height: 22, fontSize: '0.7rem' }} />)}
+                                                                            {b.triggered_rules.map((rule, idx) => <Chip key={`rule-${idx}`} label={rule} size="small" sx={{ bgcolor: 'rgba(255, 90, 20, 0.08)', color: '#F56B2F', height: 22, fontSize: '0.7rem' }} />)}
                                                                         </Box>
                                                                     </Box>
                                                                 )}
 
                                                                 {(b.citations && Array.isArray(b.citations) && b.citations.filter(c => c && c.trim() !== '' && c.toLowerCase() !== 'none' && c.toLowerCase() !== 'n/a' && !c.toLowerCase().includes('list of')).length > 0) && (
                                                                     <Box sx={{ mt: 1 }}>
-                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', display: 'block', mb: 0.5 }}>Citations / Source Documents:</Typography>
+                                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: themeColors.textSecondary, display: 'block', mb: 0.5 }}>Citations / Source Documents:</Typography>
                                                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                                             {b.citations.filter(c => c && c.trim() !== '' && c.toLowerCase() !== 'none' && c.toLowerCase() !== 'n/a' && !c.toLowerCase().includes('list of')).map((doc, idx) => {
                                                                                 const resolvedFile = resolveCitationToFile(doc, riskData?.uploaded_documents || []);
-                                                                                return <Chip component="a" href={`http://127.0.0.1:8000/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={resolvedFile || doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }} />} sx={{ bgcolor: '#e0f2fe', color: '#0369a1', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
+                                                                                return <Chip component="a" href={`http://127.0.0.1:8000/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={resolvedFile || doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }} />} sx={{ bgcolor: '#FFF7F2', color: '#FF5A14', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
                                                                             })}
                                                                         </Box>
                                                                     </Box>
@@ -2107,7 +2107,7 @@ export default function Applications() {
                                 </Stack>
                             )}
                         </DialogContent>
-                        <DialogActions sx={{ px: 4, pb: 4, borderTop: '1px solid #e2e8f0', pt: 3, bgcolor: '#f8fafc', flexDirection: 'column', alignItems: 'stretch', gap: 2 }}>
+                        <DialogActions sx={{ px: 4, pb: 4, borderTop: '1px solid #e2e8f0', pt: 3, bgcolor: themeColors.cardBg, flexDirection: 'column', alignItems: 'stretch', gap: 2 }}>
                             {(() => {
                                 const isEscalatedPastUser = selectedCase.current_role_id && user.role_id > selectedCase.current_role_id;
                                 // Enable actions for non-brokers, ignoring status for testing/demo per user request
@@ -2123,12 +2123,12 @@ export default function Applications() {
                                             </Box>
                                         )}
                                         <Stack direction="row" spacing={1} sx={{ width: '100%', flexWrap: 'wrap' }}>
-                                            <Button onClick={() => setSelectedCase(null)} sx={{ color: '#64748b', fontWeight: 700, mr: 'auto' }}>Close</Button>
+                                            <Button onClick={() => setSelectedCase(null)} sx={{ color: themeColors.textSecondary, fontWeight: 700, mr: 'auto' }}>Close</Button>
                                             {!disableActions && (
                                                 <>
-                                                    <Button variant="outlined" color="warning" disabled={decisionLoading} onClick={() => handleDecision('escalate')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Refer</Button>
+                                                    <Button variant="outlined" color="primary" disabled={decisionLoading} onClick={() => handleDecision('escalate')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Refer</Button>
                                                     <Button variant="outlined" color="error" disabled={decisionLoading} onClick={() => handleDecision('reject')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Reject</Button>
-                                                    <Button variant="contained" color="success" disabled={decisionLoading} onClick={() => handleDecision('approve')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Approve</Button>
+                                                    <Button variant="contained" color="primary" disabled={decisionLoading} onClick={() => handleDecision('approve')} sx={{ fontWeight: 700, px: 3, borderRadius: 2 }}>Approve</Button>
                                                 </>
                                             )}
                                         </Stack>
@@ -2182,7 +2182,7 @@ export default function Applications() {
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
                     <Button onClick={() => setOpenRejectModal(false)} color="inherit">Cancel</Button>
-                    <Button onClick={handleRejectSubmit} variant="contained" color="error" disabled={decisionLoading || !rejectCustomReason || !rejectDoc}>
+                    <Button onClick={handleRejectSubmit} variant="contained" color="inherit" disabled={decisionLoading || !rejectCustomReason || !rejectDoc}>
                         Confirm Reject
                     </Button>
                 </DialogActions>
@@ -2219,7 +2219,7 @@ export default function Applications() {
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
                     <Button onClick={() => setOpenReferModal(false)} color="inherit">Cancel</Button>
-                    <Button onClick={handleReferSubmit} variant="contained" color="warning" disabled={decisionLoading || !selectedReferUser}>
+                    <Button onClick={handleReferSubmit} variant="contained" color="primary" disabled={decisionLoading || !selectedReferUser}>
                         Confirm Refer
                     </Button>
                 </DialogActions>
@@ -2227,7 +2227,7 @@ export default function Applications() {
 
             {/* Add Comment Dialog */}
             <Dialog open={openAddComment} onClose={() => setOpenAddComment(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-                <DialogTitle sx={{ fontWeight: 800, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>Add Comment</DialogTitle>
+                <DialogTitle sx={{ fontWeight: 800, bgcolor: themeColors.cardBg, borderBottom: '1px solid #e2e8f0' }}>Add Comment</DialogTitle>
                 <DialogContent sx={{ pt: 1 }}>
                     <TextField
                         autoFocus
@@ -2255,12 +2255,12 @@ export default function Applications() {
                     <Typography variant="h6" sx={{ fontWeight: 900, color: '#991b1b' }}>Access Denied 🔒</Typography>
                 </DialogTitle>
                 <DialogContent sx={{ p: 4, textAlign: 'center' }}>
-                    <Typography variant="body1" sx={{ color: '#334155', fontWeight: 600, lineHeight: 1.6 }}>
+                    <Typography variant="body1" sx={{ color: themeColors.textPrimary, fontWeight: 600, lineHeight: 1.6 }}>
                         {errorMsg}
                     </Typography>
                 </DialogContent>
-                <DialogActions sx={{ p: 2, justifyContent: 'center', bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
-                    <Button onClick={() => setErrorMsg('')} variant="contained" color="error" sx={{ fontWeight: 800, borderRadius: 2, px: 4 }}>
+                <DialogActions sx={{ p: 2, justifyContent: 'center', bgcolor: themeColors.cardBg, borderTop: '1px solid #e2e8f0' }}>
+                    <Button onClick={() => setErrorMsg('')} variant="contained" color="inherit" sx={{ fontWeight: 800, borderRadius: 2, px: 4 }}>
                         Okay, Understood
                     </Button>
                 </DialogActions>
@@ -2270,13 +2270,13 @@ export default function Applications() {
             {/* ── Comment Thread Dialog ── */}
             <Dialog open={openCommentThread} onClose={() => setOpenCommentThread(false)} maxWidth="sm" fullWidth
                 PaperProps={{ sx: { borderRadius: 4, boxShadow: '0 25px 60px -15px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', maxHeight: '85vh' } }}>
-                <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', pb: 2 }}>
+                <DialogTitle sx={{ bgcolor: themeColors.cardBg, borderBottom: '1px solid #e2e8f0', pb: 2 }}>
                     <Stack direction="row" alignItems="center" spacing={1.5}>
-                        <ForumIcon sx={{ color: '#9333ea' }} />
+                        <ForumIcon sx={{ color: '#FF5A14' }} />
                         <Box>
                             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>Comment Thread</Typography>
                             {threadCase && (
-                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
+                                <Typography variant="caption" sx={{ color: themeColors.textSecondary, fontWeight: 600 }}>
                                     {threadCase.case_number} · {threadCase.applicant_name}
                                 </Typography>
                             )}
@@ -2288,7 +2288,7 @@ export default function Applications() {
                     {/* Thread messages */}
                     <Box sx={{ flex: 1, overflowY: 'auto', p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
                         {threadLoading ? (
-                            <Box sx={{ py: 6, textAlign: 'center' }}><CircularProgress size={28} /><Typography sx={{ mt: 1.5, color: '#64748b', fontSize: '0.85rem' }}>Loading thread...</Typography></Box>
+                            <Box sx={{ py: 6, textAlign: 'center' }}><CircularProgress size={28} /><Typography sx={{ mt: 1.5, color: themeColors.textSecondary, fontSize: '0.85rem' }}>Loading thread...</Typography></Box>
                         ) : threadComments.length === 0 ? (
                             <Box sx={{ py: 6, textAlign: 'center' }}>
                                 <ForumIcon sx={{ fontSize: 40, color: '#e2e8f0', mb: 1 }} />
@@ -2298,9 +2298,9 @@ export default function Applications() {
                         ) : threadComments.map((msg, idx) => {
                             const isMe = msg.user_id === user?.id;
                             const isBrokerMsg = msg.role_id === 5;
-                            const roleColor = isBrokerMsg ? '#16a34a' : '#9333ea';
+                            const roleColor = isBrokerMsg ? '#FF5A14' : '#FF5A14';
                             return (
-                                <Box key={msg.id} sx={{ display: 'flex', gap: 2, p: 2, bgcolor: darkMode ? '#1e293b' : '#f8fafc', borderRadius: 2, border: '1px solid', borderColor: darkMode ? '#334155' : '#e2e8f0' }}>
+                                <Box key={msg.id} sx={{ display: 'flex', gap: 2, p: 2, bgcolor: darkMode ? '#1e293b' : '#f8fafc', borderRadius: 2, border: '1px solid', borderColor: themeColors.borderHex }}>
                                     <Avatar sx={{ width: 36, height: 36, bgcolor: roleColor, fontSize: '0.9rem', fontWeight: 700, flexShrink: 0 }}>
                                         {(msg.author_name || 'U').charAt(0).toUpperCase()}
                                     </Avatar>
@@ -2338,7 +2338,7 @@ export default function Applications() {
                                             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: darkMode ? '#1e293b' : (disableBrokerComment ? '#f1f5f9' : '#fff') } }}
                                         />
                                         <IconButton onClick={handleSendComment} disabled={disableBrokerComment || sendingComment || !newComment.trim()}
-                                            sx={{ bgcolor: '#9333ea', color: '#fff', '&:hover': { bgcolor: '#7e22ce' }, '&:disabled': { bgcolor: '#e2e8f0', color: '#94a3b8' }, borderRadius: 2, width: 40, height: 40, flexShrink: 0 }}>
+                                            sx={{ bgcolor: '#FF5A14', color: '#fff', '&:hover': { bgcolor: '#F56B2F' }, '&:disabled': { bgcolor: '#e2e8f0', color: '#94a3b8' }, borderRadius: 2, width: 40, height: 40, flexShrink: 0 }}>
                                             {sendingComment ? <CircularProgress size={18} sx={{ color: '#fff' }} /> : <SendIcon fontSize="small" />}
                                         </IconButton>
                                     </>
@@ -2349,21 +2349,21 @@ export default function Applications() {
                 </DialogContent>
 
                 <DialogActions sx={{ px: 3, py: 1.5, borderTop: '1px solid #e2e8f0', bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-                    <Button onClick={() => setOpenCommentThread(false)} sx={{ fontWeight: 700, color: '#64748b' }}>Close</Button>
+                    <Button onClick={() => setOpenCommentThread(false)} sx={{ fontWeight: 700, color: themeColors.textSecondary }}>Close</Button>
                 </DialogActions>
             </Dialog>
 
             {/* ── Broker Case Timeline Dialog ── */}
             <Dialog open={openBrokerTimeline} onClose={() => setOpenBrokerTimeline(false)} maxWidth="md" fullWidth
                 PaperProps={{ sx: { borderRadius: 4, boxShadow: '0 25px 60px -15px rgba(0,0,0,0.2)' } }}>
-                <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                <DialogTitle sx={{ bgcolor: themeColors.cardBg, borderBottom: '1px solid #e2e8f0' }}>
                     <Stack direction="row" alignItems="center" spacing={1.5}>
-                        <TimelineIcon sx={{ color: '#16a34a', fontSize: 28 }} />
+                        <TimelineIcon sx={{ color: '#FF5A14', fontSize: 28 }} />
                         <Box>
                             <Typography variant="h6" sx={{ fontWeight: 800 }}>Case Timeline</Typography>
                             {brokerTimelineCase && (
                                 <Typography variant="body2" color="text.secondary">
-                                    <Box component="span" sx={{ fontFamily: 'monospace', fontWeight: 700, color: '#2563eb' }}>{brokerTimelineCase.case_number}</Box>
+                                    <Box component="span" sx={{ fontFamily: 'monospace', fontWeight: 700, color: '#FF5A14' }}>{brokerTimelineCase.case_number}</Box>
                                     {' · '}{brokerTimelineCase.applicant_name}
                                 </Typography>
                             )}
@@ -2372,7 +2372,7 @@ export default function Applications() {
                 </DialogTitle>
                 <DialogContent sx={{ p: 4 }}>
                     {brokerTimelineLoading ? (
-                        <Box sx={{ py: 8, textAlign: 'center' }}><CircularProgress /><Typography sx={{ mt: 2, color: '#64748b' }}>Loading timeline...</Typography></Box>
+                        <Box sx={{ py: 8, textAlign: 'center' }}><CircularProgress /><Typography sx={{ mt: 2, color: themeColors.textSecondary }}>Loading timeline...</Typography></Box>
                     ) : brokerTimelineEvents.length === 0 ? (
                         <Typography sx={{ color: '#94a3b8', textAlign: 'center', py: 6 }}>No events yet for this case.</Typography>
                     ) : (
@@ -2381,8 +2381,8 @@ export default function Applications() {
                             <Stack spacing={0}>
                                 {brokerTimelineEvents.map((evt, idx) => {
                                     const evtColors = {
-                                        case_created: '#3b82f6', document_uploaded: '#8b5cf6', risk_analyzed: '#7c3aed',
-                                        comment_added: '#0891b2', decision_approve: '#16a34a', decision_reject: '#dc2626', decision_escalate: '#d97706'
+                                        case_created: '#FF5A14', document_uploaded: '#F56B2F', risk_analyzed: '#FF7A45',
+                                        comment_added: '#0891b2', decision_approve: '#FF5A14', decision_reject: '#dc2626', decision_escalate: '#d97706'
                                     };
                                     const color = evtColors[evt.event_type] || '#64748b';
                                     const isLast = idx === brokerTimelineEvents.length - 1;
@@ -2391,7 +2391,7 @@ export default function Applications() {
                                             <Avatar sx={{ width: 34, height: 34, bgcolor: `${color}15`, border: `2px solid ${color}`, color, flexShrink: 0, zIndex: 1, fontSize: '0.75rem', fontWeight: 700 }}>
                                                 {(evt.actor || 'S').charAt(0).toUpperCase()}
                                             </Avatar>
-                                            <Box sx={{ flex: 1, pt: 0.5, pb: 1, px: 2, bgcolor: darkMode ? '#1e293b' : '#f8fafc', borderRadius: 2, border: '1px solid', borderColor: darkMode ? '#334155' : '#e2e8f0' }}>
+                                            <Box sx={{ flex: 1, pt: 0.5, pb: 1, px: 2, bgcolor: darkMode ? '#1e293b' : '#f8fafc', borderRadius: 2, border: '1px solid', borderColor: themeColors.borderHex }}>
                                                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" gap={1} sx={{ width: '100%' }}>
                                                     <Box>
                                                         <Typography sx={{ fontWeight: 800, color, fontSize: '0.88rem' }}>{evt.title}</Typography>
@@ -2417,7 +2417,7 @@ export default function Applications() {
                         </Box>
                     )}
                 </DialogContent>
-                <DialogActions sx={{ px: 4, pb: 3, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+                <DialogActions sx={{ px: 4, pb: 3, bgcolor: themeColors.cardBg, borderTop: '1px solid #e2e8f0' }}>
                     <Button onClick={() => setOpenBrokerTimeline(false)} variant="contained" sx={{ fontWeight: 700, borderRadius: 2 }}>Close</Button>
                 </DialogActions>
             </Dialog>

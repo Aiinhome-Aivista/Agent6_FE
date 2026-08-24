@@ -69,7 +69,7 @@
 //         profileBg: darkMode ? '#1f2937' : '#f8fafc',
 //         profileName: darkMode ? '#f8fafc' : '#0f172a',
 //         profileRole: darkMode ? '#94a3b8' : '#64748b',
-//         navActiveBg: '#2563eb',
+//         navActiveBg: '#FF5A14',
 //         navActiveText: '#ffffff',
 //         navHoverBg: darkMode ? '#1f2937' : '#f1f5f9',
 //         navText: darkMode ? '#cbd5e1' : '#475569',
@@ -123,7 +123,7 @@
 //         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: themeColors.sidebarBg, borderRight: themeColors.sidebarBorder }}>
 //             <Toolbar sx={{ borderBottom: themeColors.sidebarHeaderBorder }}>
 //                 <Stack direction="row" alignItems="center" spacing={1}>
-//                     <ShieldIcon sx={{ color: '#2563eb' }} />
+//                     <ShieldIcon sx={{ color: '#FF5A14' }} />
 //                     {sidebarOpen && <Typography sx={{ fontWeight: 800, color: themeColors.textPrimary, fontSize: '1rem' }}>IUA Platform</Typography>}
 //                 </Stack>
 //             </Toolbar>
@@ -202,12 +202,12 @@
 //                         onClick={handleAvatarClick}
 //                         sx={{
 //                             p: 0,
-//                             border: openProfileMenu ? '2px solid #2563eb' : '2px solid transparent',
+//                             border: openProfileMenu ? '2px solid #FF5A14' : '2px solid transparent',
 //                             transition: 'all 0.2s ease'
 //                         }}
 //                         title="Profile & Settings"
 //                     >
-//                         <Avatar sx={{ bgcolor: '#2563eb', fontWeight: 800 }}>{user.username.charAt(0).toUpperCase()}</Avatar>
+//                         <Avatar sx={{ bgcolor: '#FF5A14', fontWeight: 800 }}>{user.username.charAt(0).toUpperCase()}</Avatar>
 //                     </IconButton>
 //                     <Menu
 //                         anchorEl={profileAnchorEl}
@@ -238,7 +238,7 @@
 //                             <Typography sx={{ color: themeColors.textPrimary, fontWeight: 800, fontSize: '1rem', mb: 0.5 }}>
 //                                 {user?.username}
 //                             </Typography>
-//                             <Chip label={roleName} size="small" sx={{ bgcolor: 'rgba(37, 99, 235, 0.1)', color: '#2563eb', fontWeight: 700, borderRadius: 1.5, mb: 1.5 }} />
+//                             <Chip label={roleName} size="small" sx={{ bgcolor: 'rgba(37, 99, 235, 0.1)', color: '#FF5A14', fontWeight: 700, borderRadius: 1.5, mb: 1.5 }} />
 //                             <Divider sx={{ width: '100%', mb: 1.5, borderColor: themeColors.borderHex }} />
 //                             <MenuItem onClick={logout} sx={{ width: '100%', borderRadius: 2, color: '#ef4444', '&:hover': { bgcolor: '#fef2f2' } }}>
 //                                 <ListItemIcon><LogoutIcon sx={{ color: '#ef4444', fontSize: 20 }} /></ListItemIcon>
@@ -284,6 +284,7 @@ import {
     Badge, Dialog, DialogTitle, DialogContent, DialogActions, Button, Alert
 } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
+import { useThemeContext } from '../context/ThemeContext';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -331,40 +332,30 @@ export default function Layout() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [darkMode, setDarkMode] = useState(() => {
-        return localStorage.getItem('theme') === 'dark';
-    });
-
-    const toggleTheme = () => {
-        setDarkMode(prev => {
-            const next = !prev;
-            localStorage.setItem('theme', next ? 'dark' : 'light');
-            return next;
-        });
-    };
+    const { darkMode, toggleTheme } = useThemeContext();
 
     const themeColors = {
-        bg: darkMode ? '#0b0f19' : '#f8fafc',
-        cardBg: darkMode ? '#111827' : '#ffffff',
-        border: darkMode ? '1px solid #1f2937' : '1px solid #e2e8f0',
-        borderHex: darkMode ? '#1f2937' : '#e2e8f0',
-        textPrimary: darkMode ? '#f8fafc' : '#0f172a',
-        textSecondary: darkMode ? '#94a3b8' : '#64748b',
-        sidebarBg: darkMode ? '#111827' : '#ffffff',
-        sidebarBorder: darkMode ? '1px solid #1f2937' : '1px solid #e2e8f0',
-        sidebarHeaderBorder: darkMode ? '1px solid #1f2937' : '1px solid #f1f5f9',
-        profileBg: darkMode ? '#1f2937' : '#f8fafc',
-        profileName: darkMode ? '#f8fafc' : '#0f172a',
-        profileRole: darkMode ? '#94a3b8' : '#64748b',
-        navActiveBg: '#2563eb',
-        navActiveText: '#ffffff',
-        navHoverBg: darkMode ? '#1f2937' : '#f1f5f9',
-        navText: darkMode ? '#cbd5e1' : '#475569',
-        appBarBg: darkMode ? '#111827' : '#ffffff',
-        tableHeadBg: darkMode ? '#1f2937' : '#f8fafc',
-        tableHeadText: darkMode ? '#cbd5e1' : '#475569',
-        tableRowHover: darkMode ? '#1e293b' : '#f8fafc',
-        tableCellBorder: darkMode ? '1px solid #1f2937' : '1px solid #f1f5f9',
+        bg: darkMode ? '#0b0f19' : '#FFFFFF', // Light Background
+        cardBg: darkMode ? '#111827' : '#FFFFFF',
+        border: darkMode ? '1px solid #1f2937' : '1px solid #D8D8D8', // Light Border
+        borderHex: darkMode ? '#1f2937' : '#D8D8D8',
+        textPrimary: darkMode ? '#f8fafc' : '#666666', // Primary Text
+        textSecondary: darkMode ? '#94a3b8' : '#888888', // Secondary Text
+        sidebarBg: '#4A4A4A', // Sidebar
+        sidebarBorder: 'none',
+        sidebarHeaderBorder: darkMode ? '1px solid #333' : '1px solid #555',
+        profileBg: darkMode ? '#1f2937' : '#555555',
+        profileName: '#FFFFFF', // Sidebar text should be white
+        profileRole: '#D8D8D8',
+        navActiveBg: '#FF5A14', // Primary Orange
+        navActiveText: '#FFFFFF',
+        navHoverBg: darkMode ? '#1f2937' : '#555555', // Hover orange/gray combination
+        navText: '#FFFFFF',
+        appBarBg: darkMode ? '#111827' : '#FFFFFF',
+        tableHeadBg: darkMode ? '#1f2937' : '#FFFFFF',
+        tableHeadText: darkMode ? '#cbd5e1' : '#666666',
+        tableRowHover: darkMode ? '#1e293b' : '#FFF7F2', // Input Background
+        tableCellBorder: darkMode ? '1px solid #1f2937' : '1px solid #D8D8D8',
     };
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -468,8 +459,8 @@ export default function Layout() {
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: themeColors.sidebarBg, borderRight: themeColors.sidebarBorder }}>
             <Toolbar sx={{ borderBottom: themeColors.sidebarHeaderBorder }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-                    <ShieldIcon sx={{ color: '#2563eb' }} />
-                    {sidebarOpen && <Typography sx={{ fontWeight: 800, color: themeColors.textPrimary, fontSize: '1rem' }}>IUA Platform</Typography>}
+                    <ShieldIcon sx={{ color: '#FF5A14' }} />
+                    {sidebarOpen && <Typography sx={{ fontWeight: 800, color: '#FFFFFF', fontSize: '1rem' }}>IUA Platform</Typography>}
                 </Box>
             </Toolbar>
             <Box sx={{ p: 2 }}>
@@ -517,14 +508,14 @@ export default function Layout() {
                     sx={{
                         borderRadius: 2,
                         bgcolor: themeColors.profileBg,
-                        border: themeColors.border,
-                        color: '#ef4444',
-                        '&:hover': { bgcolor: '#fef2f2', color: '#ef4444', borderColor: '#fecaca' },
+                        border: '1px solid #FF8A55',
+                        color: '#FF5A14',
+                        '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.1)', color: '#FF5A14' },
                         justifyContent: sidebarOpen ? 'flex-start' : 'center',
                         transition: 'all 0.2s ease'
                     }}
                 >
-                    <ListItemIcon sx={{ color: '#ef4444', minWidth: sidebarOpen ? 36 : 'auto' }}>
+                    <ListItemIcon sx={{ color: '#FF5A14', minWidth: sidebarOpen ? 36 : 'auto' }}>
                         <LogoutIcon />
                     </ListItemIcon>
                     {sidebarOpen && <ListItemText primary="Sign Out" slotProps={{ primary: { sx: { color: 'inherit', fontWeight: 700, fontSize: '0.875rem' } } }} />}
@@ -560,12 +551,12 @@ export default function Layout() {
                         onClick={handleAvatarClick}
                         sx={{
                             p: 0,
-                            border: openProfileMenu ? '2px solid #2563eb' : '2px solid transparent',
+                            border: openProfileMenu ? '2px solid #FF5A14' : '2px solid transparent',
                             transition: 'all 0.2s ease'
                         }}
                         title="Profile & Settings"
                     >
-                        <Avatar sx={{ bgcolor: '#2563eb', fontWeight: 800 }}>{user.username.charAt(0).toUpperCase()}</Avatar>
+                        <Avatar sx={{ bgcolor: '#FF5A14', fontWeight: 800 }}>{user.username.charAt(0).toUpperCase()}</Avatar>
                     </IconButton>
                     <Menu
                         anchorEl={profileAnchorEl}
@@ -596,7 +587,7 @@ export default function Layout() {
                             <Typography sx={{ color: themeColors.textPrimary, fontWeight: 800, fontSize: '1rem', mb: 0.5 }}>
                                 {user?.username}
                             </Typography>
-                            <Chip label={roleName} size="small" sx={{ bgcolor: 'rgba(37, 99, 235, 0.1)', color: '#2563eb', fontWeight: 700, borderRadius: 1.5, mb: 1.5 }} />
+                            <Chip label={roleName} size="small" sx={{ bgcolor: 'rgba(255, 90, 20, 0.1)', color: '#FF5A14', fontWeight: 700, borderRadius: 1.5, mb: 1.5 }} />
                             <Divider sx={{ width: '100%', mb: 1.5, borderColor: themeColors.borderHex }} />
                             <MenuItem onClick={logout} sx={{ width: '100%', borderRadius: 2, color: '#ef4444', '&:hover': { bgcolor: '#fef2f2' } }}>
                                 <ListItemIcon><LogoutIcon sx={{ color: '#ef4444', fontSize: 20 }} /></ListItemIcon>

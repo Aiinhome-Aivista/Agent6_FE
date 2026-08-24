@@ -50,9 +50,9 @@ export default function AuditLogs() {
                     onClick={handleRefreshAudits}
                     disabled={auditLoading}
                     sx={{
-                        color: '#3b82f6',
-                        bgcolor: '#eff6ff',
-                        '&:hover': { bgcolor: '#dbeafe' },
+                        color: '#FF5A14',
+                        bgcolor: '#FFF7F2',
+                        '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' },
                         width: 32,
                         height: 32,
                         p: 0
@@ -97,7 +97,7 @@ export default function AuditLogs() {
                                 <TableRow key={l.id} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
                                     <TableCell sx={{ fontWeight: 700, color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder }}>#{l.id}</TableCell>
                                     <TableCell sx={{ fontWeight: 800, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{l.username}</TableCell>
-                                    <TableCell sx={{ fontWeight: 600, color: '#2563eb', borderBottom: themeColors.tableCellBorder }}>{l.action}</TableCell>
+                                    <TableCell sx={{ fontWeight: 600, color: '#FF5A14', borderBottom: themeColors.tableCellBorder }}>{l.action}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem', fontFamily: 'monospace' }}>
                                         {Object.entries(parsedDetails).map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' · ')}
                                     </TableCell>

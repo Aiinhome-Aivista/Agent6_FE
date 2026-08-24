@@ -23,9 +23,9 @@ export default function AdminDashboard() {
     }, []);
 
     const statsCards = [
-        { label: 'Total Cases', val: cases.length, color: '#2563eb' },
+        { label: 'Total Cases', val: cases.length, color: '#FF5A14' },
         { label: 'Pending Upload', val: cases.filter(c => c.status === 'pending').length, color: '#d97706' },
-        { label: 'Under Review', val: cases.filter(c => c.status === 'under_review' || c.status === 'Underwriter Review').length, color: '#7c3aed' },
+        { label: 'Under Review', val: cases.filter(c => c.status === 'under_review' || c.status === 'Underwriter Review').length, color: '#FF7A45' },
         { label: 'Approved', val: cases.filter(c => c.status === 'approved' || c.status === 'Approved').length, color: '#16a34a' },
     ];
 

@@ -23,9 +23,9 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import api from '../api';
 
 const EVENT_ICON_MAP = {
-    case_created: { icon: <CreateIcon fontSize="small" />, color: '#3b82f6', bg: '#eff6ff' },
-    document_uploaded: { icon: <UploadFileIcon fontSize="small" />, color: '#8b5cf6', bg: '#f5f3ff' },
-    risk_analyzed: { icon: <PsychologyIcon fontSize="small" />, color: '#7c3aed', bg: '#fdf4ff' },
+    case_created: { icon: <CreateIcon fontSize="small" />, color: '#FF5A14', bg: '#FFF7F2' },
+    document_uploaded: { icon: <UploadFileIcon fontSize="small" />, color: '#F56B2F', bg: '#f5f3ff' },
+    risk_analyzed: { icon: <PsychologyIcon fontSize="small" />, color: '#FF7A45', bg: '#fdf4ff' },
     comment_added: { icon: <AddCommentIcon fontSize="small" />, color: '#0891b2', bg: '#ecfeff' },
     'decision_approve': { icon: <CheckCircleIcon fontSize="small" />, color: '#16a34a', bg: '#f0fdf4' },
     'decision_reject': { icon: <CancelIcon fontSize="small" />, color: '#dc2626', bg: '#fef2f2' },
@@ -129,7 +129,7 @@ export default function HistoricalCases() {
                         <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" sx={{ ml: 'auto' }}>
                             <Tooltip title="Refresh">
                                 <IconButton onClick={fetchCases} disabled={loading}
-                                    sx={{ color: '#3b82f6', bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' }, width: 34, height: 34 }}>
+                                    sx={{ color: '#FF5A14', bgcolor: '#FFF7F2', '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' }, width: 34, height: 34 }}>
                                     <RefreshIcon sx={{ fontSize: 18, animation: loading ? 'spin 1s linear infinite' : 'none', '@keyframes spin': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } } }} />
                                 </IconButton>
                             </Tooltip>
@@ -189,7 +189,7 @@ export default function HistoricalCases() {
 
                                 return filteredCases.map(row => (
                                 <TableRow key={row.id} hover sx={{ '&:hover': { bgcolor: `${themeColors.tableRowHover} !important` } }}>
-                                    <TableCell sx={{ fontWeight: 700, color: '#2563eb', fontFamily: 'monospace', borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem' }}>{row.case_number}</TableCell>
+                                    <TableCell sx={{ fontWeight: 700, color: '#FF5A14', fontFamily: 'monospace', borderBottom: themeColors.tableCellBorder, fontSize: '0.8rem' }}>{row.case_number}</TableCell>
                                     <TableCell sx={{ fontWeight: 700, color: themeColors.textPrimary, borderBottom: themeColors.tableCellBorder }}>{row.applicant_name}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.85rem' }}>{row.policy_type}</TableCell>
                                     <TableCell sx={{ color: themeColors.textSecondary, borderBottom: themeColors.tableCellBorder, fontSize: '0.82rem' }}>{row.assigned_user || 'Pending Assignment'}</TableCell>
@@ -200,7 +200,7 @@ export default function HistoricalCases() {
                                     {/* <TableCell sx={{ borderBottom: themeColors.tableCellBorder }}>
                                         <Tooltip title="View Case Timeline">
                                             <IconButton size="small" onClick={() => openTimeline(row)}
-                                                sx={{ bgcolor: '#eff6ff', border: '1px solid #bfdbfe', color: '#3b82f6', '&:hover': { bgcolor: '#dbeafe' } }}>
+                                                sx={{ bgcolor: '#FFF7F2', border: '1px solid #FF8A55', color: '#FF5A14', '&:hover': { bgcolor: 'rgba(255, 90, 20, 0.08)' } }}>
                                                 <TimelineIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
@@ -220,10 +220,10 @@ export default function HistoricalCases() {
                     <>
                         <DialogTitle sx={{ bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0', pb: 2 }}>
                             <Stack direction="row" alignItems="center" spacing={1.5}>
-                                <TimelineIcon sx={{ color: '#3b82f6', fontSize: 28 }} />
+                                <TimelineIcon sx={{ color: '#FF5A14', fontSize: 28 }} />
                                 <Box>
                                     <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                                        Case Timeline — <Box component="span" sx={{ color: '#2563eb', fontFamily: 'monospace' }}>{timelineCase.case_number}</Box>
+                                        Case Timeline — <Box component="span" sx={{ color: '#FF5A14', fontFamily: 'monospace' }}>{timelineCase.case_number}</Box>
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
                                         {timelineCase.applicant_name} · {timelineCase.policy_type}
