@@ -35,7 +35,7 @@ const formatChatMessage = (text, role, darkMode, themeColors) => {
                                     label={fileName}
                                     size="small"
                                     sx={{ ml: 0.5, mr: 0.5, height: 20, fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', bgcolor: darkMode ? '#334155' : '#e2e8f0', color: darkMode ? '#94a3b8' : '#475569' }}
-                                    onClick={() => window.open(`http://122.163.121.176:3029/uploads/${fileName}`, '_blank')}
+                                    onClick={() => window.open(`http://187.127.163.17:3029/uploads/${fileName}`, '_blank')}
                                 />
                             );
                         }

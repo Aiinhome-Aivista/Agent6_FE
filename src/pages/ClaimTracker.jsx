@@ -627,7 +627,7 @@ export default function ClaimTracker() {
                               Underwriting Graph for Case: CASE-{caseId}
                             </Typography>
                             <iframe
-                              src={`http://122.163.121.176:3029/static_graphs/case_${caseId}_graph.html`}
+                              src={`http://187.127.163.17:3029/static_graphs/case_${caseId}_graph.html`}
                               style={{
                                 width: '100%',
                                 height: '450px',

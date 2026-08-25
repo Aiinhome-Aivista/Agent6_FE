@@ -1021,7 +1021,7 @@ export default function Applications() {
                                             </Typography>
                                         </Box>
                                         <Box>
-                                            <IconButton size="small" component="a" href={`http://122.163.121.176:3029/uploads/${doc.file_name}`} target="_blank" rel="noopener noreferrer" sx={{ color: '#FF5A14' }}>
+                                            <IconButton size="small" component="a" href={`http://187.127.163.17:3029/uploads/${doc.file_name}`} target="_blank" rel="noopener noreferrer" sx={{ color: '#FF5A14' }}>
                                                 <VisibilityIcon fontSize="small" />
                                             </IconButton>
                                             {!viewMode && (
@@ -2005,7 +2005,7 @@ export default function Applications() {
                                                                                 <UploadFileIcon sx={{ fontSize: 16, color: '#94a3b8' }} />
                                                                                 <Typography
                                                                                     variant="caption"
-                                                                                    onClick={() => window.open(`http://122.163.121.176:3029/uploads/${doc.file_name}`, '_blank')}
+                                                                                    onClick={() => window.open(`http://187.127.163.17:3029/uploads/${doc.file_name}`, '_blank')}
                                                                                     sx={{ fontWeight: 600, color: '#FF5A14', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
                                                                                 >
                                                                                     {doc.file_name} <VisibilityIcon sx={{ fontSize: 12, ml: 0.5, verticalAlign: 'middle' }} />
@@ -2086,7 +2086,7 @@ export default function Applications() {
                                                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                                             {b.citations.filter(c => c && c.trim() !== '' && c.toLowerCase() !== 'none' && c.toLowerCase() !== 'n/a' && !c.toLowerCase().includes('list of')).map((doc, idx) => {
                                                                                 const resolvedFile = resolveCitationToFile(doc, riskData?.uploaded_documents || []);
-                                                                                return <Chip component="a" href={`http://122.163.121.176:3029/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={resolvedFile || doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }} />} sx={{ bgcolor: '#FFF7F2', color: '#FF5A14', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
+                                                                                return <Chip component="a" href={`http://187.127.163.17:3029/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={resolvedFile || doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }} />} sx={{ bgcolor: '#FFF7F2', color: '#FF5A14', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
                                                                             })}
                                                                         </Box>
                                                                     </Box>
