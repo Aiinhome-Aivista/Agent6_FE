@@ -712,12 +712,12 @@ export default function Applications() {
                                                             <span>
                                                                 <IconButton size="small" onClick={() => openCommentThreadFor(row)}
                                                                     disabled={!row.underwriter_comment_count || row.underwriter_comment_count <= 0}
-                                                                    sx={{ 
-                                                                        bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : '#FFF7F2', 
+                                                                    sx={{
+                                                                        bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : '#FFF7F2',
                                                                         border: '1px solid',
-                                                                        borderColor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#e2e8f0' : '#FF8A55', 
-                                                                        color: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#94a3b8' : '#FF5A14', 
-                                                                        '&:hover': { bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : 'rgba(255, 90, 20, 0.08)' } 
+                                                                        borderColor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#e2e8f0' : '#FF8A55',
+                                                                        color: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? '#94a3b8' : '#FF5A14',
+                                                                        '&:hover': { bgcolor: (!row.underwriter_comment_count || row.underwriter_comment_count <= 0) ? 'transparent' : 'rgba(255, 90, 20, 0.08)' }
                                                                     }}>
                                                                     <ForumIcon fontSize="small" />
                                                                 </IconButton>
@@ -1021,7 +1021,7 @@ export default function Applications() {
                                             </Typography>
                                         </Box>
                                         <Box>
-                                            <IconButton size="small" component="a" href={`http://127.0.0.1:8000/uploads/${doc.file_name}`} target="_blank" rel="noopener noreferrer" sx={{ color: '#FF5A14' }}>
+                                            <IconButton size="small" component="a" href={`http://122.163.121.176:3029/uploads/${doc.file_name}`} target="_blank" rel="noopener noreferrer" sx={{ color: '#FF5A14' }}>
                                                 <VisibilityIcon fontSize="small" />
                                             </IconButton>
                                             {!viewMode && (
@@ -1338,7 +1338,7 @@ export default function Applications() {
                                                                 <Typography variant="overline" sx={{ fontWeight: 800, color: themeColors.textPrimary, display: 'block', mb: 2, fontSize: '0.8rem', letterSpacing: 0.5 }}>
                                                                     Actuarial Historical Comparison
                                                                 </Typography>
-                                                                
+
                                                                 {riskData.past_cases_comparison.compared_cases_count > 0 ? (
                                                                     <Box>
                                                                         <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -1424,7 +1424,7 @@ export default function Applications() {
                                                                                             <TableCell sx={{ fontWeight: 500, py: 1 }}>{pastCase.applicant_name}</TableCell>
                                                                                             <TableCell sx={{ color: '#4b5563', py: 1 }}>{pastCase.medical_condition}</TableCell>
                                                                                             <TableCell align="right" sx={{ py: 1 }}>
-                                                                                                <Tooltip 
+                                                                                                <Tooltip
                                                                                                     title={
                                                                                                         pastCase.similarity_breakdown ? (
                                                                                                             <Box sx={{ p: 1.5 }}>
@@ -1443,7 +1443,7 @@ export default function Applications() {
                                                                                                                             +{pastCase.similarity_breakdown.medical_condition.score}%
                                                                                                                         </Typography>
                                                                                                                     </Grid>
-                                                                                                                    
+
                                                                                                                     <Grid item xs={8}>
                                                                                                                         <Typography variant="caption" sx={{ display: 'block', fontWeight: 600 }}>Policy Type Match (max 25%):</Typography>
                                                                                                                         <Typography variant="caption" sx={{ display: 'block', opacity: 0.85, fontSize: '0.65rem' }}>
@@ -1523,10 +1523,10 @@ export default function Applications() {
                                                                                                 </Tooltip>
                                                                                             </TableCell>
                                                                                             <TableCell align="center" sx={{ py: 1 }}>
-                                                                                                <Chip 
-                                                                                                    label={pastCase.status} 
-                                                                                                    size="small" 
-                                                                                                    color={pastCase.status.toLowerCase() === 'approved' ? 'success' : 'error'} 
+                                                                                                <Chip
+                                                                                                    label={pastCase.status}
+                                                                                                    size="small"
+                                                                                                    color={pastCase.status.toLowerCase() === 'approved' ? 'success' : 'error'}
                                                                                                     sx={{ fontWeight: 700, fontSize: '0.7rem', height: 20 }}
                                                                                                 />
                                                                                             </TableCell>
@@ -2005,7 +2005,7 @@ export default function Applications() {
                                                                                 <UploadFileIcon sx={{ fontSize: 16, color: '#94a3b8' }} />
                                                                                 <Typography
                                                                                     variant="caption"
-                                                                                    onClick={() => window.open(`http://127.0.0.1:8000/uploads/${doc.file_name}`, '_blank')}
+                                                                                    onClick={() => window.open(`http://122.163.121.176:3029/uploads/${doc.file_name}`, '_blank')}
                                                                                     sx={{ fontWeight: 600, color: '#FF5A14', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
                                                                                 >
                                                                                     {doc.file_name} <VisibilityIcon sx={{ fontSize: 12, ml: 0.5, verticalAlign: 'middle' }} />
@@ -2086,7 +2086,7 @@ export default function Applications() {
                                                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                                             {b.citations.filter(c => c && c.trim() !== '' && c.toLowerCase() !== 'none' && c.toLowerCase() !== 'n/a' && !c.toLowerCase().includes('list of')).map((doc, idx) => {
                                                                                 const resolvedFile = resolveCitationToFile(doc, riskData?.uploaded_documents || []);
-                                                                                return <Chip component="a" href={`http://127.0.0.1:8000/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={resolvedFile || doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }} />} sx={{ bgcolor: '#FFF7F2', color: '#FF5A14', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
+                                                                                return <Chip component="a" href={`http://122.163.121.176:3029/uploads/${resolvedFile}`} target="_blank" clickable key={`doc-${idx}`} label={resolvedFile || doc} size="small" icon={<DescriptionIcon sx={{ fontSize: 14 }} />} sx={{ bgcolor: '#FFF7F2', color: '#FF5A14', height: 22, fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none' }} />;
                                                                             })}
                                                                         </Box>
                                                                     </Box>

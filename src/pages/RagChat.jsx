@@ -30,12 +30,12 @@ const formatChatMessage = (text, role, darkMode, themeColors) => {
                         if (part.startsWith('[Source Document:') && part.endsWith(']')) {
                             const fileName = part.slice(17, -1).trim();
                             return (
-                                <Chip 
-                                    key={j} 
-                                    label={fileName} 
-                                    size="small" 
-                                    sx={{ ml: 0.5, mr: 0.5, height: 20, fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', bgcolor: darkMode ? '#334155' : '#e2e8f0', color: darkMode ? '#94a3b8' : '#475569' }} 
-                                    onClick={() => window.open(`http://127.0.0.1:8000/uploads/${fileName}`, '_blank')}
+                                <Chip
+                                    key={j}
+                                    label={fileName}
+                                    size="small"
+                                    sx={{ ml: 0.5, mr: 0.5, height: 20, fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', bgcolor: darkMode ? '#334155' : '#e2e8f0', color: darkMode ? '#94a3b8' : '#475569' }}
+                                    onClick={() => window.open(`http://122.163.121.176:3029/uploads/${fileName}`, '_blank')}
                                 />
                             );
                         }
