@@ -7,7 +7,7 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import PersonIcon from '@mui/icons-material/Person';
 import SendIcon from '@mui/icons-material/Send';
-import api from '../api';
+import api, { API_BASE_URL } from '../api';
 
 const formatChatMessage = (text, role, darkMode, themeColors) => {
     if (!text) return null;
@@ -35,7 +35,7 @@ const formatChatMessage = (text, role, darkMode, themeColors) => {
                                     label={fileName} 
                                     size="small" 
                                     sx={{ ml: 0.5, mr: 0.5, height: 20, fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', bgcolor: darkMode ? '#334155' : '#e2e8f0', color: darkMode ? '#94a3b8' : '#475569' }} 
-                                    onClick={() => window.open(`http://127.0.0.1:8000/uploads/${fileName}`, '_blank')}
+                                    onClick={() => window.open(`${API_BASE_URL}/uploads/${fileName}`, '_blank')}
                                 />
                             );
                         }

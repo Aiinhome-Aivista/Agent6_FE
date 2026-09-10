@@ -10,7 +10,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import api from '../api';
+import api, { API_BASE_URL } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 // Helper to format currency
@@ -627,7 +627,7 @@ export default function ClaimTracker() {
                               Underwriting Graph for Case: CASE-{caseId}
                             </Typography>
                             <iframe
-                              src={`http://127.0.0.1:8000/static_graphs/case_${caseId}_graph.html`}
+                              src={`${API_BASE_URL}/static_graphs/case_${caseId}_graph.html`}
                               style={{
                                 width: '100%',
                                 height: '450px',
